@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MATH2351/2352 – First Order Equations: Modelling</title>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    tags: 'ams'
+  },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg: #2d2d2d;
+  --text: #e0e0e0;
+  --heading: #ffffff;
+  --accent: #8ab4f8;
+  --accent2: #81c995;
+  --border: #4a4a4a;
+  --def-bg: #3a3a3a;
+  --def-border: #6a6a6a;
+  --prop-bg: #353535;
+  --prop-border: #5a5a5a;
+  --exercise-bg: #383838;
+  --exercise-border: #5a5a5a;
+  --warn-bg: #3d3535;
+  --warn-border: #7a5a5a;
+  --code-bg: #333333;
+  --shadow: rgba(0, 0, 0, 0.3);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 18px; scroll-behavior: smooth; }
+
+body {
+  font-family: 'Crimson Pro', Georgia, serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page-wrapper { display: flex; min-height: 100vh; }
+
+/* --- Sidebar --- */
+.sidebar {
+  position: sticky; top: 0; align-self: flex-start;
+  width: 280px; min-width: 280px; height: 100vh;
+  overflow-y: auto; padding: 2rem 1.2rem 2rem 1.4rem;
+  border-right: 1.5px solid var(--border); background: #252525;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+.sidebar::-webkit-scrollbar { width: 5px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+.sidebar .sidebar-title {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.72rem;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: #888888; margin-bottom: 1rem; font-weight: 600;
+}
+
+.sidebar ol { list-style: none; padding: 0; margin: 0; counter-reset: sidebar-counter; }
+.sidebar > ol > li { counter-increment: sidebar-counter; margin-bottom: 0.15rem; }
+.sidebar > ol > li > a::before {
+  content: counter(sidebar-counter) ". "; font-weight: 600;
+  color: var(--accent); font-size: 0.8rem;
+}
+
+.sidebar a {
+  display: block; font-family: 'Source Sans 3', sans-serif; font-size: 0.82rem;
+  color: var(--text); text-decoration: none; padding: 0.2rem 0.5rem;
+  border-radius: 4px; border-left: 2.5px solid transparent;
+  transition: all 0.2s; line-height: 1.4;
+}
+.sidebar a:hover { color: var(--accent); background: rgba(138,180,248,0.1); }
+.sidebar a.active {
+  color: var(--accent); font-weight: 600;
+  background: rgba(138,180,248,0.15); border-left-color: var(--accent);
+}
+
+.sidebar ol ol { margin-left: 1rem; margin-top: 0.1rem; counter-reset: none; }
+.sidebar ol ol li { margin-bottom: 0.05rem; }
+.sidebar ol ol a { font-size: 0.78rem; }
+.sidebar ol ol a::before { display: none; }
+
+.container {
+  max-width: 780px; margin: 0 auto; padding: 2rem 1.5rem 4rem;
+  flex: 1; min-width: 0;
+}
+
+/* --- Title Block --- */
+.title-block {
+  text-align: center; padding: 3rem 0 2.5rem;
+  border-bottom: 2px solid var(--border); margin-bottom: 2.5rem;
+}
+.title-block h1 {
+  font-family: 'Crimson Pro', serif; font-size: 2.4rem; font-weight: 700;
+  color: var(--heading); line-height: 1.2; margin-bottom: 0.5rem; letter-spacing: -0.02em;
+}
+.title-block .author { font-family: 'Source Sans 3', sans-serif; font-size: 1rem; color: #a0a0a0; }
+.title-block .course {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: #888888;
+  margin-top: 0.2rem; letter-spacing: 0.04em; text-transform: uppercase;
+}
+.title-block .date { font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: #888888; margin-top: 0.3rem; }
+
+/* --- TOC (mobile) --- */
+.toc {
+  background: var(--def-bg); border: 1px solid var(--border);
+  border-radius: 6px; padding: 1.5rem 2rem; margin-bottom: 2.5rem;
+}
+.toc h2 {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.8rem;
+  text-transform: uppercase; letter-spacing: 0.12em; color: #888888;
+  margin-bottom: 0.8rem; font-weight: 600;
+}
+.toc ol { list-style: none; counter-reset: toc-counter; }
+.toc > ol > li { counter-increment: toc-counter; margin-bottom: 0.3rem; }
+.toc > ol > li::before {
+  content: counter(toc-counter) "."; font-weight: 600; color: var(--accent);
+  margin-right: 0.5rem; font-family: 'Source Sans 3', sans-serif; font-size: 0.9rem;
+}
+.toc a { color: var(--text); text-decoration: none; font-size: 0.95rem; transition: color 0.2s; }
+.toc a:hover { color: var(--accent); }
+
+/* --- Headings --- */
+h2 {
+  font-family: 'Crimson Pro', serif; font-size: 1.8rem; font-weight: 700;
+  color: var(--heading); margin-top: 3rem; margin-bottom: 1rem;
+  padding-bottom: 0.4rem; border-bottom: 1.5px solid var(--border); line-height: 1.3;
+}
+h3 { font-family: 'Crimson Pro', serif; font-size: 1.35rem; font-weight: 600; color: var(--heading); margin-top: 2rem; margin-bottom: 0.8rem; }
+h4 { font-family: 'Crimson Pro', serif; font-size: 1.1rem; font-weight: 600; color: var(--heading); margin-top: 1.5rem; margin-bottom: 0.6rem; }
+
+p { margin-bottom: 1rem; text-align: justify; hyphens: auto; }
+
+/* --- Boxes --- */
+.box { border-radius: 5px; padding: 1.2rem 1.4rem; margin: 1.5rem 0; border-left: 4px solid; position: relative; }
+.box-title { font-family: 'Source Sans 3', sans-serif; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.6rem; display: block; }
+.definition { background: var(--def-bg); border-color: var(--def-border); }
+.definition .box-title { color: #f0c040; }
+.theorem { background: var(--prop-bg); border-color: var(--accent2); }
+.theorem .box-title { color: var(--accent2); }
+.proposition { background: var(--prop-bg); border-color: var(--prop-border); }
+.proposition .box-title { color: var(--accent2); }
+.exercise-box { background: var(--exercise-bg); border-color: var(--exercise-border); }
+.exercise-box .box-title { color: #c0a080; }
+.warning-box { background: var(--warn-bg); border-color: var(--warn-border); }
+.warning-box .box-title { color: #f08080; }
+.remark-box { background: #3a3a40; border-color: #6a6a80; }
+.remark-box .box-title { color: #a0a0d0; }
+.box p:last-child { margin-bottom: 0; }
+
+.proof { margin: 1rem 0 1.5rem; padding-left: 1rem; border-left: 2px solid var(--border); }
+.proof-label { font-style: italic; font-weight: 500; color: #a0a0a0; }
+.proof::after { content: "□"; display: block; text-align: right; color: #666; margin-top: 0.3rem; }
+
+ol, ul { margin-bottom: 1rem; padding-left: 1.5rem; }
+li { margin-bottom: 0.4rem; }
+
+.answer { display: none; }
+.answer-btn {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.78rem; font-weight: 600;
+  color: var(--accent2); background: none; border: 1.5px solid var(--accent2);
+  border-radius: 4px; padding: 0.15rem 0.55rem; margin-left: 0.4rem;
+  cursor: pointer; transition: all 0.2s; vertical-align: middle;
+}
+.answer-btn:hover { background: var(--accent2); color: #fff; }
+.answer-btn.revealed { border-color: var(--border); color: #888888; }
+.answer-btn.revealed:hover { background: var(--exercise-bg); color: #a0a0a0; }
+.answer-revealed {
+  display: inline; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem;
+  color: var(--accent2); margin-left: 0.3rem; animation: fadeIn 0.25s ease;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-2px); } to { opacity: 1; transform: translateY(0); } }
+
+hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+.key-formula {
+  background: linear-gradient(135deg, #3a3a3a, #353535);
+  border: 1.5px solid var(--def-border); border-radius: 5px;
+  padding: 1rem 1.4rem; margin: 1.2rem 0; text-align: center;
+}
+
+/* --- MCQ Phase System --- */
+.mcq { background: #333; border: 1.5px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; }
+.mcq-title { font-family: 'Source Sans 3', sans-serif; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 0.8rem; }
+.mcq-problem { margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border); }
+
+.mcq-phase { margin-bottom: 1rem; padding: 1rem; border-radius: 6px; background: #2a2a2a; border: 1.5px solid #444; transition: all 0.3s; }
+.mcq-phase.locked { opacity: 0.4; pointer-events: none; filter: grayscale(0.3); }
+.mcq-phase.active { border-color: var(--accent); box-shadow: 0 2px 8px rgba(138,180,248,0.15); }
+.mcq-phase.completed { border-color: var(--accent2); background: #2a3530; }
+
+.phase-label { font-family: 'Source Sans 3', sans-serif; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.5rem; }
+.phase-label .phase-tag { background: var(--accent); color: #1a1a1a; padding: 0.15rem 0.5rem; border-radius: 3px; font-size: 0.65rem; }
+.mcq-phase.completed .phase-label .phase-tag { background: var(--accent2); }
+.phase-label .phase-name { color: #888; }
+
+.strategy-outline { background: #353535; border-radius: 4px; padding: 0.8rem 1rem; margin: 0.8rem 0; border-left: 3px solid var(--accent2); }
+.strategy-outline-title { font-family: 'Source Sans 3', sans-serif; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin-bottom: 0.4rem; }
+.strategy-step { font-size: 0.9rem; padding: 0.3rem 0; color: var(--text); display: flex; align-items: flex-start; gap: 0.5rem; }
+.strategy-step::before { content: "✓"; color: var(--accent2); font-weight: 700; flex-shrink: 0; }
+
+.mcq-step { margin-bottom: 0.8rem; }
+.mcq-step.locked { display: none; }
+.mcq-step.completed .mcq-options { opacity: 0.6; }
+.mcq-step-label { font-family: 'Source Sans 3', sans-serif; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin-bottom: 0.5rem; }
+.mcq-question { margin-bottom: 0.6rem; font-size: 0.95rem; }
+.mcq-options { display: flex; flex-direction: column; gap: 0.4rem; }
+.mcq-option { font-family: 'Crimson Pro', serif; font-size: 0.95rem; text-align: left; padding: 0.5rem 0.8rem; border: 1.5px solid #555; border-radius: 5px; background: #2a2a2a; color: var(--text); cursor: pointer; transition: all 0.2s; line-height: 1.5; }
+.mcq-option:hover { border-color: var(--accent); background: rgba(138,180,248,0.1); }
+.mcq-option.correct { border-color: var(--accent2); background: rgba(129,201,149,0.15); cursor: default; }
+.mcq-option.correct::before { content: "✓ "; color: var(--accent2); font-weight: 700; }
+.mcq-option.wrong { border-color: #f08080; background: rgba(240,128,128,0.15); cursor: default; }
+.mcq-option.wrong::before { content: "✗ "; color: #f08080; font-weight: 700; }
+.mcq-option.disabled { pointer-events: none; opacity: 0.5; }
+.mcq-feedback { display: none; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; padding: 0.5rem 0.8rem; border-radius: 4px; margin-top: 0.5rem; line-height: 1.5; }
+.mcq-feedback.correct-fb { display: block; background: rgba(129,201,149,0.15); color: var(--accent2); border: 1px solid var(--accent2); }
+.mcq-feedback.wrong-fb { display: block; background: rgba(240,128,128,0.15); color: #f08080; border: 1px solid #f08080; }
+.mcq-result { display: none; font-family: 'Source Sans 3', sans-serif; font-size: 0.9rem; font-weight: 600; color: var(--accent2); padding: 0.8rem 1rem; background: rgba(129,201,149,0.15); border-radius: 6px; border: 1.5px solid var(--accent2); text-align: center; margin-top: 1rem; }
+
+.phase-transition { display: none; text-align: center; padding: 0.6rem; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: var(--accent2); background: rgba(129,201,149,0.1); border-radius: 4px; margin: 0.5rem 0; animation: fadeIn 0.3s ease; }
+
+@media (min-width: 901px) { .toc { display: none; } }
+@media (max-width: 900px) {
+  .page-wrapper { display: block; } .sidebar { display: none; }
+  html { font-size: 16px; } .container { padding: 1rem; max-width: 100%; }
+  .title-block h1 { font-size: 1.8rem; } h2 { font-size: 1.5rem; } .box { padding: 1rem; }
+}
+@media print {
+  .sidebar { display: none; } .page-wrapper { display: block; }
+  body { font-size: 11pt; } .container { max-width: 100%; }
+  .box { break-inside: avoid; } h2 { break-after: avoid; } .toc { display: block; }
+}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+
+<!-- ===== SIDEBAR ===== -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-title">Contents</div>
+  <ol>
+    <li><a href="#sec-flow">Flow-in, Flow-out</a>
+      <ol>
+        <li><a href="#sec-flow-oscillating">Oscillating concentration</a></li>
+        <li><a href="#sec-flow-exercises">Exercises</a></li>
+        <li><a href="#sec-flow-practice">Practice</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec-cooling">Newton's Law of Cooling</a>
+      <ol>
+        <li><a href="#sec-cooling-exercises">Exercises</a></li>
+        <li><a href="#sec-cooling-practice">Practice</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec-compound">Compounding</a>
+      <ol>
+        <li><a href="#sec-compound-exercises">Exercises</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec-logistic">Logistic Equations</a>
+      <ol>
+        <li><a href="#sec-logistic-cases">Case analysis</a></li>
+        <li><a href="#sec-logistic-concavity">Concavity</a></li>
+        <li><a href="#sec-logistic-modified">Modified logistic</a></li>
+        <li><a href="#sec-logistic-exercises">Exercises</a></li>
+        <li><a href="#sec-logistic-practice">Practice</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec-existence">Existence &amp; Uniqueness</a>
+      <ol>
+        <li><a href="#sec-existence-example">Example</a></li>
+        <li><a href="#sec-existence-counter">Counter-example</a></li>
+        <li><a href="#sec-existence-exercises">Exercises</a></li>
+        <li><a href="#sec-existence-practice">Practice</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+
+<div class="container">
+
+<!-- ===== TITLE ===== -->
+<div class="title-block">
+  <h1>First Order Equations: Modelling</h1>
+  <div class="author">Edmund Chiang</div>
+  <div class="course">MATH2351 / 2352 — Boyce &amp; DiPrima §2.3</div>
+  <div class="date">February 5, 2026</div>
+</div>
+
+<!-- ===== TOC (mobile) ===== -->
+<nav class="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#sec-flow">Flow-in, Flow-out Example</a></li>
+    <li><a href="#sec-cooling">Newton's Law of Cooling</a></li>
+    <li><a href="#sec-compound">Continuous Compounding with Deposit/Withdrawal</a></li>
+    <li><a href="#sec-logistic">Autonomous (Logistic) Equations</a></li>
+    <li><a href="#sec-existence">Existence and Uniqueness</a></li>
+  </ol>
+</nav>
+
+<!-- ============================================================ -->
+<h2 id="sec-flow">1 &ensp; Flow-in, Flow-out Example</h2>
+
+<p><strong>Example (B&amp;D).</strong> At $t=0$ a tank contains $Q_0$ lb of salt dissolved in 100 gal of water. Salted water with concentration $\tfrac{1}{4}$ lb/gal enters at rate $r$ gal/min; the well-stirred mixture drains at the same rate. Find:</p>
+<ol>
+  <li>The amount of salt $Q(t)$ at any time.</li>
+  <li>The limiting amount $Q_L$ after a very long time.</li>
+  <li>If $r=3$ and $Q_0 = 2Q_L$, the time $T$ for salt to be within 2% of $Q_L$.</li>
+  <li>The flow rate needed so that $T \leq 45$ min.</li>
+</ol>
+
+<p>Since we are dealing with DEs, the key observation is to express every rate of change relevant to the tank flow:</p>
+
+$$\frac{dQ}{dt} = \text{(rate of salt in)} - \text{(rate of salt out)}.$$
+
+<p>We determine:</p>
+<ul>
+  <li>Salt entering per minute: $\;\dfrac{1}{4}\;\text{lb/gal} \times r\;\text{gal/min} = \dfrac{r}{4}\;\text{lb/min}$</li>
+  <li>Salt draining per minute: $\;r\;\text{gal/min} \times \dfrac{Q}{100}\;\text{lb/gal} = \dfrac{rQ}{100}\;\text{lb/min}$</li>
+</ul>
+
+<p>Hence the IVP is:</p>
+
+$$\frac{dQ}{dt} = \frac{r}{4} - \frac{rQ}{100} = \frac{25r - rQ}{100}, \qquad Q(0) = Q_0.$$
+
+<p><strong>(i) Separation of variables.</strong></p>
+
+$$\int \frac{dQ}{Q - 25} = \int \frac{-r}{100}\,dt.$$
+
+<p>Hence</p>
+
+$$\ln|Q - 25| = -\frac{rt}{100} + c.$$
+
+<p>So $Q - 25 = Ce^{-rt/100}$ where $C = e^{\pm c}$. Therefore</p>
+
+$$Q(t) = 25 + Ce^{-rt/100}.$$
+
+<p>The initial condition $Q(0) = Q_0$ gives $C = Q_0 - 25$:</p>
+
+<div class="key-formula">
+$$Q(t) = 25 + (Q_0 - 25)\,e^{-rt/100}.$$
+</div>
+
+<p><strong>(ii)</strong> As $t \to \infty$, $\;Q(t) \to 25 = Q_L$.</p>
+
+<p><strong>(iii)</strong> With $Q_0 = 50 = 2Q_L$ and $r = 3$. We need $Q(T)$ within 2% of $Q_L = 25$, i.e. $Q(T) = 25.5$:</p>
+
+$$25.5 = 25 + (50 - 25)e^{-3T/100} = 25 + 25\,e^{-T/50}.$$
+
+<p>So $e^{-T/50} = 0.5/25 = 0.02$, giving</p>
+
+$$T = \frac{\ln 50}{0.03} \approx 130.4 \text{ min.}$$
+
+<p><strong>(iv)</strong> For $T \leq 45$ min:</p>
+
+$$25.5 = 25 + 25\,e^{-45r/100} \implies r = \frac{100}{45}\ln 50 \approx 8.69 \text{ gal/min.}$$
+
+<hr>
+
+<h3 id="sec-flow-oscillating">1.1 &ensp; Oscillating Concentration (B&amp;D §2.3, Example 3)</h3>
+
+<p>If the salt concentration flowing into the tank varies as $\gamma(t) = 2 + \sin 2t$ g/L and drains at the same rate, the DE becomes</p>
+
+$$\frac{dq}{dt} + \frac{1}{2}q = 10 + 5\sin 2t,$$
+
+<p>which has the solution</p>
+
+$$q(t) = 20 - \frac{10}{17}\cos 2t + \frac{40}{17}\sin 2t + ce^{-t/2}.$$
+
+<p>Notice the solution also oscillates as the source that flows in. See Boyce &amp; DiPrima for details.</p>
+
+<hr>
+
+<div class="box exercise-box" id="sec-flow-exercises">
+  <span class="box-title">Exercises (B&amp;D)</span>
+  <ol>
+    <li>A tank contains 200 L of dye (1 g/L), rinsed with fresh water at 2 L/min. Time to reach 1% concentration. <span class="answer">(Ans. $t = 100\ln 100 \approx 460.5$ min)</span></li>
+    <li>120 L pure water; salt enters at $\gamma$ g/L, 2 L/min. Find $Q(t)$ and limiting amount. <span class="answer">(Ans. $Q(t) = 120\gamma[1 - e^{-t/60}] \to 120\gamma$)</span></li>
+    <li>100 gal fresh water; salt at $\frac{1}{2}$ lb/gal for 10 min then fresh water for 10 more min. <span class="answer">(Ans. $Q \approx 7.42$ lb)</span></li>
+    <li>500 gal capacity, initially 200 gal with 100 lb salt; inflow 3 gal/min (1 lb/gal), outflow 2 gal/min. Find $Q(t)$ before overflow and concentration at overflow. <span class="answer">(Ans. $Q(t) = 200 + t - 100(200)^2/(200+t)^2$; overflow concentration $= 121/125$ lb/gal; limiting $c = 1$ lb/gal)</span></li>
+  </ol>
+</div>
+
+<!-- MCQ: Flow -->
+<div class="mcq" id="sec-flow-practice">
+  <div class="mcq-title">Practice: Setting Up a Flow Problem</div>
+  <div class="mcq-problem">
+    <p>A tank holds 200 L of pure water. Brine with 3 g/L of salt flows in at 5 L/min. The well-stirred mixture drains at 5 L/min. Let $Q(t)$ be the grams of salt at time $t$.</p>
+  </div>
+
+  <div class="mcq-step" data-step="1">
+    <div class="mcq-step-label">Step 1</div>
+    <p class="mcq-question">What is the rate of salt <em>entering</em> the tank (in g/min)?</p>
+    <div class="mcq-options">
+      <button class="mcq-option" data-correct="false" data-hint="That's the drain rate times concentration in the tank, not the inflow.">$5Q/200$</button>
+      <button class="mcq-option" data-correct="true">$15$</button>
+      <button class="mcq-option" data-correct="false" data-hint="The inflow concentration is 3 g/L, not 5 g/L.">$25$</button>
+      <button class="mcq-option" data-correct="false" data-hint="That's just the flow rate, not the salt rate. Multiply by concentration.">$5$</button>
+    </div>
+    <div class="mcq-feedback"></div>
+  </div>
+
+  <div class="mcq-step locked" data-step="2">
+    <div class="mcq-step-label">Step 2</div>
+    <p class="mcq-question">What is the rate of salt <em>leaving</em> the tank?</p>
+    <div class="mcq-options">
+      <button class="mcq-option" data-correct="false" data-hint="The concentration in the tank is Q/200 g/L, not Q/100.">$Q/20$</button>
+      <button class="mcq-option" data-correct="false" data-hint="You need to multiply drain rate by the tank's concentration.">$5$</button>
+      <button class="mcq-option" data-correct="true">$Q/40$</button>
+      <button class="mcq-option" data-correct="false" data-hint="That's the inflow rate of salt, not the outflow.">$15$</button>
+    </div>
+    <div class="mcq-feedback"></div>
+  </div>
+
+  <div class="mcq-step locked" data-step="3">
+    <div class="mcq-step-label">Step 3</div>
+    <p class="mcq-question">Which DE describes $Q(t)$?</p>
+    <div class="mcq-options">
+      <button class="mcq-option" data-correct="false" data-hint="Check the sign — salt enters at 15 and leaves at Q/40.">$dQ/dt = Q/40 - 15$</button>
+      <button class="mcq-option" data-correct="true">$dQ/dt = 15 - Q/40$</button>
+      <button class="mcq-option" data-correct="false" data-hint="The drain term should involve Q, not a constant.">$dQ/dt = 15 - 5$</button>
+      <button class="mcq-option" data-correct="false" data-hint="The rates don't add — salt in minus salt out.">$dQ/dt = 15 + Q/40$</button>
+    </div>
+    <div class="mcq-feedback"></div>
+  </div>
+
+  <div class="mcq-step locked" data-step="4">
+    <div class="mcq-step-label">Step 4</div>
+    <p class="mcq-question">Solving the DE with $Q(0)=0$, what is $Q(t)$?</p>
+    <div class="mcq-options">
+      <button class="mcq-option" data-correct="false" data-hint="Check the equilibrium: as $t\to\infty$, $Q\to 600$ (set $dQ/dt=0$).">$Q(t) = 200(1 - e^{-t/40})$</button>
+      <button class="mcq-option" data-correct="false" data-hint="The coefficient should match the equilibrium value 600.">$Q(t) = 15(1 - e^{-t/40})$</button>
+      <button class="mcq-option" data-correct="true">$Q(t) = 600(1 - e^{-t/40})$</button>
+      <button class="mcq-option" data-correct="false" data-hint="The time constant comes from the drain rate 1/40, not 1/200.">$Q(t) = 600(1 - e^{-t/200})$</button>
+    </div>
+    <div class="mcq-feedback"></div>
+  </div>
+
+  <div class="mcq-result">All steps complete — well done!</div>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec-cooling">2 &ensp; Newton's Law of Cooling</h2>
+
+<p>Newton published his finding in a short article in the <em>Philosophical Transactions of the Royal Society</em> anonymously in 1701 (in Latin). It states that the temperature of an object changes at a rate proportional to the difference between the object's temperature and its surroundings.</p>
+
+<div class="box definition">
+  <span class="box-title">Newton's Law of Cooling</span>
+  <p>The rate of heat loss of a body is directly proportional to the temperature difference with its surroundings. Let $T = T(t)$ denote the temperature of the body, $T_s$ the surrounding temperature. Then
+  $$\frac{dT}{dt} \propto (T - T_s),$$
+  which as a DE reads
+  $$\frac{dT}{dt} = k(T - T_s).$$</p>
+</div>
+
+<p>The "law" is valid provided the temperature difference is small — Newton was well aware of this limitation.</p>
+
+<div class="box theorem">
+  <span class="box-title">Theorem</span>
+  <p>With initial temperature $T_0$ and surrounding temperature $T_s$:
+  $$T(t) = T_s + (T_0 - T_s)\,e^{kt}.$$</p>
+</div>
+
+<div class="proof">
+  <span class="proof-label">Proof.</span>
+  <p>Let $y(t) = T(t) - T_s$. Then $y' = T'$. By Newton's law of cooling the DE becomes</p>
+  $$\frac{dy}{dt} = ky,$$
+  <p>so that $y(t) = Ce^{kt}$ from the exponential growth/decay result. Express $y$ back in terms of $T$:</p>
+  $$T(t) = T_s + Ce^{kt}.$$
+  <p>But $T(0) = T_0$, so $C = T_0 - T_s$. Thus</p>
+  $$T(t) = T_s + (T_0 - T_s)e^{kt}.$$
+</div>
+
+<div class="box exercise-box" id="sec-cooling-exercises">
+  <span class="box-title">Exercise</span>
+  <p>Suppose the ambient temperature is $70°$F and the rate constant is $0.05$/min. Write a DE for the temperature $y$ of the object at any time. Note that the DE is the same whether the object is above or below ambient temperature.</p>
+  <p><span class="answer">(Ans. $y' = -0.05(y - 70)$ where $y$ is in °F and $t$ in minutes.)</span></p>
+</div>
+
+<!-- MCQ: Cooling -->
+<div class="mcq" id="sec-cooling-practice">
+  <div class="mcq-title">Practice: Newton's Law of Cooling</div>
+  <div class="mcq-problem">
+    <p>A cup of coffee at $90°$C is placed in a $20°$C room. After 5 minutes, the coffee is at $70°$C.</p>
+  </div>
+
+  <div class="mcq-step" data-step="1">
+    <div class="mcq-step-label">Step 1</div>
+    <p class="mcq-question">Using $T(t) = T_s + (T_0 - T_s)e^{kt}$, what are $T_s$ and $T_0$?</p>
+    <div class="mcq-options">
+      <button class="mcq-option" data-correct="false" data-hint="$T_s$ is the surrounding temperature, not the coffee temperature.">$T_s = 90,\; T_0 = 20$</button>
+      <button class="mcq-option" data-correct="true">$T_s = 20,\; T_0 = 90$</button>
+      <button class="mcq-option" data-correct="false" data-hint="$T_0$ is the initial coffee temperature.">$T_s = 20,\; T_0 = 70$</button>
+    </div>
+    <div class="mcq-feedback"></div>
+  </div>
+
+  <div class="mcq-step locked" data-step="2">
+    <div class="mcq-step-label">Step 2</div>
+    <p class="mcq-question">Using $T(5) = 70$, what equation do you get for $k$?</p>
+    <div class="mcq-options">
+      <button class="mcq-option" data-correct="true">$70 = 20 + 70e^{5k}$</button>
+      <button class="mcq-option" data-correct="false" data-hint="The coefficient should be $T_0 - T_s = 90 - 20 = 70$.">$70 = 20 + 90e^{5k}$</button>
+      <button class="mcq-option" data-correct="false" data-hint="Remember to subtract $T_s$ from $T_0$.">$70 = 90e^{5k}$</button>
+    </div>
+    <div class="mcq-feedback"></div>
+  </div>
+
+  <div class="mcq-step locked" data-step="3">
+    <div class="mcq-step-label">Step 3</div>
+    <p class="mcq-question">Solving for $k$:</p>
+    <div class="mcq-options">
+      <button class="mcq-option" data-correct="false" data-hint="$e^{5k} = 50/70 = 5/7$, so $k = \frac{1}{5}\ln(5/7)$.">$k = \frac{1}{5}\ln(7/5)$</button>
+      <button class="mcq-option" data-correct="true">$k = \frac{1}{5}\ln(5/7)$</button>
+      <button class="mcq-option" data-correct="false" data-hint="Divide both sides by 70 first, then take ln.">$k = \ln(50)/5$</button>
+    </div>
+    <div class="mcq-feedback"></div>
+  </div>
+
+  <div class="mcq-step locked" data-step="4">
+    <div class="mcq-step-label">Step 4</div>
+    <p class="mcq-question">Since $k < 0$, the coffee temperature as $t \to \infty$:</p>
+    <div class="mcq-options">
+      <button class="mcq-option" data-correct="false" data-hint="The exponential term decays to 0, not the whole expression.">$T \to 0°$C</button>
+      <button class="mcq-option" data-correct="true">$T \to 20°$C</button>
+      <button class="mcq-option" data-correct="false" data-hint="The coffee approaches the surrounding temperature, not its average with the initial.">$T \to 55°$C</button>
+    </div>
+    <div class="mcq-feedback"></div>
+  </div>
+
+  <div class="mcq-result">All steps complete — well done!</div>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec-compound">3 &ensp; Continuous Compounding with Deposit/Withdrawal</h2>
+
+<p>Discrete compounding $m$ times over time $t$ at rate $r$: $\;S_0\!\left(1 + \dfrac{r}{m}\right)^{mt}$. Taking $m \to \infty$:</p>
+
+$$S(t) = \lim_{m\to\infty} S_0\left(1 + \frac{r}{m}\right)^{mt} = S_0\,e^{rt}.$$
+
+<p><strong>Example.</strong> Continuous compounding means the IVP $\;dS/dt = rS,\; S(0) = S_0$, with unique solution $S(t) = S_0 e^{rt}$.</p>
+
+<div class="box theorem">
+  <span class="box-title">Theorem</span>
+  <p>With constant deposit/withdrawal rate $k$ and $S(0) = S_0$:
+  $$\frac{dS}{dt} = rS + k \implies S(t) = S_0\,e^{rt} + \frac{k}{r}(e^{rt} - 1).$$
+  ($k > 0$: deposit; $k < 0$: withdrawal.)</p>
+</div>
+
+<div class="box exercise-box" id="sec-compound-exercises">
+  <span class="box-title">Exercises (B&amp;D)</span>
+  <ol>
+    <li>$S_0$ invested at rate $r$ continuously. (a) Doubling time $T$. (b) $T$ for $r = 7\%$. (c) Rate to double in 8 years. <span class="answer">(Ans. $T = \ln 2/r$; 9.90 yr; 8.66%)</span></li>
+    <li>Invest $k$/year at return $r$. (a) $S(t)$. (b) $k$ for \$1M in 40 yr at 7.5%. (c) $r$ for \$1M in 40 yr at $k = \$2000$/yr. <span class="answer">(Ans. $S(t) = k(e^{rt}-1)/r$; $k \approx \$3930$; $r \approx 9.77\%$)</span></li>
+  </ol>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec-logistic">4 &ensp; Autonomous (Logistic) Equations</h2>
+
+<p>An <strong>autonomous DE</strong> has the form $\dfrac{dy}{dt} = f(y)$, where $f$ depends on $y$ only — no $t$ appears explicitly. The simplest case $y' = ry$ describes exponential growth, but this is not realistic. In population growth, although initial behaviour is exponential, growth is restricted by physical conditions (food, space, etc.).</p>
+
+<p>A more realistic model assumes $f(y) = y\,h(y)$ where $h(y) \approx r$ when $y$ is small. The simplest such example is $h(y) = r - ay$, giving:</p>
+
+<div class="box definition">
+  <span class="box-title">Definition — Logistic Equation</span>
+  $$\frac{dy}{dt} = r\left(1 - \frac{y}{K}\right)y,$$
+  <p>where $K = r/a$ is the <strong>carrying capacity</strong> (intrinsic growth rate constant).</p>
+</div>
+
+<p>This equation is nonlinear but separable. Sign analysis:</p>
+
+$$\frac{dy}{dt} \begin{cases} > 0 & \text{if } 0 < y < K, \\ = 0 & \text{if } y = 0 \text{ or } y = K, \\ < 0 & \text{if } y > K. \end{cases}$$
+
+<p>The solutions $y(t) = 0$ and $y(t) = K$ are <strong>equilibrium solutions</strong>.</p>
+
+<h3 id="sec-logistic-cases">4.1 &ensp; Case Analysis</h3>
+
+<p><strong>Example (Logistic equation).</strong> By separation of variables and partial fractions:</p>
+
+$$rt + c = \int r\,dt = \int \frac{dy}{(1 - y/K)\,y} = \int \frac{1}{y}\,dy + \int \frac{1/K}{1 - y/K}\,dy = \ln|y| - \ln|1 - y/K|.$$
+
+<p><strong>Case I: $0 < y_0 < K$.</strong></p>
+
+$$rt + c = \ln\frac{y}{1 - y/K}, \qquad\text{so}\qquad \frac{y}{1 - y/K} = Ce^{rt}, \quad C = e^c.$$
+
+<p>The initial condition $y(0) = y_0$ gives $C = \dfrac{y_0}{1 - y_0/K}$. Solving for $y$:</p>
+
+<div class="key-formula">
+$$y(t) = \frac{y_0 K}{y_0 + (K - y_0)\,e^{-rt}} \;\to\; K \quad\text{as } t\to\infty \text{ (from below).}$$
+</div>
+
+<p><strong>Case II: $y_0 = 0$ or $K$.</strong> These are the equilibrium solutions.</p>
+
+<p><strong>Case III: $y_0 > K$.</strong> The same formula from Case I remains valid. The only difference is that now $y(t) \to K$ <em>from above</em> as $t \to \infty$ (since $K - y_0 < 0$, the exponential term is negative and decaying).</p>
+
+<h3 id="sec-logistic-concavity">4.2 &ensp; Concavity</h3>
+
+<p>Using the chain rule:</p>
+
+$$\frac{d^2y}{dt^2} = \frac{d}{dt}f(y) = f'(y)\frac{dy}{dt} = f(y)\,f'(y).$$
+
+<p>Computing explicitly:</p>
+
+$$\frac{d^2y}{dt^2} = r^2 y\!\left(1 - \frac{y}{K}\right)\!\left(1 - \frac{2y}{K}\right).$$
+
+<p>Hence:</p>
+
+$$\frac{d^2y}{dt^2} \begin{cases} > 0 & \text{if } 0 < y < K/2 \text{ (concave up)}, \\ = 0 & \text{if } y = K/2 \text{ (inflection point)}, \\ < 0 & \text{if } K/2 < y < K \text{ (concave down)}. \end{cases}$$
+
+<p>The solution $y = K$ is <strong>stable</strong> and $y = 0$ is <strong>unstable</strong>. The inflection point occurs at $y = K/2$.</p>
+
+<h3 id="sec-logistic-modified">4.3 &ensp; Modified Logistic Equation</h3>
+
+<p>Consider the equation with the opposite sign:</p>
+
+$$\frac{dy}{dt} = -r\left(1 - \frac{y}{T}\right)y.$$
+
+<p>The sign analysis is reversed:</p>
+
+$$\frac{dy}{dt} \begin{cases} < 0 & \text{if } 0 < y < T, \\ = 0 & \text{if } y = 0 \text{ or } y = T, \\ > 0 & \text{if } y > T. \end{cases}$$
+
+<p>A similar procedure gives for $y_0 < T$:</p>
+
+$$y(t) = \frac{y_0 T}{y_0 + (T - y_0)e^{rt}} \to 0 \quad\text{as } t\to\infty.$$
+
+<p>If $y_0 > T$, then there exists a finite time $t^*$ at which the solution blows up:</p>
+
+$$y_0 + (T - y_0)e^{rt^*} = 0 \implies t^* = \frac{1}{r}\ln\frac{y_0}{y_0 - T} > 0.$$
+
+<p>In fact $y(t^*) = +\infty$. The concavity analysis gives the same structure as the original logistic:</p>
+
+$$\frac{d^2y}{dt^2} = r^2 y\!\left(1 - \frac{y}{T}\right)\!\left(1 - \frac{2y}{T}\right).$$
+
+<div class="box exercise-box" id="sec-logistic-exercises">
+  <span class="box-title">Exercises (B&amp;D)</span>
+  <ol>
+    <li>Logistic equation $dy/dt = ry[1-(y/K)]$ with $y_0 = K/3$:
+      <ol type="a">
+        <li>Doubling time $\tau$ for $r = 0.025$/yr. <span class="answer">(Ans. $\tau = (\ln 4)/r = 55.452$ yr)</span></li>
+        <li>Time $T$ for $y(T)/K = \beta$ given $y_0/K = \alpha$, where $0 < \alpha, \beta < 1$. <span class="answer">(Ans. $T = \frac{1}{r}\ln\!\left[\frac{\beta(1-\alpha)}{(1-\beta)\alpha}\right]$; for $\alpha=0.1$, $\beta=0.9$: $T = 175.78$ yr)</span></li>
+      </ol>
+    </li>
+    <li>Gompertz equation $dy/dt = ry\ln(K/y)$:
+      <ol type="a">
+        <li>Critical points and stability. <span class="answer">(Ans. $y=0$ unstable, $y=K$ asymptotically stable)</span></li>
+        <li>Concavity for $0 \leq y \leq K$. <span class="answer">(Ans. Concave up for $0 < y \leq K/e$, concave down for $K/e \leq y < K$)</span></li>
+        <li>Show Gompertz $dy/dt \geq$ logistic $dy/dt$ for $0 < y \leq K$.</li>
+      </ol>
+    </li>
+  </ol>
+</div>
+
+<!-- MCQ: Logistic -->
+<div class="mcq" id="sec-logistic-practice">
+  <div class="mcq-title">Practice: Logistic Equation Analysis</div>
+  <div class="mcq-problem">
+    <p>Consider $\dfrac{dy}{dt} = 0.5\!\left(1 - \dfrac{y}{100}\right)y$ with $y(0) = 20$.</p>
+  </div>
+
+  <div class="mcq-step" data-step="1">
+    <div class="mcq-step-label">Step 1</div>
+    <p class="mcq-question">What are the equilibrium solutions?</p>
+    <div class="mcq-options">
+      <button class="mcq-option" data-correct="false" data-hint="Set $dy/dt = 0$: the factors are $y$ and $(1-y/100)$.">$y = 0$ only</button>
+      <button class="mcq-option" data-correct="true">$y = 0$ and $y = 100$</button>
+      <button class="mcq-option" data-correct="false" data-hint="$y=50$ is where the inflection point is, not an equilibrium.">$y = 0$, $y = 50$, $y = 100$</button>
+    </div>
+    <div class="mcq-feedback"></div>
+  </div>
+
+  <div class="mcq-step locked" data-step="2">
+    <div class="mcq-step-label">Step 2</div>
+    <p class="mcq-question">Since $0 < y_0 = 20 < K = 100$, is $dy/dt$ positive or negative?</p>
+    <div class="mcq-options">
+      <button class="mcq-option" data-correct="true">Positive — $y$ is increasing</button>
+      <button class="mcq-option" data-correct="false" data-hint="Both factors $y$ and $(1-y/K)$ are positive when $0 < y < K$.">Negative — $y$ is decreasing</button>
+      <button class="mcq-option" data-correct="false" data-hint="$dy/dt = 0.5(1-20/100)(20) = 0.5(0.8)(20) = 8 > 0$.">Zero — equilibrium</button>
+    </div>
+    <div class="mcq-feedback"></div>
+  </div>
+
+  <div class="mcq-step locked" data-step="3">
+    <div class="mcq-step-label">Step 3</div>
+    <p class="mcq-question">What is $y(t)$ as $t \to \infty$?</p>
+    <div class="mcq-options">
+      <button class="mcq-option" data-correct="false" data-hint="$y=0$ is unstable — solutions move away from it.">$y \to 0$</button>
+      <button class="mcq-option" data-correct="false" data-hint="$y = K/2$ is the inflection point, not the limiting value.">$y \to 50$</button>
+      <button class="mcq-option" data-correct="true">$y \to 100$</button>
+      <button class="mcq-option" data-correct="false" data-hint="The carrying capacity $K=100$ limits the growth.">$y \to \infty$</button>
+    </div>
+    <div class="mcq-feedback"></div>
+  </div>
+
+  <div class="mcq-step locked" data-step="4">
+    <div class="mcq-step-label">Step 4</div>
+    <p class="mcq-question">At what value of $y$ does the solution have an inflection point (change concavity)?</p>
+    <div class="mcq-options">
+      <button class="mcq-option" data-correct="false" data-hint="$y=20$ is just the initial condition.">$y = 20$</button>
+      <button class="mcq-option" data-correct="true">$y = 50$</button>
+      <button class="mcq-option" data-correct="false" data-hint="The inflection is at $K/2$, not $K$.">$y = 100$</button>
+      <button class="mcq-option" data-correct="false" data-hint="The inflection point of the logistic curve is always at $K/2$.">$y = 25$</button>
+    </div>
+    <div class="mcq-feedback"></div>
+  </div>
+
+  <div class="mcq-result">All steps complete — well done!</div>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec-existence">5 &ensp; Existence and Uniqueness</h2>
+
+<p>We have seen solution curves with different initial values that do not intersect. The following theorem justifies this.</p>
+
+<div class="box theorem">
+  <span class="box-title">Theorem (Existence &amp; Uniqueness)</span>
+  <p>Let $f$ and $\partial f/\partial y$ be continuous in a rectangle $\alpha < t < \beta$, $\gamma < y < \delta$ containing $(t_0, y_0)$. Then in some interval $t_0 - h < t < t_0 + h$ there is a <strong>unique</strong> solution $y = \phi(t)$ for
+  $$\frac{dy}{dt} = f(t,y), \qquad y(t_0) = y_0.$$</p>
+</div>
+
+<h3 id="sec-existence-example">5.1 &ensp; Example</h3>
+
+<p>Consider the IVP</p>
+
+$$\frac{dy}{dx} = \frac{3x^2 + 4x + 2}{2(y-1)}, \qquad y(0) = -1.$$
+
+<p>We identify</p>
+
+$$f(x,y) = \frac{3x^2 + 4x + 2}{2(y-1)}, \qquad \frac{\partial f}{\partial y} = -\frac{3x^2 + 4x + 2}{2(y-1)^2}.$$
+
+<p>The $\partial f/\partial y$ is continuous everywhere except $y = 1$. Since our initial condition is $y_0 = -1 \neq 1$, there is an interval about $y = -1$ (away from $y=1$) in which the IVP has a unique solution:</p>
+
+$$y = 1 - \sqrt{x^3 + 2x^2 + 2x}.$$
+
+<h3 id="sec-existence-counter">5.2 &ensp; Counter-example</h3>
+
+<p>Consider the IVP</p>
+
+$$\frac{dy}{dx} = y^{1/3}, \qquad y(0) = 0.$$
+
+<p>Here $f(x,y) = y^{1/3}$ and $\dfrac{\partial f}{\partial y} = \dfrac{1}{3}y^{-2/3}$. Although $f$ is continuous everywhere, $\partial f/\partial y$ is <strong>not</strong> continuous at $y = 0$ — which is exactly where the initial condition lies. So no conclusion can be drawn about uniqueness.</p>
+
+<p>The DE is separable:</p>
+
+$$\frac{3}{2}y^{2/3} = x + c.$$
+
+<p>The condition $y(0) = 0$ gives $c = 0$. So</p>
+
+$$\phi_1(x) = \left(\frac{2}{3}x\right)^{3/2}, \qquad x \geq 0$$
+
+<p>is a solution. But so is</p>
+
+$$\phi_2(x) = -\left(\frac{2}{3}x\right)^{3/2}, \qquad x \geq 0$$
+
+<p>and even $\psi(x) \equiv 0$. One can construct <strong>infinitely many</strong> solutions:</p>
+
+$$\chi(x) = \begin{cases} 0, & 0 \leq x < x_0, \\ \pm\!\left(\frac{2}{3}(x - x_0)\right)^{3/2}, & x \geq x_0. \end{cases}$$
+
+<p>One can verify that $\chi$ is continuous and differentiable even at $x_0$.</p>
+
+<div class="box exercise-box" id="sec-existence-exercises">
+  <span class="box-title">Exercises (B&amp;D)</span>
+  <ol>
+    <li>Determine intervals of existence (without solving):
+      <ul>
+        <li>$(t-3)y' + (\ln t)y = 2$, $y(1) = 2$ <span class="answer">(Ans. $0 < t < 3$)</span></li>
+        <li>$t(t-4)y' + y = 0$, $y(2) = 1$ <span class="answer">(Ans. $0 < t < 4$)</span></li>
+        <li>$y' + (\tan t)y = \sin t$, $y(\pi) = 0$ <span class="answer">(Ans. $\pi/2 < t < 3\pi/2$)</span></li>
+      </ul>
+    </li>
+    <li>Where are the hypotheses of the theorem satisfied?
+      <ul>
+        <li>$y' = (t-y)/(2t+5y)$ <span class="answer">(Ans. $2t + 5y \neq 0$)</span></li>
+        <li>$y' = (1-t^2-y^2)^{1/2}$ <span class="answer">(Ans. $t^2+y^2 < 1$)</span></li>
+        <li>$y' = (1+t^2)/(3y-y^2)$ <span class="answer">(Ans. $y \neq 0,\; y \neq 3$)</span></li>
+      </ul>
+    </li>
+    <li>Solve and find dependence on $y_0$:
+      <ul>
+        <li>$y' = -4t/y$, $y(0) = y_0$ <span class="answer">(Ans. $y = \pm\sqrt{y_0^2 - 4t^2}$; $|t| < |y_0|/2$)</span></li>
+        <li>$y' = 2ty^2$, $y(0) = y_0$ <span class="answer">(Ans. $y = 1/[(1/y_0)-t^2]$ if $y_0 \neq 0$; interval $|t| < 1/\sqrt{y_0}$ if $y_0 > 0$)</span></li>
+      </ul>
+    </li>
+  </ol>
+</div>
+
+<!-- MCQ: Existence -->
+<div class="mcq" id="sec-existence-practice">
+  <div class="mcq-title">Practice: Checking Existence &amp; Uniqueness</div>
+  <div class="mcq-problem">
+    <p>Consider the IVP $\;\dfrac{dy}{dt} = \dfrac{t}{y-2},\; y(0) = 1.$</p>
+  </div>
+
+  <div class="mcq-step" data-step="1">
+    <div class="mcq-step-label">Step 1</div>
+    <p class="mcq-question">What is $f(t,y)$?</p>
+    <div class="mcq-options">
+      <button class="mcq-option" data-correct="true">$f(t,y) = t/(y-2)$</button>
+      <button class="mcq-option" data-correct="false" data-hint="The right-hand side of $dy/dt = f(t,y)$ is $t/(y-2)$.">$f(t,y) = (y-2)/t$</button>
+      <button class="mcq-option" data-correct="false" data-hint="Don't rearrange — $f$ is whatever is on the right of $dy/dt =$.">$f(t,y) = t\cdot y - 2$</button>
+    </div>
+    <div class="mcq-feedback"></div>
+  </div>
+
+  <div class="mcq-step locked" data-step="2">
+    <div class="mcq-step-label">Step 2</div>
+    <p class="mcq-question">What is $\partial f/\partial y$?</p>
+    <div class="mcq-options">
+      <button class="mcq-option" data-correct="false" data-hint="Differentiate $t(y-2)^{-1}$ with respect to $y$.">$1/(y-2)$</button>
+      <button class="mcq-option" data-correct="true">$-t/(y-2)^2$</button>
+      <button class="mcq-option" data-correct="false" data-hint="Use the power rule: $d/dy[(y-2)^{-1}] = -(y-2)^{-2}$.">$t/(y-2)^2$</button>
+    </div>
+    <div class="mcq-feedback"></div>
+  </div>
+
+  <div class="mcq-step locked" data-step="3">
+    <div class="mcq-step-label">Step 3</div>
+    <p class="mcq-question">Where is $\partial f/\partial y$ discontinuous?</p>
+    <div class="mcq-options">
+      <button class="mcq-option" data-correct="false" data-hint="$t = 0$ doesn't cause a problem — $(y-2)^2$ is the denominator.">At $t = 0$</button>
+      <button class="mcq-option" data-correct="true">At $y = 2$</button>
+      <button class="mcq-option" data-correct="false" data-hint="Check which value of $y$ makes the denominator zero.">At $y = 0$</button>
+    </div>
+    <div class="mcq-feedback"></div>
+  </div>
+
+  <div class="mcq-step locked" data-step="4">
+    <div class="mcq-step-label">Step 4</div>
+    <p class="mcq-question">Since $y_0 = 1 \neq 2$, does the theorem guarantee a unique solution?</p>
+    <div class="mcq-options">
+      <button class="mcq-option" data-correct="true">Yes — $f$ and $\partial f/\partial y$ are continuous near $(0, 1)$</button>
+      <button class="mcq-option" data-correct="false" data-hint="The initial point $(0,1)$ is away from the singularity at $y=2$.">No — $\partial f/\partial y$ is not continuous at the initial point</button>
+      <button class="mcq-option" data-correct="false" data-hint="We can draw a conclusion because the hypotheses ARE satisfied near $(0,1)$.">Cannot determine</button>
+    </div>
+    <div class="mcq-feedback"></div>
+  </div>
+
+  <div class="mcq-result">All steps complete — well done!</div>
+</div>
+
+<hr>
+<p style="text-align:center;color:#aaa;font-size:0.85rem;margin-top:3rem;">— End of Modelling Notes —</p>
+
+</div><!-- /.container -->
+</div><!-- /.page-wrapper -->
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+  // --- Interactive answers (show/hide) ---
+  document.querySelectorAll('.answer').forEach(function (span) {
+    var btn = document.createElement('button');
+    btn.className = 'answer-btn';
+    btn.textContent = 'Show';
+    btn.setAttribute('type', 'button');
+    span.parentNode.insertBefore(btn, span);
+    btn.addEventListener('click', function () {
+      var visible = span.classList.toggle('answer-revealed');
+      span.style.display = visible ? 'inline' : 'none';
+      btn.textContent = visible ? 'Hide' : 'Show';
+      btn.classList.toggle('revealed', visible);
+      if (visible && window.MathJax && MathJax.typeset) MathJax.typeset([span]);
+    });
+  });
+
+  // --- MCQ step-by-step logic ---
+  document.querySelectorAll('.mcq').forEach(function (mcq) {
+    var steps = mcq.querySelectorAll('.mcq-step');
+    var result = mcq.querySelector('.mcq-result');
+    var totalSteps = steps.length;
+    var completed = 0;
+
+    steps.forEach(function (step, idx) {
+      var options = step.querySelectorAll('.mcq-option');
+      var feedback = step.querySelector('.mcq-feedback');
+
+      options.forEach(function (opt) {
+        opt.addEventListener('click', function () {
+          if (opt.classList.contains('correct') || opt.classList.contains('wrong') || opt.classList.contains('disabled')) return;
+
+          var isCorrect = opt.getAttribute('data-correct') === 'true';
+
+          if (isCorrect) {
+            opt.classList.add('correct');
+            options.forEach(function (o) { if (o !== opt) o.classList.add('disabled'); });
+            step.classList.add('completed');
+            feedback.textContent = 'Correct!';
+            feedback.className = 'mcq-feedback correct-fb';
+            completed++;
+
+            // Re-typeset math
+            if (window.MathJax && MathJax.typeset) MathJax.typeset([step]);
+
+            // Unlock next step
+            if (idx + 1 < totalSteps) {
+              setTimeout(function () {
+                steps[idx + 1].classList.remove('locked');
+                if (window.MathJax && MathJax.typeset) MathJax.typeset([steps[idx + 1]]);
+              }, 400);
+            }
+
+            // Show result if all done
+            if (completed === totalSteps) {
+              setTimeout(function () { result.style.display = 'block'; }, 600);
+            }
+          } else {
+            opt.classList.add('wrong');
+            var hint = opt.getAttribute('data-hint') || 'Try again.';
+            feedback.textContent = hint;
+            feedback.className = 'mcq-feedback wrong-fb';
+            // Allow retry after a moment
+            setTimeout(function () {
+              opt.classList.remove('wrong');
+              feedback.style.display = 'none';
+              feedback.className = 'mcq-feedback';
+              setTimeout(function () { feedback.style.display = ''; }, 50);
+            }, 2000);
+          }
+        });
+      });
+    });
+  });
+
+  // --- Scroll-spy ---
+  var sidebarLinks = document.querySelectorAll('.sidebar a[href^="#"]');
+  var sections = [];
+  sidebarLinks.forEach(function (link) {
+    var id = link.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) sections.push({ id: id, el: el, link: link });
+  });
+
+  function updateActive() {
+    var scrollY = window.scrollY + 80;
+    var current = null;
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i].el.offsetTop <= scrollY) current = sections[i];
+    }
+    sidebarLinks.forEach(function (l) { l.classList.remove('active'); });
+    if (current) {
+      current.link.classList.add('active');
+      var sidebar = document.getElementById('sidebar');
+      var linkTop = current.link.offsetTop;
+      var sidebarH = sidebar.clientHeight;
+      if (linkTop < sidebar.scrollTop + 40 || linkTop > sidebar.scrollTop + sidebarH - 40) {
+        sidebar.scrollTo({ top: linkTop - sidebarH / 3, behavior: 'smooth' });
+      }
+    }
+  }
+
+  window.addEventListener('scroll', updateActive, { passive: true });
+  updateActive();
+});
+</script>
+</body>
+</html>

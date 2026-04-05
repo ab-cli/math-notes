@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MATH2351/2352 – Supplementary Notes: Partial Derivatives</title>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    tags: 'ams'
+  },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg: #2d2d2d;
+  --text: #e0e0e0;
+  --heading: #ffffff;
+  --accent: #8ab4f8;
+  --accent2: #81c995;
+  --border: #4a4a4a;
+  --def-bg: #3a3a3a;
+  --def-border: #6a6a6a;
+  --prop-bg: #353535;
+  --prop-border: #5a5a5a;
+  --exercise-bg: #383838;
+  --exercise-border: #5a5a5a;
+  --warn-bg: #3d3535;
+  --warn-border: #7a5a5a;
+  --code-bg: #333333;
+  --shadow: rgba(0, 0, 0, 0.3);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 18px; scroll-behavior: smooth; }
+
+body {
+  font-family: 'Crimson Pro', Georgia, serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page-wrapper { display: flex; min-height: 100vh; }
+
+/* --- Sidebar --- */
+.sidebar {
+  position: sticky; top: 0; align-self: flex-start;
+  width: 280px; min-width: 280px; height: 100vh;
+  overflow-y: auto; padding: 2rem 1.2rem 2rem 1.4rem;
+  border-right: 1.5px solid var(--border); background: #252525;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+.sidebar::-webkit-scrollbar { width: 5px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+.sidebar .sidebar-title {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.72rem;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: #888888; margin-bottom: 1rem; font-weight: 600;
+}
+
+.sidebar ol { list-style: none; padding: 0; margin: 0; counter-reset: sidebar-counter; }
+.sidebar > ol > li { counter-increment: sidebar-counter; margin-bottom: 0.15rem; }
+.sidebar > ol > li > a::before {
+  content: counter(sidebar-counter) ". "; font-weight: 600;
+  color: var(--accent); font-size: 0.8rem;
+}
+
+.sidebar a {
+  display: block; font-family: 'Source Sans 3', sans-serif; font-size: 0.82rem;
+  color: var(--text); text-decoration: none; padding: 0.2rem 0.5rem;
+  border-radius: 4px; border-left: 2.5px solid transparent;
+  transition: all 0.2s; line-height: 1.4;
+}
+.sidebar a:hover { color: var(--accent); background: rgba(138,180,248,0.1); }
+.sidebar a.active {
+  color: var(--accent); font-weight: 600;
+  background: rgba(138,180,248,0.15); border-left-color: var(--accent);
+}
+
+.sidebar ol ol { margin-left: 1rem; margin-top: 0.1rem; counter-reset: none; }
+.sidebar ol ol li { margin-bottom: 0.05rem; }
+.sidebar ol ol a { font-size: 0.78rem; }
+.sidebar ol ol a::before { display: none; }
+
+.container {
+  max-width: 780px; margin: 0 auto; padding: 2rem 1.5rem 4rem;
+  flex: 1; min-width: 0;
+}
+
+/* --- Title Block --- */
+.title-block {
+  text-align: center; padding: 3rem 0 2.5rem;
+  border-bottom: 2px solid var(--border); margin-bottom: 2.5rem;
+}
+.title-block h1 {
+  font-family: 'Crimson Pro', serif; font-size: 2.4rem; font-weight: 700;
+  color: var(--heading); line-height: 1.2; margin-bottom: 0.5rem; letter-spacing: -0.02em;
+}
+.title-block .author { font-family: 'Source Sans 3', sans-serif; font-size: 1rem; color: #a0a0a0; }
+.title-block .course {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: #888888;
+  margin-top: 0.2rem; letter-spacing: 0.04em; text-transform: uppercase;
+}
+.title-block .date { font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: #888888; margin-top: 0.3rem; }
+
+/* --- TOC (mobile) --- */
+.toc {
+  background: var(--def-bg); border: 1px solid var(--border);
+  border-radius: 6px; padding: 1.5rem 2rem; margin-bottom: 2.5rem;
+}
+.toc h2 {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.8rem;
+  text-transform: uppercase; letter-spacing: 0.12em; color: #888888;
+  margin-bottom: 0.8rem; font-weight: 600;
+}
+.toc ol { list-style: none; counter-reset: toc-counter; }
+.toc > ol > li { counter-increment: toc-counter; margin-bottom: 0.3rem; }
+.toc > ol > li::before {
+  content: counter(toc-counter) "."; font-weight: 600; color: var(--accent);
+  margin-right: 0.5rem; font-family: 'Source Sans 3', sans-serif; font-size: 0.9rem;
+}
+.toc a { color: var(--text); text-decoration: none; font-size: 0.95rem; transition: color 0.2s; }
+.toc a:hover { color: var(--accent); }
+
+/* --- Headings --- */
+h2 {
+  font-family: 'Crimson Pro', serif; font-size: 1.8rem; font-weight: 700;
+  color: var(--heading); margin-top: 3rem; margin-bottom: 1rem;
+  padding-bottom: 0.4rem; border-bottom: 1.5px solid var(--border); line-height: 1.3;
+}
+h3 { font-family: 'Crimson Pro', serif; font-size: 1.35rem; font-weight: 600; color: var(--heading); margin-top: 2rem; margin-bottom: 0.8rem; }
+h4 { font-family: 'Crimson Pro', serif; font-size: 1.1rem; font-weight: 600; color: var(--heading); margin-top: 1.5rem; margin-bottom: 0.6rem; }
+
+p { margin-bottom: 1rem; text-align: justify; hyphens: auto; }
+
+/* --- Boxes --- */
+.box { border-radius: 5px; padding: 1.2rem 1.4rem; margin: 1.5rem 0; border-left: 4px solid; position: relative; }
+.box-title { font-family: 'Source Sans 3', sans-serif; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.6rem; display: block; }
+.definition { background: var(--def-bg); border-color: var(--def-border); }
+.definition .box-title { color: #f0c040; }
+.theorem { background: var(--prop-bg); border-color: var(--accent2); }
+.theorem .box-title { color: var(--accent2); }
+.proposition { background: var(--prop-bg); border-color: var(--prop-border); }
+.proposition .box-title { color: var(--accent2); }
+.exercise-box { background: var(--exercise-bg); border-color: var(--exercise-border); }
+.exercise-box .box-title { color: #c0a080; }
+.warning-box { background: var(--warn-bg); border-color: var(--warn-border); }
+.warning-box .box-title { color: #f08080; }
+.remark-box { background: #3a3a40; border-color: #6a6a80; }
+.remark-box .box-title { color: #a0a0d0; }
+.box p:last-child { margin-bottom: 0; }
+
+.proof { margin: 1rem 0 1.5rem; padding-left: 1rem; border-left: 2px solid var(--border); }
+.proof-label { font-style: italic; font-weight: 500; color: #a0a0a0; }
+.proof::after { content: "□"; display: block; text-align: right; color: #666; margin-top: 0.3rem; }
+
+ol, ul { margin-bottom: 1rem; padding-left: 1.5rem; }
+li { margin-bottom: 0.4rem; }
+
+.answer { display: none; }
+.answer-btn {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.78rem; font-weight: 600;
+  color: var(--accent2); background: none; border: 1.5px solid var(--accent2);
+  border-radius: 4px; padding: 0.15rem 0.55rem; margin-left: 0.4rem;
+  cursor: pointer; transition: all 0.2s; vertical-align: middle;
+}
+.answer-btn:hover { background: var(--accent2); color: #fff; }
+.answer-btn.revealed { border-color: var(--border); color: #888888; }
+.answer-btn.revealed:hover { background: var(--exercise-bg); color: #a0a0a0; }
+.answer-revealed {
+  display: inline; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem;
+  color: var(--accent2); margin-left: 0.3rem; animation: fadeIn 0.25s ease;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-2px); } to { opacity: 1; transform: translateY(0); } }
+
+hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+.key-formula {
+  background: linear-gradient(135deg, #3a3a3a, #353535);
+  border: 1.5px solid var(--def-border); border-radius: 5px;
+  padding: 1rem 1.4rem; margin: 1.2rem 0; text-align: center;
+}
+
+/* --- MCQ Phase System --- */
+.mcq { background: #333; border: 1.5px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; }
+.mcq-title { font-family: 'Source Sans 3', sans-serif; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 0.8rem; }
+.mcq-problem { margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border); }
+
+.mcq-phase { margin-bottom: 1rem; padding: 1rem; border-radius: 6px; background: #2a2a2a; border: 1.5px solid #444; transition: all 0.3s; }
+.mcq-phase.locked { opacity: 0.4; pointer-events: none; filter: grayscale(0.3); }
+.mcq-phase.active { border-color: var(--accent); box-shadow: 0 2px 8px rgba(138,180,248,0.15); }
+.mcq-phase.completed { border-color: var(--accent2); background: #2a3530; }
+
+.phase-label { font-family: 'Source Sans 3', sans-serif; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.5rem; }
+.phase-label .phase-tag { background: var(--accent); color: #1a1a1a; padding: 0.15rem 0.5rem; border-radius: 3px; font-size: 0.65rem; }
+.mcq-phase.completed .phase-label .phase-tag { background: var(--accent2); }
+.phase-label .phase-name { color: #888; }
+
+.strategy-outline { background: #353535; border-radius: 4px; padding: 0.8rem 1rem; margin: 0.8rem 0; border-left: 3px solid var(--accent2); }
+.strategy-outline-title { font-family: 'Source Sans 3', sans-serif; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin-bottom: 0.4rem; }
+.strategy-step { font-size: 0.9rem; padding: 0.3rem 0; color: var(--text); display: flex; align-items: flex-start; gap: 0.5rem; }
+.strategy-step::before { content: "✓"; color: var(--accent2); font-weight: 700; flex-shrink: 0; }
+
+.mcq-step { margin-bottom: 0.8rem; }
+.mcq-step.locked { display: none; }
+.mcq-step.completed .mcq-options { opacity: 0.6; }
+.mcq-step-label { font-family: 'Source Sans 3', sans-serif; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin-bottom: 0.5rem; }
+.mcq-question { margin-bottom: 0.6rem; font-size: 0.95rem; }
+.mcq-options { display: flex; flex-direction: column; gap: 0.4rem; }
+.mcq-option { font-family: 'Crimson Pro', serif; font-size: 0.95rem; text-align: left; padding: 0.5rem 0.8rem; border: 1.5px solid #555; border-radius: 5px; background: #2a2a2a; color: var(--text); cursor: pointer; transition: all 0.2s; line-height: 1.5; }
+.mcq-option:hover { border-color: var(--accent); background: rgba(138,180,248,0.1); }
+.mcq-option.correct { border-color: var(--accent2); background: rgba(129,201,149,0.15); cursor: default; }
+.mcq-option.correct::before { content: "✓ "; color: var(--accent2); font-weight: 700; }
+.mcq-option.wrong { border-color: #f08080; background: rgba(240,128,128,0.15); cursor: default; }
+.mcq-option.wrong::before { content: "✗ "; color: #f08080; font-weight: 700; }
+.mcq-option.disabled { pointer-events: none; opacity: 0.5; }
+.mcq-feedback { display: none; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; padding: 0.5rem 0.8rem; border-radius: 4px; margin-top: 0.5rem; line-height: 1.5; }
+.mcq-feedback.correct-fb { display: block; background: rgba(129,201,149,0.15); color: var(--accent2); border: 1px solid var(--accent2); }
+.mcq-feedback.wrong-fb { display: block; background: rgba(240,128,128,0.15); color: #f08080; border: 1px solid #f08080; }
+.mcq-result { display: none; font-family: 'Source Sans 3', sans-serif; font-size: 0.9rem; font-weight: 600; color: var(--accent2); padding: 0.8rem 1rem; background: rgba(129,201,149,0.15); border-radius: 6px; border: 1.5px solid var(--accent2); text-align: center; margin-top: 1rem; }
+
+.phase-transition { display: none; text-align: center; padding: 0.6rem; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: var(--accent2); background: rgba(129,201,149,0.1); border-radius: 4px; margin: 0.5rem 0; animation: fadeIn 0.3s ease; }
+
+@media (min-width: 901px) { .toc { display: none; } }
+@media (max-width: 900px) {
+  .page-wrapper { display: block; } .sidebar { display: none; }
+  html { font-size: 16px; } .container { padding: 1rem; max-width: 100%; }
+  .title-block h1 { font-size: 1.8rem; } h2 { font-size: 1.5rem; } .box { padding: 1rem; }
+}
+@media print {
+  .sidebar { display: none; } .page-wrapper { display: block; }
+  body { font-size: 11pt; } .container { max-width: 100%; }
+  .box { break-inside: avoid; } h2 { break-after: avoid; } .toc { display: block; }
+}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+
+<!-- ===== SIDEBAR ===== -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-title">Contents</div>
+  <ol>
+    <li><a href="#sec-one-var">Functions of One Variable</a></li>
+    <li><a href="#sec-two-var">Functions of Two Variables</a></li>
+    <li><a href="#sec-partial">Partial Derivatives</a>
+      <ol>
+        <li><a href="#sec-partial-def">Definition &amp; notation</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec-tangent">Tangent Plane / Approximations</a></li>
+    <li><a href="#sec-chain">Generalised Chain Rules</a></li>
+    <li><a href="#sec-practice">Practice MCQ</a></li>
+  </ol>
+</nav>
+
+<div class="container">
+
+<!-- ===== TITLE ===== -->
+<div class="title-block">
+  <h1>Supplementary Notes: Partial Derivatives</h1>
+  <div class="author">Edmund Chiang</div>
+  <div class="course">MATH2351 / 2352 &mdash; based on Stewart's Calculus: Partial Derivatives</div>
+  <div class="date">February 1, 2026</div>
+</div>
+
+<!-- ===== TOC (mobile) ===== -->
+<nav class="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#sec-one-var">Functions of One Variable</a></li>
+    <li><a href="#sec-two-var">Functions of Two Variables</a></li>
+    <li><a href="#sec-partial">Partial Derivatives</a></li>
+    <li><a href="#sec-tangent">Tangent Plane / Approximations</a></li>
+    <li><a href="#sec-chain">Generalised Chain Rules</a></li>
+    <li><a href="#sec-practice">Practice MCQ</a></li>
+  </ol>
+</nav>
+
+<!-- ============================================================ -->
+<h2 id="sec-one-var">1 &ensp; Functions of One Variable</h2>
+
+<p>Suppose that $f$ is differentiable at $x$, that is, we have the following approximation</p>
+
+$$f'(x) = \lim_{\Delta \to 0}\frac{\Delta f}{\Delta x} = \frac{f(x + \Delta x) - f(x)}{\Delta x}.$$
+
+<p>Hence we have</p>
+
+<div class="box theorem">
+  <span class="box-title">Theorem</span>
+  <p>Suppose that $f$ is differentiable at $x$. Then we have
+  $$\frac{dy}{dx} = f'(x) = \frac{\Delta f}{\Delta x} + \varepsilon$$
+  where $\varepsilon = \varepsilon(x) \to 0$ as $\Delta x \to 0$ or
+  $$\frac{\Delta f}{\Delta x} \approx \frac{dy}{dx} = f'(x), \quad \text{or} \quad \Delta f(x) \approx f'(x)\,\Delta x,$$
+  whenever $\Delta x$ is sufficiently small. We write $dx = \Delta x$. We define $dy$, at $x = a$, by
+  $$dy = f'(a)\,dx = \frac{dy}{dx}\bigg|_{x=a} \cdot dx,$$
+  where $dy = dy(a)$, $dx = \Delta x$. For a general $x$, we write
+  $$dy = f'(x)\,dx = \frac{dy}{dx} \cdot dx.$$
+  The $dy$, $dx$ are called the <em>differentials</em> of $f$ at $x$.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec-two-var">2 &ensp; Functions of Two Variables</h2>
+
+<div class="box definition">
+  <span class="box-title">Definition</span>
+  <p>A function of two variables is a rule that assigns to each pair $(x, y)$ of real numbers in a domain $D$ as a subset in the $xy$-plane a unique real number denoted by $f(x, y)$. The range of $f$ is given by
+  $$R = \{f(x, y) \mid (x, y) \in D\}.$$
+  The collection of points $(x, y, z) = (x, y, f(x, y))$ in $\mathbb{R}^3$ for $(x, y)$ in $D$ constitutes 3-dimensional graph (surface) of $f$.</p>
+</div>
+
+<hr>
+
+<p><strong>Example.</strong> Find the domain and range of</p>
+$$g(x, y) = \sqrt{10 - x^2 - y^2}.$$
+
+<p>It is easy to see that the domain of $g$ is given by</p>
+$$\{(x, y) :\; x^2 + y^2 \leq 10 = (\sqrt{10})^2\}.$$
+<p>The range is therefore $\{z :\; 0 \leq z \leq \sqrt{10}\}$.</p>
+
+<hr>
+
+<p><strong>Example.</strong> Find the domain and range of</p>
+$$f(x, y) = 8 - 2x - y.$$
+<p>It is easy to see that the domain of $f$ is the whole $xy$-plane, and the range is whole real-axis $\mathbb{R}$.</p>
+
+<hr>
+
+<p><strong>Example.</strong> Find the domain of</p>
+$$f(x, y) = \frac{xy}{x^2 + y^2}.$$
+<p>It is easy to see that the domain of $f$ is the whole $xy$-plane minus the point $(0, 0)$. But the range is not so easy to find.</p>
+
+<!-- ============================================================ -->
+<h2 id="sec-partial">3 &ensp; Partial Derivatives</h2>
+
+<p><strong>Example (Stewart).</strong> How do we find the rate of changes of</p>
+$$f(x, y) = 4 - x^2 - y^2$$
+
+<ol>
+  <li>when $x = 1$ (a plane parallel to $yz$-plane and cuts through with $x = 1$) and $y = 1$?</li>
+  <li>when $y = 1$ (a plane parallel to $xz$-plane and cuts through with $y = 1$) and $x = 1$?</li>
+</ol>
+
+<p>That are, we need to compute, assuming the general $y$ initially:</p>
+
+$$\lim_{h \to 0}\frac{f(1, y+h) - f(1, y)}{h} = \lim_{h \to 0}\frac{4 - 1^2 - (y+h)^2 - (4 - 1^2 - y^2)}{h}$$
+$$= \lim_{h \to 0}\frac{y^2 - (y+h)^2}{h} = \lim_{h \to 0}\frac{-2hy - h^2}{h} = \lim_{h \to 0} -2y - h = -2y.$$
+
+<p>Hence the derivative equals $-2(1) = -2$ when $x = 1$ and $y = 1$ with respect to $y$. Clearly we could &ldquo;move&rdquo; the plane $x = 1$ to another plane parallel to the $y$-axis.</p>
+
+<p>Similarly, we have</p>
+
+$$\lim_{h \to 0}\frac{f(x+h, 1) - f(x, 1)}{h} = \lim_{h \to 0}\frac{4 - (x+h)^2 - 1^2 - (4 - x^2 - 1^2)}{h}$$
+$$= \lim_{h \to 0}\frac{x^2 - (x+h)^2}{h} = \lim_{h \to 0}\frac{-2hx - h^2}{h} = \lim_{h \to 0} -2x - h = -2x.$$
+
+<p>Hence the derivative equals $-2(1) = -2$ when $y = 1$ and $x = 1$ with respect to $x$. Clearly we could &ldquo;move&rdquo; the plane $y = 1$ to another plane parallel to the $x$-axis.</p>
+
+<hr>
+
+<p>More generally, we define</p>
+
+<h3 id="sec-partial-def">3.1 &ensp; Definition and Notation</h3>
+
+<div class="box definition">
+  <span class="box-title">Partial Derivative</span>
+  <p>Let $z = f(x, y)$ be defined on $D$. We define
+  $$f_x(x, y) = \lim_{h \to 0}\frac{f(x+h,\, y) - f(x,\, y)}{h}$$
+  to be the <em>partial derivative of $f$ with respect to $x$</em>, and
+  $$f_y(x, y) = \lim_{h \to 0}\frac{f(x,\, y+h) - f(x,\, y)}{h}$$
+  to be the <em>partial derivative of $f$ with respect to $y$</em>, provided that the limits exist.</p>
+</div>
+
+<p>Other notation includes:</p>
+
+<div class="box definition">
+  <span class="box-title">Notation</span>
+  <p>Let $z = f(x, y)$ be defined on $D$. We write,
+  $$f_x(x, y) = \frac{\partial f}{\partial x} = \frac{\partial f}{\partial x}(x, y) = D_x f;$$
+  $$f_y(x, y) = \frac{\partial f}{\partial y} = \frac{\partial f}{\partial y}(x, y) = D_y f$$
+  provided that the limits exist.</p>
+</div>
+
+<hr>
+
+<p><strong>Example (revisited).</strong> Consider</p>
+$$f(x, y) = 4 - x^2 - y^2.$$
+
+<p>Then</p>
+$$f_x = f_x(x, y) = -2x, \qquad f_y = f_y(x, y) = -2y.$$
+
+<p>At $(1, 2)$,</p>
+$$f_x(1, 2) = -2, \qquad f_y(1, 2) = -4.$$
+
+<!-- ============================================================ -->
+<h2 id="sec-tangent">4 &ensp; Tangent Plane / Approximations</h2>
+
+<div class="box definition">
+  <span class="box-title">Definition</span>
+  <p>We recall that the equations</p>
+  <ol>
+    <li>$A(x - x_0) + B(y - y_0) = 0$ represents an infinite straight line passing through the point $(x_0, y_0)$.</li>
+    <li>$A(x - x_0) + B(y - y_0) + C(z - z_0) = 0$ represents an infinite plane passing through the point $(x_0, y_0, z_0)$.</li>
+  </ol>
+</div>
+
+<div class="box theorem">
+  <span class="box-title">Tangent Plane</span>
+  <p>Suppose that $f$ has continuous partial derivatives. An equation of the tangent plane to the surface $z = f(x, y)$ passing through the point $(x_0, y_0, z_0)$ is given by</p>
+  <div class="key-formula">
+  $$z - z_0 = f_x(x_0, y_0)(x - x_0) + f_y(x_0, y_0)(y - y_0).$$
+  </div>
+  <p>Moreover,
+  $$dz = f_x(x, y)\,dx + f_y(x, y)\,dy = \frac{\partial z}{\partial x}dx + \frac{\partial z}{\partial y}dy$$
+  is called the <strong>total differential</strong>.</p>
+</div>
+
+<hr>
+
+<p><strong>Example (revisited).</strong> Find the tangent plane equation for the function</p>
+$$f(x, y) = 4 - x^2 - y^2$$
+<p>at $(1, 2)$.</p>
+
+<p>Since $f_x(1, 2) = -2$, $\;\;f_y(1, 2) = -4$, and $f(1,2) = 4 - 1 - 4 = -1$:</p>
+
+<div class="key-formula">
+$$z - f(1, 2) = z + 1 = -2 \cdot (x - 1) - 4 \cdot (y - 2).$$
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec-chain">5 &ensp; Generalised Chain Rules</h2>
+
+<p>We recall that if $x = g(t)$ and $y = f(x)$, then Newton's chain rule states that</p>
+
+$$\frac{dy}{dt} = \frac{dy}{dx}\frac{dx}{dt}.$$
+
+<p>By taking &ldquo;limit&rdquo; of the above tangent plane approximation formula, one can obtain</p>
+
+<div class="box theorem">
+  <span class="box-title">Theorem (Chain Rule)</span>
+  <p>Suppose that $z = f(x, y)$ has partial derivatives with respect to both $x$ and $y$, where $x = x(t)$, $y = y(t)$. Then
+  $$\frac{dz}{dt} = \frac{\partial z}{\partial x}\frac{dx}{dt} + \frac{\partial z}{\partial y}\frac{dy}{dt} = \frac{\partial f}{\partial x}\frac{dx}{dt} + \frac{\partial f}{\partial y}\frac{dy}{dt}.$$</p>
+</div>
+
+<hr>
+
+<p><strong>Example (revisited).</strong> Suppose $x = x(t)$ and $y = y(t)$ in</p>
+$$f(x, y) = 4 - x^2 - y^2.$$
+
+<p>Then</p>
+$$\frac{dz}{dt} = \frac{df}{dt} = \frac{\partial f}{\partial x}\frac{dx}{dt} + \frac{\partial f}{\partial y}\frac{dy}{dt} = -2x\frac{dx}{dt} - 2y\frac{dy}{dt}.$$
+
+<hr>
+
+<p>More general formulae also follow:</p>
+
+<div class="box theorem">
+  <span class="box-title">Theorem (General Chain Rule)</span>
+  <p>Suppose that $z = f(x, y)$ has partial derivatives with respect to both $x$ and $y$, where $x = g(s, t)$, $y = h(s, t)$. Then
+  $$\frac{\partial z}{\partial s} = \frac{\partial z}{\partial x}\frac{\partial x}{\partial s} + \frac{\partial z}{\partial y}\frac{\partial y}{\partial s} = \frac{\partial f}{\partial x}\frac{\partial x}{\partial s} + \frac{\partial f}{\partial y}\frac{\partial y}{\partial s}.$$
+  and
+  $$\frac{\partial z}{\partial t} = \frac{\partial z}{\partial x}\frac{\partial x}{\partial t} + \frac{\partial z}{\partial y}\frac{\partial y}{\partial t} = \frac{\partial f}{\partial x}\frac{\partial x}{\partial t} + \frac{\partial f}{\partial y}\frac{\partial y}{\partial t}.$$</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- MCQ 1: Partial Derivatives -->
+<div class="mcq" id="sec-practice">
+  <div class="mcq-title">Practice: Partial Derivatives</div>
+  <div class="mcq-problem">
+    <p>Given $f(x, y) = x^2 y + 3xy^2$, compute partial derivatives and evaluate at a point.</p>
+  </div>
+
+  <div class="mcq-step" data-step="1">
+    <div class="mcq-step-label">Step 1</div>
+    <p class="mcq-question">Find $f_x(x, y)$.</p>
+    <div class="mcq-options">
+      <button class="mcq-option" data-correct="true">(a) $2xy + 3y^2$</button>
+      <button class="mcq-option" data-correct="false" data-hint="That would be f_y, the derivative with respect to y.">(b) $x^2 + 6xy$</button>
+      <button class="mcq-option" data-correct="false" data-hint="Remember to treat y as a constant and differentiate each term with respect to x.">(c) $2x + 3y$</button>
+      <button class="mcq-option" data-correct="false" data-hint="Check: d/dx(x^2 y) = 2xy and d/dx(3xy^2) = 3y^2.">(d) $2xy + 6xy$</button>
+    </div>
+    <div class="mcq-feedback"></div>
+  </div>
+
+  <div class="mcq-step locked" data-step="2">
+    <div class="mcq-step-label">Step 2</div>
+    <p class="mcq-question">Now find $f_y(x, y)$ for the same function.</p>
+    <div class="mcq-options">
+      <button class="mcq-option" data-correct="false" data-hint="That's f_x, not f_y.">(a) $2xy + 3y^2$</button>
+      <button class="mcq-option" data-correct="true">(b) $x^2 + 6xy$</button>
+      <button class="mcq-option" data-correct="false" data-hint="Treat x as constant: d/dy(x^2 y) = x^2 and d/dy(3xy^2) = 6xy.">(c) $x^2 + 3x$</button>
+      <button class="mcq-option" data-correct="false" data-hint="Remember: x is treated as a constant when differentiating with respect to y.">(d) $2x + 6y$</button>
+    </div>
+    <div class="mcq-feedback"></div>
+  </div>
+
+  <div class="mcq-step locked" data-step="3">
+    <div class="mcq-step-label">Step 3</div>
+    <p class="mcq-question">Find $f_x(1, 2)$.</p>
+    <div class="mcq-options">
+      <button class="mcq-option" data-correct="true">(a) $16$</button>
+      <button class="mcq-option" data-correct="false" data-hint="f_x(1,2) = 2(1)(2) + 3(2)^2 = 4 + 12.">(b) $8$</button>
+      <button class="mcq-option" data-correct="false" data-hint="Substitute x=1, y=2 into 2xy + 3y^2.">(c) $14$</button>
+      <button class="mcq-option" data-correct="false" data-hint="2(1)(2) = 4, 3(4) = 12. Sum = 16.">(d) $10$</button>
+    </div>
+    <div class="mcq-feedback"></div>
+  </div>
+
+  <div class="mcq-result">All steps complete &mdash; well done!</div>
+</div>
+
+<!-- MCQ 2: Tangent Plane & Chain Rule -->
+<div class="mcq">
+  <div class="mcq-title">Practice: Tangent Plane &amp; Chain Rule</div>
+  <div class="mcq-problem">
+    <p>Apply the tangent plane formula and generalised chain rule.</p>
+  </div>
+
+  <div class="mcq-step" data-step="1">
+    <div class="mcq-step-label">Step 1</div>
+    <p class="mcq-question">Find the tangent plane to $z = x^2 + y^2$ at the point $(1, 1, 2)$.</p>
+    <div class="mcq-options">
+      <button class="mcq-option" data-correct="true">(a) $z - 2 = 2(x - 1) + 2(y - 1)$</button>
+      <button class="mcq-option" data-correct="false" data-hint="The partial derivatives are f_x = 2x = 2 and f_y = 2y = 2 at (1,1), not 1.">(b) $z - 2 = (x - 1) + (y - 1)$</button>
+      <button class="mcq-option" data-correct="false" data-hint="Don't forget to evaluate at the point: f_x(1,1) = 2, not 2x.">(c) $z - 2 = 2x + 2y$</button>
+      <button class="mcq-option" data-correct="false" data-hint="You forgot z_0 = 2 on the left side.">(d) $z = 2(x - 1) + 2(y - 1)$</button>
+    </div>
+    <div class="mcq-feedback"></div>
+  </div>
+
+  <div class="mcq-step locked" data-step="2">
+    <div class="mcq-step-label">Step 2</div>
+    <p class="mcq-question">If $z = x^2 + y^2$, $x = t$, $y = t^2$, what is $dz/dt$?</p>
+    <div class="mcq-options">
+      <button class="mcq-option" data-correct="false" data-hint="You need to apply the chain rule properly: dz/dt = f_x dx/dt + f_y dy/dt, then substitute x=t, y=t^2.">(a) $2x + 2y \cdot 2t$</button>
+      <button class="mcq-option" data-correct="true">(b) $2t + 4t^3$</button>
+      <button class="mcq-option" data-correct="false" data-hint="Don't forget dy/dt = 2t: the f_y term becomes 2y &middot; 2t = 2t^2 &middot; 2t = 4t^3.">(c) $2t + 2t^2$</button>
+      <button class="mcq-option" data-correct="false" data-hint="f_x dx/dt = 2t &middot; 1 = 2t, not 4t.">(d) $4t + 4t^3$</button>
+    </div>
+    <div class="mcq-feedback"></div>
+  </div>
+
+  <div class="mcq-step locked" data-step="3">
+    <div class="mcq-step-label">Step 3</div>
+    <p class="mcq-question">Evaluate $dz/dt$ at $t = 1$.</p>
+    <div class="mcq-options">
+      <button class="mcq-option" data-correct="false" data-hint="2(1) + 4(1)^3 = 2 + 4 = ?">(a) $4$</button>
+      <button class="mcq-option" data-correct="true">(b) $6$</button>
+      <button class="mcq-option" data-correct="false" data-hint="Substitute t = 1 into 2t + 4t^3.">(c) $8$</button>
+      <button class="mcq-option" data-correct="false" data-hint="Both terms contribute: 2(1) + 4(1) = 6.">(d) $2$</button>
+    </div>
+    <div class="mcq-feedback"></div>
+  </div>
+
+  <div class="mcq-result">All steps complete &mdash; well done!</div>
+</div>
+
+<hr>
+<p style="text-align:center;color:#aaa;font-size:0.85rem;margin-top:3rem;">&mdash; End of Partial Derivatives Notes &mdash;</p>
+
+</div><!-- /.container -->
+</div><!-- /.page-wrapper -->
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // --- Interactive answers ---
+  document.querySelectorAll('.answer').forEach(function (span) {
+    var btn = document.createElement('button');
+    btn.className = 'answer-btn'; btn.textContent = 'Show'; btn.setAttribute('type', 'button');
+    span.parentNode.insertBefore(btn, span);
+    btn.addEventListener('click', function () {
+      var visible = span.classList.toggle('answer-revealed');
+      span.style.display = visible ? 'inline' : 'none';
+      btn.textContent = visible ? 'Hide' : 'Show';
+      btn.classList.toggle('revealed', visible);
+      if (visible && window.MathJax && MathJax.typeset) MathJax.typeset([span]);
+    });
+  });
+
+  // --- MCQ logic ---
+  document.querySelectorAll('.mcq').forEach(function (mcq) {
+    var steps = mcq.querySelectorAll('.mcq-step');
+    var result = mcq.querySelector('.mcq-result');
+    var totalSteps = steps.length, completed = 0;
+    steps.forEach(function (step, idx) {
+      var options = step.querySelectorAll('.mcq-option');
+      var feedback = step.querySelector('.mcq-feedback');
+      options.forEach(function (opt) {
+        opt.addEventListener('click', function () {
+          if (opt.classList.contains('correct') || opt.classList.contains('wrong') || opt.classList.contains('disabled')) return;
+          var isCorrect = opt.getAttribute('data-correct') === 'true';
+          if (isCorrect) {
+            opt.classList.add('correct');
+            options.forEach(function (o) { if (o !== opt) o.classList.add('disabled'); });
+            step.classList.add('completed');
+            feedback.textContent = 'Correct!';
+            feedback.className = 'mcq-feedback correct-fb';
+            completed++;
+            if (window.MathJax && MathJax.typeset) MathJax.typeset([step]);
+            if (idx + 1 < totalSteps) {
+              setTimeout(function () {
+                steps[idx + 1].classList.remove('locked');
+                if (window.MathJax && MathJax.typeset) MathJax.typeset([steps[idx + 1]]);
+              }, 400);
+            }
+            if (completed === totalSteps) setTimeout(function () { result.style.display = 'block'; }, 600);
+          } else {
+            opt.classList.add('wrong');
+            var hint = opt.getAttribute('data-hint') || 'Try again.';
+            feedback.textContent = hint;
+            feedback.className = 'mcq-feedback wrong-fb';
+            setTimeout(function () {
+              opt.classList.remove('wrong');
+              feedback.style.display = 'none'; feedback.className = 'mcq-feedback';
+              setTimeout(function () { feedback.style.display = ''; }, 50);
+            }, 2000);
+          }
+        });
+      });
+    });
+  });
+
+  // --- Scroll-spy ---
+  var sidebarLinks = document.querySelectorAll('.sidebar a[href^="#"]');
+  var sections = [];
+  sidebarLinks.forEach(function (link) {
+    var id = link.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) sections.push({ id: id, el: el, link: link });
+  });
+  function updateActive() {
+    var scrollY = window.scrollY + 80, current = null;
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i].el.offsetTop <= scrollY) current = sections[i];
+    }
+    sidebarLinks.forEach(function (l) { l.classList.remove('active'); });
+    if (current) {
+      current.link.classList.add('active');
+      var sidebar = document.getElementById('sidebar');
+      var linkTop = current.link.offsetTop, sidebarH = sidebar.clientHeight;
+      if (linkTop < sidebar.scrollTop + 40 || linkTop > sidebar.scrollTop + sidebarH - 40)
+        sidebar.scrollTo({ top: linkTop - sidebarH / 3, behavior: 'smooth' });
+    }
+  }
+  window.addEventListener('scroll', updateActive, { passive: true });
+  updateActive();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MATH2351/2352 – What are Differential Equations?</title>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    tags: 'ams'
+  },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg: #2d2d2d;
+  --text: #e0e0e0;
+  --heading: #ffffff;
+  --accent: #8ab4f8;
+  --accent2: #81c995;
+  --border: #4a4a4a;
+  --def-bg: #3a3a3a;
+  --def-border: #6a6a6a;
+  --prop-bg: #353535;
+  --prop-border: #5a5a5a;
+  --exercise-bg: #383838;
+  --exercise-border: #5a5a5a;
+  --warn-bg: #3d3535;
+  --warn-border: #7a5a5a;
+  --code-bg: #333333;
+  --shadow: rgba(0, 0, 0, 0.3);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 18px; scroll-behavior: smooth; }
+
+body {
+  font-family: 'Crimson Pro', Georgia, serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page-wrapper { display: flex; min-height: 100vh; }
+
+/* --- Sidebar --- */
+.sidebar {
+  position: sticky; top: 0; align-self: flex-start;
+  width: 280px; min-width: 280px; height: 100vh;
+  overflow-y: auto; padding: 2rem 1.2rem 2rem 1.4rem;
+  border-right: 1.5px solid var(--border); background: #252525;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+.sidebar::-webkit-scrollbar { width: 5px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+.sidebar .sidebar-title {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.72rem;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: #888888; margin-bottom: 1rem; font-weight: 600;
+}
+
+.sidebar ol { list-style: none; padding: 0; margin: 0; counter-reset: sidebar-counter; }
+.sidebar > ol > li { counter-increment: sidebar-counter; margin-bottom: 0.15rem; }
+.sidebar > ol > li > a::before {
+  content: counter(sidebar-counter) ". "; font-weight: 600;
+  color: var(--accent); font-size: 0.8rem;
+}
+
+.sidebar a {
+  display: block; font-family: 'Source Sans 3', sans-serif; font-size: 0.82rem;
+  color: var(--text); text-decoration: none; padding: 0.2rem 0.5rem;
+  border-radius: 4px; border-left: 2.5px solid transparent;
+  transition: all 0.2s; line-height: 1.4;
+}
+.sidebar a:hover { color: var(--accent); background: rgba(138,180,248,0.1); }
+.sidebar a.active {
+  color: var(--accent); font-weight: 600;
+  background: rgba(138,180,248,0.15); border-left-color: var(--accent);
+}
+
+.sidebar ol ol { margin-left: 1rem; margin-top: 0.1rem; counter-reset: none; }
+.sidebar ol ol li { margin-bottom: 0.05rem; }
+.sidebar ol ol a { font-size: 0.78rem; }
+.sidebar ol ol a::before { display: none; }
+
+.container {
+  max-width: 780px; margin: 0 auto; padding: 2rem 1.5rem 4rem;
+  flex: 1; min-width: 0;
+}
+
+/* --- Title Block --- */
+.title-block {
+  text-align: center; padding: 3rem 0 2.5rem;
+  border-bottom: 2px solid var(--border); margin-bottom: 2.5rem;
+}
+.title-block h1 {
+  font-family: 'Crimson Pro', serif; font-size: 2.4rem; font-weight: 700;
+  color: var(--heading); line-height: 1.2; margin-bottom: 0.5rem; letter-spacing: -0.02em;
+}
+.title-block .author { font-family: 'Source Sans 3', sans-serif; font-size: 1rem; color: #a0a0a0; }
+.title-block .course {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: #888888;
+  margin-top: 0.2rem; letter-spacing: 0.04em; text-transform: uppercase;
+}
+.title-block .date { font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: #888888; margin-top: 0.3rem; }
+
+/* --- TOC (mobile) --- */
+.toc {
+  background: var(--def-bg); border: 1px solid var(--border);
+  border-radius: 6px; padding: 1.5rem 2rem; margin-bottom: 2.5rem;
+}
+.toc h2 {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.8rem;
+  text-transform: uppercase; letter-spacing: 0.12em; color: #888888;
+  margin-bottom: 0.8rem; font-weight: 600;
+}
+.toc ol { list-style: none; counter-reset: toc-counter; }
+.toc > ol > li { counter-increment: toc-counter; margin-bottom: 0.3rem; }
+.toc > ol > li::before {
+  content: counter(toc-counter) "."; font-weight: 600; color: var(--accent);
+  margin-right: 0.5rem; font-family: 'Source Sans 3', sans-serif; font-size: 0.9rem;
+}
+.toc a { color: var(--text); text-decoration: none; font-size: 0.95rem; transition: color 0.2s; }
+.toc a:hover { color: var(--accent); }
+
+/* --- Headings --- */
+h2 {
+  font-family: 'Crimson Pro', serif; font-size: 1.8rem; font-weight: 700;
+  color: var(--heading); margin-top: 3rem; margin-bottom: 1rem;
+  padding-bottom: 0.4rem; border-bottom: 1.5px solid var(--border); line-height: 1.3;
+}
+h3 { font-family: 'Crimson Pro', serif; font-size: 1.35rem; font-weight: 600; color: var(--heading); margin-top: 2rem; margin-bottom: 0.8rem; }
+h4 { font-family: 'Crimson Pro', serif; font-size: 1.1rem; font-weight: 600; color: var(--heading); margin-top: 1.5rem; margin-bottom: 0.6rem; }
+
+p { margin-bottom: 1rem; text-align: justify; hyphens: auto; }
+
+/* --- Boxes --- */
+.box { border-radius: 5px; padding: 1.2rem 1.4rem; margin: 1.5rem 0; border-left: 4px solid; position: relative; }
+.box-title { font-family: 'Source Sans 3', sans-serif; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.6rem; display: block; }
+.definition { background: var(--def-bg); border-color: var(--def-border); }
+.definition .box-title { color: #f0c040; }
+.theorem { background: var(--prop-bg); border-color: var(--accent2); }
+.theorem .box-title { color: var(--accent2); }
+.proposition { background: var(--prop-bg); border-color: var(--prop-border); }
+.proposition .box-title { color: var(--accent2); }
+.exercise-box { background: var(--exercise-bg); border-color: var(--exercise-border); }
+.exercise-box .box-title { color: #c0a080; }
+.warning-box { background: var(--warn-bg); border-color: var(--warn-border); }
+.warning-box .box-title { color: #f08080; }
+.remark-box { background: #3a3a40; border-color: #6a6a80; }
+.remark-box .box-title { color: #a0a0d0; }
+.box p:last-child { margin-bottom: 0; }
+
+.proof { margin: 1rem 0 1.5rem; padding-left: 1rem; border-left: 2px solid var(--border); }
+.proof-label { font-style: italic; font-weight: 500; color: #a0a0a0; }
+.proof::after { content: "□"; display: block; text-align: right; color: #666; margin-top: 0.3rem; }
+
+ol, ul { margin-bottom: 1rem; padding-left: 1.5rem; }
+li { margin-bottom: 0.4rem; }
+
+.answer { display: none; }
+.answer-btn {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.78rem; font-weight: 600;
+  color: var(--accent2); background: none; border: 1.5px solid var(--accent2);
+  border-radius: 4px; padding: 0.15rem 0.55rem; margin-left: 0.4rem;
+  cursor: pointer; transition: all 0.2s; vertical-align: middle;
+}
+.answer-btn:hover { background: var(--accent2); color: #fff; }
+.answer-btn.revealed { border-color: var(--border); color: #888888; }
+.answer-btn.revealed:hover { background: var(--exercise-bg); color: #a0a0a0; }
+.answer-revealed {
+  display: inline; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem;
+  color: var(--accent2); margin-left: 0.3rem; animation: fadeIn 0.25s ease;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-2px); } to { opacity: 1; transform: translateY(0); } }
+
+hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+.key-formula {
+  background: linear-gradient(135deg, #3a3a3a, #353535);
+  border: 1.5px solid var(--def-border); border-radius: 5px;
+  padding: 1rem 1.4rem; margin: 1.2rem 0; text-align: center;
+}
+
+/* --- MCQ Phase System --- */
+.mcq { background: #333; border: 1.5px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; }
+.mcq-title { font-family: 'Source Sans 3', sans-serif; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 0.8rem; }
+.mcq-problem { margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border); }
+
+.mcq-phase { margin-bottom: 1rem; padding: 1rem; border-radius: 6px; background: #2a2a2a; border: 1.5px solid #444; transition: all 0.3s; }
+.mcq-phase.locked { opacity: 0.4; pointer-events: none; filter: grayscale(0.3); }
+.mcq-phase.active { border-color: var(--accent); box-shadow: 0 2px 8px rgba(138,180,248,0.15); }
+.mcq-phase.completed { border-color: var(--accent2); background: #2a3530; }
+
+.phase-label { font-family: 'Source Sans 3', sans-serif; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.5rem; }
+.phase-label .phase-tag { background: var(--accent); color: #1a1a1a; padding: 0.15rem 0.5rem; border-radius: 3px; font-size: 0.65rem; }
+.mcq-phase.completed .phase-label .phase-tag { background: var(--accent2); }
+.phase-label .phase-name { color: #888; }
+
+.strategy-outline { background: #353535; border-radius: 4px; padding: 0.8rem 1rem; margin: 0.8rem 0; border-left: 3px solid var(--accent2); }
+.strategy-outline-title { font-family: 'Source Sans 3', sans-serif; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin-bottom: 0.4rem; }
+.strategy-step { font-size: 0.9rem; padding: 0.3rem 0; color: var(--text); display: flex; align-items: flex-start; gap: 0.5rem; }
+.strategy-step::before { content: "✓"; color: var(--accent2); font-weight: 700; flex-shrink: 0; }
+
+.mcq-step { margin-bottom: 0.8rem; }
+.mcq-step.locked { display: none; }
+.mcq-step.completed .mcq-options { opacity: 0.6; }
+.mcq-step-label { font-family: 'Source Sans 3', sans-serif; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin-bottom: 0.5rem; }
+.mcq-question { margin-bottom: 0.6rem; font-size: 0.95rem; }
+.mcq-options { display: flex; flex-direction: column; gap: 0.4rem; }
+.mcq-option { font-family: 'Crimson Pro', serif; font-size: 0.95rem; text-align: left; padding: 0.5rem 0.8rem; border: 1.5px solid #555; border-radius: 5px; background: #2a2a2a; color: var(--text); cursor: pointer; transition: all 0.2s; line-height: 1.5; }
+.mcq-option:hover { border-color: var(--accent); background: rgba(138,180,248,0.1); }
+.mcq-option.correct { border-color: var(--accent2); background: rgba(129,201,149,0.15); cursor: default; }
+.mcq-option.correct::before { content: "✓ "; color: var(--accent2); font-weight: 700; }
+.mcq-option.wrong { border-color: #f08080; background: rgba(240,128,128,0.15); cursor: default; }
+.mcq-option.wrong::before { content: "✗ "; color: #f08080; font-weight: 700; }
+.mcq-option.disabled { pointer-events: none; opacity: 0.5; }
+.mcq-feedback { display: none; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; padding: 0.5rem 0.8rem; border-radius: 4px; margin-top: 0.5rem; line-height: 1.5; }
+.mcq-feedback.correct-fb { display: block; background: rgba(129,201,149,0.15); color: var(--accent2); border: 1px solid var(--accent2); }
+.mcq-feedback.wrong-fb { display: block; background: rgba(240,128,128,0.15); color: #f08080; border: 1px solid #f08080; }
+.mcq-result { display: none; font-family: 'Source Sans 3', sans-serif; font-size: 0.9rem; font-weight: 600; color: var(--accent2); padding: 0.8rem 1rem; background: rgba(129,201,149,0.15); border-radius: 6px; border: 1.5px solid var(--accent2); text-align: center; margin-top: 1rem; }
+
+.phase-transition { display: none; text-align: center; padding: 0.6rem; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: var(--accent2); background: rgba(129,201,149,0.1); border-radius: 4px; margin: 0.5rem 0; animation: fadeIn 0.3s ease; }
+
+@media (min-width: 901px) { .toc { display: none; } }
+@media (max-width: 900px) {
+  .page-wrapper { display: block; } .sidebar { display: none; }
+  html { font-size: 16px; } .container { padding: 1rem; max-width: 100%; }
+  .title-block h1 { font-size: 1.8rem; } h2 { font-size: 1.5rem; } .box { padding: 1rem; }
+}
+@media print {
+  .sidebar { display: none; } .page-wrapper { display: block; }
+  body { font-size: 11pt; } .container { max-width: 100%; }
+  .box { break-inside: avoid; } h2 { break-after: avoid; } .toc { display: block; }
+}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+
+<!-- ===== SIDEBAR ===== -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-title">Contents</div>
+  <ol>
+    <li><a href="#sec-derivatives">Derivatives</a></li>
+    <li><a href="#sec-de">Differential Equations</a></li>
+    <li><a href="#sec-common">Commonly Encountered DEs</a>
+      <ol>
+        <li><a href="#sec-exp-growth">Exponential growth/decay</a></li>
+        <li><a href="#sec-exp-constant">Models with added constant</a></li>
+        <li><a href="#sec-falling">Falling objects</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec-direction">Direction Field</a></li>
+    <li><a href="#sec-ivp">Initial Value Problems</a></li>
+    <li><a href="#sec-classification">Classification</a></li>
+    <li><a href="#sec-fourier">Fourier Series &amp; PDEs</a>
+      <ol>
+        <li><a href="#sec-heat">Heat equation</a></li>
+        <li><a href="#sec-wave">Wave equation</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec-practice">Practice MCQ</a></li>
+  </ol>
+</nav>
+
+<div class="container">
+
+<!-- ===== TITLE ===== -->
+<div class="title-block">
+  <h1>What are Differential Equations?</h1>
+  <div class="author">Edmund Chiang</div>
+  <div class="course">MATH2351 / 2352 &mdash; based on Chapter 1 of Boyce &amp; Diprima</div>
+  <div class="date">February 1, 2026</div>
+</div>
+
+<!-- ===== TOC (mobile) ===== -->
+<nav class="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#sec-derivatives">Derivatives</a></li>
+    <li><a href="#sec-de">Differential Equations</a></li>
+    <li><a href="#sec-common">Commonly Encountered DEs</a></li>
+    <li><a href="#sec-direction">Direction Field</a></li>
+    <li><a href="#sec-ivp">Initial Value Problems</a></li>
+    <li><a href="#sec-classification">Classification</a></li>
+    <li><a href="#sec-fourier">Fourier Series &amp; PDEs</a></li>
+    <li><a href="#sec-practice">Practice MCQ</a></li>
+  </ol>
+</nav>
+
+<!-- ============================================================ -->
+<h2 id="sec-derivatives">1 &ensp; Derivatives</h2>
+
+<p>We recall that the reason for creating the idea of <strong>function</strong> $f : D \to \mathbb{R}$ where $D$ is the <strong>domain</strong> is to understand better a relationship between two sets of quantities: for <em>each</em> $x$ in $D$, there is a $y$, which is also labelled by $y = f(x)$. So people are interested to see how $y$ changes against the corresponding change in $x$.</p>
+
+<p>Scientists already needed the idea of functions in the seventeenth century in the works of Newton and Leibniz. Let us recall that the derivative of $f$ at $x$ is given by</p>
+
+<div class="box definition">
+  <span class="box-title">Definition</span>
+  <p>$$f'(x) = \frac{dy}{dx}\bigg|_x = \lim_{h \to 0}\frac{f(x+h) - f(x)}{h}.$$</p>
+</div>
+
+<p>The notation $y = f'(x)$ indicates that we treat the derivative also as a function of $x$. We also recall that the derivative $f'$ of a function $y = f(x)$ can be interpreted as the <strong>instantaneous rate of change</strong> of $y$ <strong>with respect to</strong> $x$.</p>
+
+<!-- ============================================================ -->
+<h2 id="sec-de">2 &ensp; Differential Equations</h2>
+
+<p>We start with a quadratic function</p>
+$$y = 2x^2 + 3x - 4.$$
+<p>For each given $y = k$, one can solve this equation to obtain</p>
+$$x = \frac{-3 \pm \sqrt{9 + 8(4 + k)}}{4}.$$
+
+<p>So the unknowns or the solutions are two fixed numbers. Similarly one can have <strong>an equation</strong> for which the unknown is a function $y = f(x)$. Such an equation is called a <strong>differential equation</strong>. Just as a quadratic equation may arise from solving a practical problem, one can also formulate a differential equation when the rate of change of a quantity is involved.</p>
+
+<div class="box definition">
+  <span class="box-title">Definition</span>
+  <p>A <strong>differential equation</strong> is an equation involving (higher) derivatives of an unknown function $y(t)$ defined in a domain about $t$.</p>
+</div>
+
+<p>We briefly introduce some of the simplest differential equations below.</p>
+
+<!-- ============================================================ -->
+<h2 id="sec-common">3 &ensp; Some Commonly Encountered DEs</h2>
+
+<h3 id="sec-exp-growth">3.1 &ensp; Exponential Growth/Decay</h3>
+
+<p>We often hear people stating that certain quantities &ldquo;growth exponentially&rdquo; or &ldquo;growth geometrically&rdquo;. Here is a precise mathematical description. Indeed such growth/decay rate appears commonly in the natural world.</p>
+
+<div class="box definition">
+  <span class="box-title">Definition</span>
+  <p>Let $y = f(x)$. Then the <em>differential equation</em>
+  $$\frac{dy}{dx} = ky, \quad k \neq 0 \text{ constant}$$
+  describes that
+  $$(\text{the rate of change of } y) \propto y.$$</p>
+</div>
+
+<p>In ordinary language, the above differential equation is interpreted as: (the rate of change of $y$) is in direct proportion &ldquo;$\propto$&rdquo; to $y$, at any $x$ with the <strong>proportionality constant</strong> $k$. The mathematical interpretation is that <strong>the rate of change of $f(x)$ is proportional to</strong> $f(x)$.</p>
+
+<div class="box proposition">
+  <span class="box-title">Proposition</span>
+  <p>The differential equation
+  $$\frac{dy}{dx} = ky, \quad k \neq 0 \text{ constant} \tag{1}$$
+  admits a solution of the unique form
+  $$y = f(t) = Ce^{kt}, \quad C \neq 0,$$
+  apart from the non-vanishing constant $C$.</p>
+</div>
+
+<div class="proof">
+  <span class="proof-label">Proof.</span> We just need to substitute the $y = f(x) = Ce^{kx}$ into both sides of the differential equation:
+  $$Cke^{kx} = \frac{dCe^{kx}}{dx} = ky = kCe^{kt}.$$
+  Since we have achieved an equality of the equation, so the $y = f(x) = Ce^{kx}$ is indeed a solution. Let us substitute $x = 0$ into the solution
+  $$y = y(0) = Ce^{k \cdot 0} = C.$$
+  Hence
+  <div class="key-formula">$$y(x) = y(0)\,e^{kx}.$$</div>
+  <p>Here is another approach. We rearrange the &ldquo;$dx$&rdquo;, &ldquo;$dy$&rdquo; of the differential equation (1) to obtain</p>
+  $$\frac{dy}{y} = k\,dx.$$
+  <p>This is called <strong>the method of separation of variables</strong>. We then integrate both sides with respect to their respective variables:</p>
+  $$\int \frac{dy}{y} = \int k\,dx.$$
+  <p>So we obtain $\ln|y| = kx + c$, where $c$ denotes an unknown constant. Suppose we know that $y$ is always positive. Then we have</p>
+  $$y = e^{kx + c} = C\,e^{kx}, \quad C = e^c.$$
+  <p>The above calculation shows that the new unknown $C \neq 0$.</p>
+</div>
+
+<div class="box remark-box">
+  <span class="box-title">Exponential growth/decline models</span>
+  <ol>
+    <li>If $k > 0$, then the DE (1) can represent population growth, continuous compounding interest models.</li>
+    <li>If $k < 0$, then the DE (1) can represent radioactive decay model of radioactive elements.</li>
+  </ol>
+</div>
+
+<p>The (1) is a <strong>first-order linear differential equation</strong>. A solution to (1) would be a function $y = f(x)$. The equation is called <em>first order</em> because it involves no higher derivatives $y'', y''', $ etc and it is <em>linear</em> because it involves no $y^2, y^3,$ etc and $y^2, y'^2, yy', y^2y',$ etc.</p>
+
+<div class="box exercise-box">
+  <span class="box-title">Exercise (B&amp;D)</span>
+  <ol>
+    <li>A radioactive material, such as the isotope thorium-234, disintegrates at a rate proportional to the amount currently present. If $Q(t)$ is the amount present at time $t$, then $dQ/dt = -rQ$, where $r > 0$ governs the decay rate.
+      <ol type="a">
+        <li>If 100mg of thorium-234 decays to 82.04mg in 1 week, determine the decay rate $r$. <span class="answer">Ans: $r \approx 0.02828$/day</span></li>
+        <li>Find an expression for the amount of thorium-234 present at any time $t$. <span class="answer">Ans: $Q(t) = 100\,e^{-0.02828t}$</span></li>
+        <li>Find the time required for the thorium-234 to decay to one-half its original amount. <span class="answer">Ans: $T \approx 24.5$ days</span></li>
+      </ol>
+    </li>
+    <li>The half-life of a radioactive material is the time required for an amount of this material to decay to one-half its original value. Show that for any radioactive material that decays according to the equation $Q' = -rQ$ ($r > 0$), the half-life $\tau$ and the decay rate $r$ satisfy the equation $r\tau = \ln 2$. <span class="answer">Ans: From $Q(\tau) = Q_0 e^{-r\tau} = \tfrac{1}{2}Q_0$, we get $e^{-r\tau} = \tfrac{1}{2}$, so $r\tau = \ln 2$.</span></li>
+  </ol>
+</div>
+
+<hr>
+
+<h3 id="sec-exp-constant">3.2 &ensp; Exponential Models with an Added Constant</h3>
+
+<div class="box definition">
+  <span class="box-title">Definition</span>
+  <p>Let $y = f(x)$. Then the <em>differential equation</em>
+  $$\frac{dy}{dx} = ay - b, \quad b,\; a \neq 0 \text{ constants} \tag{2}$$
+  describes that $(\text{the rate of change of } y) + b \propto y$.</p>
+</div>
+
+<div class="box proposition">
+  <span class="box-title">Proposition</span>
+  <p>The differential equation (2) possesses a solution of the form
+  $$y(x) = b/a + ce^{at} \tag{3}$$
+  with a non-vanishing constant $c$.</p>
+</div>
+
+<p>One can verify that (3) is a solution to (2) by direct verification.</p>
+
+<div class="box remark-box">
+  <span class="box-title">Exponential models with an added constant</span>
+  <p>Special cases of the DE (2) include models describing:</p>
+  <ol>
+    <li>Newton's law of cooling;</li>
+    <li>Falling objects;</li>
+    <li>Flow-in/-out models;</li>
+    <li>Logistic models;</li>
+    <li>Continuous compounding interest with periodic deposits/withdrawal models.</li>
+  </ol>
+</div>
+
+<hr>
+
+<h4 id="sec-falling">3.2.1 &ensp; Falling Objects</h4>
+
+<p><strong>Example (B&amp;D).</strong> Write down a differential equation that describes an object of mass $m$ falls under the Earth's gravitational force near sea level (assume $9.8\,m/s^2$ near the Earth's surface) and air drag (resistance) with drag coefficient $\gamma (> 0)$.</p>
+
+<p>Let us assume that the downward direction is the positive direction. According to Newton's second law of motion, the gravitational force $F$ acting on the mass is $F = mg$, $g = 9.8$. However, there is an air-resistance force acting on the mass in exactly the opposite direction. It is known that such air-resistance force is <strong>directly proportional</strong> to velocity (speed with direction) of the object falling down. So we may write</p>
+
+$$\text{air-resistance} = -\gamma\,v$$
+
+<p>where $\gamma > 0$ is the air-resistance constant of the object (found by experiment) and $v$ its velocity. Thus the total force acting on the object is the sum of the two forces:</p>
+
+$$\text{Total force} = mg - \gamma v.$$
+
+<p>But acceleration $= dv/dt$, so that</p>
+
+<div class="key-formula">
+$$m\frac{dv}{dt} = mg - \gamma\,v.$$
+</div>
+
+<p>This is a <strong>first order DE</strong> in $v$.</p>
+
+<hr>
+
+<p><strong>Example (B&amp;D).</strong> Suppose we have $m = 10$ kg, $\gamma = 2$ kg/s. Then</p>
+
+$$10\frac{dv}{dt} = 10 \cdot 9.8 - 2\,v$$
+
+<p>or</p>
+
+$$\frac{dv}{dt} = 9.8 - \frac{v}{5}.$$
+
+<p>It turns out that separation of variables method again works for this DE. Then</p>
+
+$$\frac{dv}{9.8 - \frac{v}{5}} = dt.$$
+
+<p>Hence</p>
+
+$$\int \frac{dv}{9.8 - \frac{v}{5}} = \int dt.$$
+
+<p>Hence</p>
+
+$$\ln\left|9.8 - \frac{v}{5}\right| = -\frac{1}{5}t + c$$
+
+<p>for some constant $c$. We can rewrite this as</p>
+
+$$\left|9.8 - \frac{v}{5}\right| = e^{-\frac{1}{5}t} + c' = Ce^{-\frac{1}{5}t}.$$
+
+<p>Thus we could have</p>
+
+$$9.8 - \frac{v}{5} = Ce^{-\frac{1}{5}t},$$
+
+<p>or</p>
+
+$$\frac{v}{5} - 9.8 = Ce^{-\frac{1}{5}t}.$$
+
+<p>The former gives</p>
+
+$$v(t) = 5(9.8 - Ce^{-\frac{1}{5}t})$$
+
+<p>and the latter gives</p>
+
+$$v(t) = 5(9.8 + Ce^{-\frac{1}{5}t}).$$
+
+<p>Which one of the two solutions to choose depends on the <strong>initial condition</strong> which would allow one to determine the unknown constant $C$ too. We will study this later. We notice that</p>
+
+$$v(t) \to 5(9.8) = 49, \qquad t \to \infty.$$
+
+<div class="box exercise-box">
+  <span class="box-title">Exercise (B&amp;D)</span>
+  <ol>
+    <li>Recall that the falling object in the above Example satisfies the initial value problem $dv/dt = 9.8 - (v/5)$, $v(0) = 0$.
+      <ol type="a">
+        <li>Find the time that must elapse for the object to reach 98% of its limiting velocity. <span class="answer">Ans: $T = 5\ln 50 \approx 19.56$ s.</span></li>
+        <li>How far does the object fall in the time found in part (a)? <span class="answer">Ans: 718.34 m.</span></li>
+      </ol>
+    </li>
+    <li>For small, slowly falling objects, the assumption made in the text that the drag force is proportional to the velocity is a good one. For larger, more rapidly falling objects, it is more accurate to assume that the drag force is proportional to the square of the velocity.
+      <ol type="a">
+        <li>Write a differential equation for the velocity of a falling object of mass $m$ if the magnitude of the drag force is proportional to the square of the velocity and its direction is opposite to that of the velocity. <span class="answer">Ans: $mv' = mg - kv^2$</span></li>
+        <li>Determine the limiting velocity after a long time. <span class="answer">Ans: $v \to \sqrt{mg/k}$.</span></li>
+        <li>If $m = 10$ kg, find the drag coefficient so that the limiting velocity is 49m/s. <span class="answer">Ans: $k = 2/49$.</span></li>
+      </ol>
+    </li>
+    <li>(Although this is an electrical circuit problem, the idea is similar to a falling object problem.) Consider an electric circuit containing a capacitor $C$, resistor $R$, and battery $V$. The charge $Q(t)$ on the capacitor satisfies the equation
+      $$R\frac{dQ}{dt} + \frac{Q}{C} = V,$$
+      where $R$ is the resistance, $C$ is the capacitance, and $V$ is the constant voltage supplied by the battery.
+      <ol type="a">
+        <li>If $Q(0) = 0$, find $Q(t)$ at any time $t$, and sketch the graph of $Q$ versus $t$. <span class="answer">Ans: $Q(t) = CV(1 - e^{-t/RC})$</span></li>
+        <li>Find the limiting value $Q_L$ that $Q(t)$ approaches after a long time. <span class="answer">Ans: $Q(t) \to CV = Q_L$</span></li>
+        <li>Suppose that $Q(t_1) = Q_L$ and that at time $t = t_1$ the battery is removed and the circuit is closed again. Find $Q(t)$ for $t > t_1$ and sketch its graph. <span class="answer">Ans: $Q(t) = CV\exp[-(t - t_1)/RC]$</span></li>
+      </ol>
+    </li>
+  </ol>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec-direction">4 &ensp; Direction Field</h2>
+
+<p>Not all DEs can be solved. In fact, we could only solve very few DEs from applications although those tend to be very important equations. If we could express the solution of a DE in terms of known functions, then we call the equation <strong>exactly solvable</strong> and the corresponding solutions <strong>exact solutions</strong>. We can extract some information from the DE without even solving the equation (which may not be easy or possible).</p>
+
+<hr>
+
+<p><strong>Example (B&amp;D).</strong> Let us revisit the DE</p>
+
+$$\frac{dv}{dt} = 9.8 - \frac{v}{5}. \tag{4}$$
+
+<p>Suppose we put $v = 40$ into the equation. Then we have $\frac{dv}{dt} = 1.8$. In fact,</p>
+
+$$v = 40, \qquad \frac{dv}{dt} = 1.8$$
+$$v = 50, \qquad \frac{dv}{dt} = -0.2$$
+$$\cdots\cdots$$
+
+<p>So if we use data to plot $(v, \frac{dv}{dt})$ in the $tv$-plane, then we could see that there is a difference: $v'(t)$ changes its sign when $v = 40$ and $v = 50$. So it is worthwhile to look at when $v'(t) = 0$. That is, when $v = 49$ that we encountered earlier. It turns out that $v(t) \equiv 49$ is a solution to the DE too (check!). It is called <strong>equilibrium solution</strong>.</p>
+
+<p>We notice that the &ldquo;field lines&rdquo; converge to the solution which is represented by the horizontal line $v(t) = 49$ as $t \to \infty$ even for the non-equilibrium solutions. This observation conforms with our earlier derivation that $v(t) \to 49$ as $t \to \infty$ for any solution of the DE.</p>
+
+<hr>
+
+<p>In general, we can consider direction field of DE of the form</p>
+
+$$\frac{dy}{dx} = f(x, y)$$
+
+<p>where $f$ is a fixed function in $x$ and $y$.</p>
+
+<hr>
+
+<p><strong>Example.</strong> Plot the direction field of</p>
+
+$$\frac{dy}{dt} = 3 - 2y.$$
+
+<p>We see that the equilibrium solution is when $y(t) = 1.5$.</p>
+
+<hr>
+
+<div class="box exercise-box">
+  <span class="box-title">Exercise (B&amp;D) &mdash; Matching</span>
+  <p>Match each of the following six equations to exactly one of the six direction field figures below.</p>
+  <ol>
+    <li>$y' = 2 + y$</li>
+    <li>$y' = y - 2$</li>
+    <li>$y' = y(y - 3)$</li>
+    <li>$y' = -2 - y$</li>
+    <li>$y' = y(3 - y)$</li>
+    <li>$y' = 2 - y$</li>
+  </ol>
+  <p><span class="answer">Hint: Analyse each equation's equilibrium points (where $y' = 0$) and the sign of $y'$ above and below each equilibrium. For example, $y' = 2 - y$ has equilibrium at $y = 2$ and is stable (solutions converge to $y = 2$). $y' = y - 2$ has equilibrium at $y = 2$ and is unstable (solutions diverge from $y = 2$). The quadratics $y(y-3)$ and $y(3-y)$ have equilibria at $y = 0$ and $y = 3$, with opposite stability characteristics.</span></p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec-ivp">5 &ensp; Initial Value Problems</h2>
+
+<p><strong>Example.</strong> We recall that the falling body above sea level equation that we considered earlier</p>
+
+$$\frac{dv}{dt} = 9.8 - \frac{v}{5}.$$
+
+<p>The separation of variables method allows us to derive solutions:</p>
+
+$$v(t) = 5(9.8 - Ce^{-\frac{1}{5}t})$$
+
+<p>and</p>
+
+$$v(t) = 5(9.8 + Ce^{-\frac{1}{5}t}).$$
+
+<p>But we were unable to decide on which of the above two is the solution we look for. In fact, there is insufficient information to pin down the solution. Suppose we know that the object is <strong>dropped from rest</strong>. Then this can be translated into $v(0) = 0$.</p>
+
+<p>Substitute this information into the above potential solutions yields</p>
+
+$$0 = v(0) = 5(9.8 - Ce^{-\frac{1}{5}\cdot 0}) = 5(9.8 - C)$$
+
+<p>and</p>
+
+$$0 = v(0) = 5(9.8 + Ce^{-\frac{1}{5}\cdot 0}) = 5(9.8 + C).$$
+
+<p>Thus the first expression would give $C = 9.8$ and the second expression would give $C = -9.8$. So both expressions become one:</p>
+
+<div class="key-formula">
+$$v(t) = 49(1 - e^{-t/5}).$$
+</div>
+
+<p>Clearly, $v(0) = 0$, and $v(t) \to 49$ as $t \to \infty$. Thus the object falls to a constant speed $49$ in the long run which we call the <strong>terminal velocity</strong> of the object. We note that $v(t) = 49$ was also the equilibrium solution that we discussed earlier. The velocity does not increase any further over time because our calculation shows that the air-resistance counters balance the gravitational force.</p>
+
+<p>The condition $v(0) = 0$ is called a <strong>initial value condition</strong> of the differential equation. In general,</p>
+
+<div class="box definition">
+  <span class="box-title">Definition</span>
+  <p>$$\frac{dy}{dx} = f(x, y), \quad y(0) = y_0$$
+  for some $y_0$, is called an <strong>initial value problem</strong>.</p>
+</div>
+
+<hr>
+
+<p><strong>Example (Cont.).</strong> Find the positions of the object released from rest discussed in this section and measured at the initial position.</p>
+
+<p>Let $x = x(t)$ be the position of the object measured from the height (in meters) where it is released from rest and measured at the initial position. We recall that we chose the downward direction is the positive direction. Now let us interpret</p>
+
+<p style="text-align:center;">velocity = rate of change of distance.</p>
+
+<p>This means on the one hand, that $x'(t) = v(t) = 49(1 - e^{-t/5})$. On the other hand, we have $x(0) = 0$. Thus we are led to <em>another</em> initial value problem:</p>
+
+$$\frac{dx}{dt} = 49(1 - e^{-t/5}), \quad x(0) = 0.$$
+
+<p>Of course this DE is separable. But it may be easier to perform a simple integration of the above DE yields</p>
+
+$$x(t) = 49t + 245\,e^{-t/5} + c$$
+
+<p>for some constant $c$. Substitute the initial condition $x(0) = 0$ into the solution further yields</p>
+
+$$0 = x(0) = 0 + 245 + c.$$
+
+<p>Thus $c = -245$ and we finally obtain</p>
+
+<div class="key-formula">
+$$x(t) = 49t - 245(1 - e^{-t/5}), \quad t \geq 0.$$
+</div>
+
+<hr>
+
+<p>Under this terminology, we immediately have</p>
+
+<div class="box proposition">
+  <span class="box-title">Proposition</span>
+  <p>Let $k \neq 0$. The initial value problem
+  $$\frac{dy}{dx} = ky, \quad y(0) = y_0 \tag{5}$$
+  admits the unique solution of the form
+  $$y = f(t) = y_0\,e^{kt}.$$</p>
+</div>
+
+<p>Similarly,</p>
+
+<div class="box proposition">
+  <span class="box-title">Proposition</span>
+  <p>Let $a \neq 0$. The initial value problem
+  $$\frac{dy}{dx} = ay - b, \quad y(0) = y_0 \tag{6}$$
+  admits the unique solution of the form
+  $$y = f(t) = b/a + [y_0 - b/a]\,e^{at}.$$</p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec-classification">6 &ensp; Classification</h2>
+
+<div class="box definition">
+  <span class="box-title">Definition</span>
+  <p>We have
+  $$F\!\left(t,\, u(t),\, u'(t),\, u''(t),\, \ldots,\, u^{(n)}(t)\right) = 0$$
+  be a differential equation of <strong>order $n$</strong>, where
+  $$F(t, x_1, x_2, \ldots, x_n)$$
+  is a multi-variable function in the variables $t, x_1, x_2, \ldots, x_n$.</p>
+</div>
+
+<hr>
+
+<p><strong>Example.</strong> Consider the previously encountered examples:</p>
+
+<table>
+  <tr><th>DE</th><th>DE rewritten as $F = 0$</th><th>Explicit $F$</th></tr>
+  <tr>
+    <td>$\dfrac{dy}{dx} = ky$</td>
+    <td>$F(x,y,y') = \dfrac{dy}{dx} - ky = 0$</td>
+    <td>$F(x,x_1,x_2) = x_2 - kx_1$</td>
+  </tr>
+  <tr>
+    <td>$\dfrac{dv}{dt} = 9.8 - \dfrac{v}{5}$</td>
+    <td>$F(t,v,v') = \dfrac{dv}{dt} + \dfrac{v}{5} - 9.8 = 0$</td>
+    <td>$F(t,x_1,x_2) = x_2 + \dfrac{1}{5}x_1 - 9.8$</td>
+  </tr>
+  <tr>
+    <td>$y' = \dfrac{3x^2}{y}$</td>
+    <td>$F(x,y,y') = yy' - 3x^2 = 0$</td>
+    <td>$F(x,x_1,x_2) = x_1 x_2 - 3x^2$</td>
+  </tr>
+</table>
+
+<p>All the above examples are first order DEs since the highest order in those equations are first order derivative. The first two examples are linear first order DEs while the third example is non-linear since it involves the term $yy'$.</p>
+
+<hr>
+
+<p><strong>Example.</strong> The following are linear second order DEs</p>
+
+<table>
+  <tr><th>DE</th><th>DE rewritten as $F = 0$</th><th>Explicit $F$</th></tr>
+  <tr>
+    <td>$y'' + 2y' - 3y = 0$</td>
+    <td>$F(x,y,y',y'') = y'' + 2y' - 3y = 0$</td>
+    <td>$F(x,x_1,x_2,x_3) = x_3 + 2x_2 - 3x_1$</td>
+  </tr>
+  <tr>
+    <td>$x^2y'' - 2xy' + 3y = 0$</td>
+    <td>$F(x,y,y',y'') = x^2y'' - 2xy' + 3y = 0$</td>
+    <td>$F(x,x_1,x_2,x_3) = x^2x_3 - 2xx_2 + 2x_1$</td>
+  </tr>
+</table>
+
+<p>We call the first example constant coefficient second order linear differential equation, and the second one second order linear differential equation with variable coefficients. It is called an <strong>Euler's equation</strong>.</p>
+
+<hr>
+
+<p>The following differential equation</p>
+
+<table>
+  <tr><th>DE</th><th>DE rewritten as $F = 0$</th><th>Explicit $F$</th></tr>
+  <tr>
+    <td>$\dfrac{d^2y}{dt^2} = 6y^2 + t$</td>
+    <td>$F(t,y,y',y'') = \dfrac{d^2y}{dt^2} - 6y^2 - t = 0$</td>
+    <td>$F(t,x_1,x_2,x_3) = x_3 - 6x_1^2 - t$</td>
+  </tr>
+</table>
+
+<p>This DE is second order and nonlinear. It is called the <strong>Painlev&eacute; I equation</strong>.</p>
+
+<div class="box exercise-box">
+  <span class="box-title">Exercise</span>
+  <p>Write down the $F$ involved in the DE
+  $$\frac{d^2y}{dt^2} = 2y^3 + ty + \alpha,$$
+  where $\alpha$ is a fixed constant. This DE is called the <strong>Painlev&eacute; II equation</strong>.</p>
+  <p><span class="answer">Ans: $F(t, y, y', y'') = y'' - 2y^3 - ty - \alpha = 0$, i.e., $F(t, x_1, x_2, x_3) = x_3 - 2x_1^3 - tx_1 - \alpha$.</span></p>
+</div>
+
+<hr>
+
+<p><strong>Example.</strong> Pendulum equation of a rod of length $L$ with an object of mass $m$ attached at the end:</p>
+
+$$\frac{d^2\theta}{dt^2} + \frac{g}{L}\sin\theta = 0.$$
+
+<p>We see the appearance of the term $\sin\theta$ making the pendulum <em>highly nonlinear</em>.</p>
+
+<p>When $\theta$ is small, then $\sin\theta \sim \theta$. So the pendulum equation is approximated by</p>
+
+$$\frac{d^2\theta}{dt^2} + \frac{g}{L}\theta = 0,$$
+
+<p>which is a second order linear DE.</p>
+
+<hr>
+
+<div class="box exercise-box">
+  <span class="box-title">Exercise &mdash; Order and Linearity</span>
+  <p>Determine the order and linear/nonlinearity of the following equations.</p>
+  <ol>
+    <li>$y''' + xy'' + 3y(y')^2 + x^2y = 0$. <span class="answer">Ans: 3rd order, nonlinear (due to $y(y')^2$).</span></li>
+    <li>$\dfrac{d^3v}{dx^2}\dfrac{dv}{dx} + x\!\left(\dfrac{dv}{dx}\right)^{\!2} + v = 0$. <span class="answer">Ans: 3rd order, nonlinear (products of derivatives).</span></li>
+    <li>$e^{y'} - x^2y'' + y$. <span class="answer">Ans: 2nd order, nonlinear (due to $e^{y'}$).</span></li>
+  </ol>
+</div>
+
+<div class="box exercise-box">
+  <span class="box-title">Exercise &mdash; Construct a DE</span>
+  <p>Construct a DE for each of the following $y$ for which the $y$ are their respective solutions.</p>
+  <ol>
+    <li>$y = kx$. <span class="answer">Ans: $xy' - y = 0$.</span></li>
+    <li>$y = Ax + B$. <span class="answer">Ans: $y'' = 0$.</span></li>
+    <li>$y = \sin(x + c)$. <span class="answer">Ans: $y'' + y = 0$ (or $(y')^2 + y^2 = 1$).</span></li>
+    <li>$y = Ae^x + B$. <span class="answer">Ans: $y'' - y' = 0$.</span></li>
+    <li>$x = A\sin(y + B)$. <span class="answer">Ans: $(1 + x^2(y')^2)y'' + x(y')^3 = 0$ (eliminate $A, B$).</span></li>
+    <li>$y = \dfrac{Ax + B}{Cx + D}$. <span class="answer">Ans: $y''' = \dfrac{3(y'')^2}{2y'}$ (eliminate $A, B, C, D$).</span></li>
+  </ol>
+</div>
+
+<div class="box exercise-box">
+  <span class="box-title">Exercise &mdash; Verify Solutions</span>
+  <p>Verify that the given $y$, or $y_1$ and $y_2$ are solutions of the corresponding DEs:</p>
+  <ol>
+    <li>$y'' + 2y' - 3y = 0$, $\;\;y_1(t) = e^{-3t}$ and $y_2(t) = e^t$. <span class="answer">Ans: For $y_1$: $y_1'' + 2y_1' - 3y_1 = 9e^{-3t} - 6e^{-3t} - 3e^{-3t} = 0$. Similarly for $y_2$.</span></li>
+    <li>$t'y - y = t^2$, $\;\;y_1(t) = 3t + t^2$. <span class="answer">Ans: $ty_1' - y_1 = t(3+2t) - (3t+t^2) = 3t + 2t^2 - 3t - t^2 = t^2$.</span></li>
+    <li>$y^{(4)} + 4y^{(3)} + 3y = t$, $\;\;y_1(t) = t/3$, $\;y_2(t) = e^{-t} + t/3$. <span class="answer">Ans: Substitute each and verify LHS $= t$.</span></li>
+    <li>$y'' + y = \sec t$, $\;\;y = \cos t\,\ln\cos t + t\sin t$. <span class="answer">Ans: Compute $y''$ using the product rule and verify $y'' + y = \sec t$.</span></li>
+  </ol>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec-fourier">7 &ensp; Fourier Series, Sturm-Liouville Theory</h2>
+
+<h3 id="sec-pde">7.1 &ensp; Partial Differential Equations</h3>
+
+<h4 id="sec-heat">7.1.1 &ensp; Heat Equations</h4>
+
+<p>We assume an insulated metal rod of length $L$ that is heated at one of its end. Suppose that one keeps the temperatures at both ends of the rod, namely $x = 0$ and $x = L$ at constant temperatures $T_1$, and at $T_2$.</p>
+
+<p>Let $u = u(x, t)$ denote the temperature of distribution of the metal rod at the location $0 \leq x \leq L$ and at time $t$. Suppose the <em>thermal diffusivity</em></p>
+
+$$\alpha^2 = \frac{\kappa}{\rho s} = \frac{\text{thermal conductivity}}{(\text{metal density}) \times (\text{specific heat})}.$$
+
+<p>Then it is known that the &ldquo;heat&rdquo; function $u$ satisfies, when considered as a kind of diffusion. Since there are more than one independent variables involved, so partial differentiations with respect to $x$ and $t$ are involved, hence <strong>partial differential equations</strong> are needed to describe heat flow.</p>
+
+<div class="box definition">
+  <span class="box-title">Heat (diffusion) equation</span>
+  <p>$$\alpha^2 u_{xx} = u_t, \quad 0 < x < L, \quad t > 0;$$</p>
+  <p>$u(x,0) = f(x)$, $\;\;u(0,t) = T_1$, $\;\;u(L,t) = T_2,$</p>
+  <p>where $f(x)$ represents the initial temperature distribution of the metal rod.</p>
+</div>
+
+<h4 id="sec-wave">7.1.2 &ensp; Wave Equations (One-Dimensional)</h4>
+
+<p>Suppose we have an elastic string tight at both ends with a length $L$. Let $u = u(x, t)$ denote the vertical displacement of the string at the position $x$, $0 \leq x \leq L$ and at time $t$.</p>
+
+<p>Suppose it has an initial position and initial velocity given by $u(x, 0) = f(x)$ and $u_t(x, 0) = g(x)$ respectively.</p>
+
+<!-- ============================================================ -->
+<!-- MCQ 1: Exponential Growth & Decay -->
+<div class="mcq" id="sec-practice">
+  <div class="mcq-title">Practice: Exponential Growth &amp; Decay</div>
+  <div class="mcq-problem">
+    <p>A population grows at a rate proportional to its current size. If $P(0) = 100$ and $P(5) = 200$, determine the governing DE, its solution, and the growth constant $k$.</p>
+  </div>
+
+  <div class="mcq-step" data-step="1">
+    <div class="mcq-step-label">Step 1</div>
+    <p class="mcq-question">What is the DE governing the population?</p>
+    <div class="mcq-options">
+      <button class="mcq-option" data-correct="false" data-hint="&quot;Proportional to current size&quot; means linear in P, not quadratic.">(a) $dP/dt = kP^2$</button>
+      <button class="mcq-option" data-correct="true">(b) $dP/dt = kP$</button>
+      <button class="mcq-option" data-correct="false" data-hint="The rate is proportional to P, not the square root of P.">(c) $dP/dt = k\sqrt{P}$</button>
+      <button class="mcq-option" data-correct="false" data-hint="dP/dt = k would give linear (not exponential) growth.">(d) $dP/dt = k$</button>
+    </div>
+    <div class="mcq-feedback"></div>
+  </div>
+
+  <div class="mcq-step locked" data-step="2">
+    <div class="mcq-step-label">Step 2</div>
+    <p class="mcq-question">What is the general solution to $dP/dt = kP$?</p>
+    <div class="mcq-options">
+      <button class="mcq-option" data-correct="false" data-hint="That is the solution to dP/dt = k, not dP/dt = kP.">(a) $P(t) = kt + C$</button>
+      <button class="mcq-option" data-correct="true">(b) $P(t) = Ce^{kt}$</button>
+      <button class="mcq-option" data-correct="false" data-hint="Check the sign in the exponent.">(c) $P(t) = Ce^{-kt}$</button>
+      <button class="mcq-option" data-correct="false" data-hint="Logarithmic functions do not arise from dP/dt = kP.">(d) $P(t) = C\ln(kt)$</button>
+    </div>
+    <div class="mcq-feedback"></div>
+  </div>
+
+  <div class="mcq-step locked" data-step="3">
+    <div class="mcq-step-label">Step 3</div>
+    <p class="mcq-question">Given $P(0) = 100$ and $P(5) = 200$, find $k$.</p>
+    <div class="mcq-options">
+      <button class="mcq-option" data-correct="true">(a) $k = \dfrac{\ln 2}{5}$</button>
+      <button class="mcq-option" data-correct="false" data-hint="P(5) = 100e^{5k} = 200, so e^{5k} = 2. Solve for k using logarithms.">(b) $k = \dfrac{2}{5}$</button>
+      <button class="mcq-option" data-correct="false" data-hint="Take ln of both sides: 5k = ln 2.">(c) $k = \dfrac{1}{5}$</button>
+      <button class="mcq-option" data-correct="false" data-hint="The doubling condition gives e^{5k} = 2, so k = (ln 2)/5.">(d) $k = \ln 5$</button>
+    </div>
+    <div class="mcq-feedback"></div>
+  </div>
+
+  <div class="mcq-result">All steps complete &mdash; well done!</div>
+</div>
+
+<!-- MCQ 2: Classification of DEs -->
+<div class="mcq">
+  <div class="mcq-title">Practice: Classification of DEs</div>
+  <div class="mcq-problem">
+    <p>Classify differential equations by order and linearity.</p>
+  </div>
+
+  <div class="mcq-step" data-step="1">
+    <div class="mcq-step-label">Step 1</div>
+    <p class="mcq-question">What is the order of the DE: $y''' + xy'' + 3y(y')^2 + x^2 y = 0$?</p>
+    <div class="mcq-options">
+      <button class="mcq-option" data-correct="false" data-hint="Look for the highest derivative present.">(a) 1st order</button>
+      <button class="mcq-option" data-correct="false" data-hint="The highest derivative is y''', not y''.">(b) 2nd order</button>
+      <button class="mcq-option" data-correct="true">(c) 3rd order</button>
+      <button class="mcq-option" data-correct="false" data-hint="There is no y^{(4)} in the equation.">(d) 4th order</button>
+    </div>
+    <div class="mcq-feedback"></div>
+  </div>
+
+  <div class="mcq-step locked" data-step="2">
+    <div class="mcq-step-label">Step 2</div>
+    <p class="mcq-question">Is the above DE linear or nonlinear?</p>
+    <div class="mcq-options">
+      <button class="mcq-option" data-correct="false" data-hint="Look at the term y(y')^2. Does it involve products of y and its derivatives?">(a) Linear</button>
+      <button class="mcq-option" data-correct="true">(b) Nonlinear</button>
+    </div>
+    <div class="mcq-feedback"></div>
+  </div>
+
+  <div class="mcq-step locked" data-step="3">
+    <div class="mcq-step-label">Step 3</div>
+    <p class="mcq-question">Which of these is a linear second-order DE?</p>
+    <div class="mcq-options">
+      <button class="mcq-option" data-correct="false" data-hint="The term yy'' is a product of y and y''.">(a) $yy'' + 2y' - 3y = 0$</button>
+      <button class="mcq-option" data-correct="false" data-hint="(y')^2 is nonlinear.">(b) $(y')^2 + y = \sin t$</button>
+      <button class="mcq-option" data-correct="true">(c) $x^2 y'' - 2xy' + 3y = 0$</button>
+      <button class="mcq-option" data-correct="false" data-hint="sin(y) is a nonlinear function of y.">(d) $y'' + \sin(y) = 0$</button>
+    </div>
+    <div class="mcq-feedback"></div>
+  </div>
+
+  <div class="mcq-result">All steps complete &mdash; well done!</div>
+</div>
+
+<hr>
+<p style="text-align:center;color:#aaa;font-size:0.85rem;margin-top:3rem;">&mdash; End of What are Differential Equations? Notes &mdash;</p>
+
+</div><!-- /.container -->
+</div><!-- /.page-wrapper -->
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // --- Interactive answers ---
+  document.querySelectorAll('.answer').forEach(function (span) {
+    var btn = document.createElement('button');
+    btn.className = 'answer-btn'; btn.textContent = 'Show'; btn.setAttribute('type', 'button');
+    span.parentNode.insertBefore(btn, span);
+    btn.addEventListener('click', function () {
+      var visible = span.classList.toggle('answer-revealed');
+      span.style.display = visible ? 'inline' : 'none';
+      btn.textContent = visible ? 'Hide' : 'Show';
+      btn.classList.toggle('revealed', visible);
+      if (visible && window.MathJax && MathJax.typeset) MathJax.typeset([span]);
+    });
+  });
+
+  // --- MCQ logic ---
+  document.querySelectorAll('.mcq').forEach(function (mcq) {
+    var steps = mcq.querySelectorAll('.mcq-step');
+    var result = mcq.querySelector('.mcq-result');
+    var totalSteps = steps.length, completed = 0;
+    steps.forEach(function (step, idx) {
+      var options = step.querySelectorAll('.mcq-option');
+      var feedback = step.querySelector('.mcq-feedback');
+      options.forEach(function (opt) {
+        opt.addEventListener('click', function () {
+          if (opt.classList.contains('correct') || opt.classList.contains('wrong') || opt.classList.contains('disabled')) return;
+          var isCorrect = opt.getAttribute('data-correct') === 'true';
+          if (isCorrect) {
+            opt.classList.add('correct');
+            options.forEach(function (o) { if (o !== opt) o.classList.add('disabled'); });
+            step.classList.add('completed');
+            feedback.textContent = 'Correct!';
+            feedback.className = 'mcq-feedback correct-fb';
+            completed++;
+            if (window.MathJax && MathJax.typeset) MathJax.typeset([step]);
+            if (idx + 1 < totalSteps) {
+              setTimeout(function () {
+                steps[idx + 1].classList.remove('locked');
+                if (window.MathJax && MathJax.typeset) MathJax.typeset([steps[idx + 1]]);
+              }, 400);
+            }
+            if (completed === totalSteps) setTimeout(function () { result.style.display = 'block'; }, 600);
+          } else {
+            opt.classList.add('wrong');
+            var hint = opt.getAttribute('data-hint') || 'Try again.';
+            feedback.textContent = hint;
+            feedback.className = 'mcq-feedback wrong-fb';
+            setTimeout(function () {
+              opt.classList.remove('wrong');
+              feedback.style.display = 'none'; feedback.className = 'mcq-feedback';
+              setTimeout(function () { feedback.style.display = ''; }, 50);
+            }, 2000);
+          }
+        });
+      });
+    });
+  });
+
+  // --- Scroll-spy ---
+  var sidebarLinks = document.querySelectorAll('.sidebar a[href^="#"]');
+  var sections = [];
+  sidebarLinks.forEach(function (link) {
+    var id = link.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) sections.push({ id: id, el: el, link: link });
+  });
+  function updateActive() {
+    var scrollY = window.scrollY + 80, current = null;
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i].el.offsetTop <= scrollY) current = sections[i];
+    }
+    sidebarLinks.forEach(function (l) { l.classList.remove('active'); });
+    if (current) {
+      current.link.classList.add('active');
+      var sidebar = document.getElementById('sidebar');
+      var linkTop = current.link.offsetTop, sidebarH = sidebar.clientHeight;
+      if (linkTop < sidebar.scrollTop + 40 || linkTop > sidebar.scrollTop + sidebarH - 40)
+        sidebar.scrollTo({ top: linkTop - sidebarH / 3, behavior: 'smooth' });
+    }
+  }
+  window.addEventListener('scroll', updateActive, { passive: true });
+  updateActive();
+});
+</script>
+</body>
+</html>

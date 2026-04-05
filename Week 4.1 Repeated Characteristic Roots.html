@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 4.1 – Repeated Characteristic Roots</title>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    tags: 'ams'
+  },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg: #2d2d2d;
+  --text: #e0e0e0;
+  --heading: #ffffff;
+  --accent: #8ab4f8;
+  --accent2: #81c995;
+  --border: #4a4a4a;
+  --def-bg: #3a3a3a;
+  --def-border: #6a6a6a;
+  --prop-bg: #353535;
+  --prop-border: #5a5a5a;
+  --exercise-bg: #383838;
+  --exercise-border: #5a5a5a;
+  --warn-bg: #3d3535;
+  --warn-border: #7a5a5a;
+  --code-bg: #333333;
+  --shadow: rgba(0, 0, 0, 0.3);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 18px; scroll-behavior: smooth; }
+
+body {
+  font-family: 'Crimson Pro', Georgia, serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page-wrapper { display: flex; min-height: 100vh; }
+
+/* --- Sidebar --- */
+.sidebar {
+  position: sticky; top: 0; align-self: flex-start;
+  width: 280px; min-width: 280px; height: 100vh;
+  overflow-y: auto; padding: 2rem 1.2rem 2rem 1.4rem;
+  border-right: 1.5px solid var(--border); background: #252525;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+.sidebar::-webkit-scrollbar { width: 5px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+.sidebar .sidebar-title {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.72rem;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: #888888; margin-bottom: 1rem; font-weight: 600;
+}
+
+.sidebar ol { list-style: none; padding: 0; margin: 0; counter-reset: sidebar-counter; }
+.sidebar > ol > li { counter-increment: sidebar-counter; margin-bottom: 0.15rem; }
+.sidebar > ol > li > a::before {
+  content: counter(sidebar-counter) ". "; font-weight: 600;
+  color: var(--accent); font-size: 0.8rem;
+}
+
+.sidebar a {
+  display: block; font-family: 'Source Sans 3', sans-serif; font-size: 0.82rem;
+  color: var(--text); text-decoration: none; padding: 0.2rem 0.5rem;
+  border-radius: 4px; border-left: 2.5px solid transparent;
+  transition: all 0.2s; line-height: 1.4;
+}
+.sidebar a:hover { color: var(--accent); background: rgba(138,180,248,0.1); }
+.sidebar a.active {
+  color: var(--accent); font-weight: 600;
+  background: rgba(138,180,248,0.15); border-left-color: var(--accent);
+}
+
+.sidebar ol ol { margin-left: 1rem; margin-top: 0.1rem; counter-reset: none; }
+.sidebar ol ol li { margin-bottom: 0.05rem; }
+.sidebar ol ol a { font-size: 0.78rem; }
+.sidebar ol ol a::before { display: none; }
+
+.container {
+  max-width: 780px; margin: 0 auto; padding: 2rem 1.5rem 4rem;
+  flex: 1; min-width: 0;
+}
+
+/* --- Title Block --- */
+.title-block {
+  text-align: center; padding: 3rem 0 2.5rem;
+  border-bottom: 2px solid var(--border); margin-bottom: 2.5rem;
+}
+.title-block h1 {
+  font-family: 'Crimson Pro', serif; font-size: 2.4rem; font-weight: 700;
+  color: var(--heading); line-height: 1.2; margin-bottom: 0.5rem; letter-spacing: -0.02em;
+}
+.title-block .author { font-family: 'Source Sans 3', sans-serif; font-size: 1rem; color: #a0a0a0; }
+.title-block .course {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: #888888;
+  margin-top: 0.2rem; letter-spacing: 0.04em; text-transform: uppercase;
+}
+.title-block .date { font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: #888888; margin-top: 0.3rem; }
+
+/* --- TOC (mobile) --- */
+.toc {
+  background: var(--def-bg); border: 1px solid var(--border);
+  border-radius: 6px; padding: 1.5rem 2rem; margin-bottom: 2.5rem;
+}
+.toc h2 {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.8rem;
+  text-transform: uppercase; letter-spacing: 0.12em; color: #888888;
+  margin-bottom: 0.8rem; font-weight: 600;
+}
+.toc ol { list-style: none; counter-reset: toc-counter; }
+.toc > ol > li { counter-increment: toc-counter; margin-bottom: 0.3rem; }
+.toc > ol > li::before {
+  content: counter(toc-counter) "."; font-weight: 600; color: var(--accent);
+  margin-right: 0.5rem; font-family: 'Source Sans 3', sans-serif; font-size: 0.9rem;
+}
+.toc a { color: var(--text); text-decoration: none; font-size: 0.95rem; transition: color 0.2s; }
+.toc a:hover { color: var(--accent); }
+
+/* --- Headings --- */
+h2 {
+  font-family: 'Crimson Pro', serif; font-size: 1.8rem; font-weight: 700;
+  color: var(--heading); margin-top: 3rem; margin-bottom: 1rem;
+  padding-bottom: 0.4rem; border-bottom: 1.5px solid var(--border); line-height: 1.3;
+}
+h3 { font-family: 'Crimson Pro', serif; font-size: 1.35rem; font-weight: 600; color: var(--heading); margin-top: 2rem; margin-bottom: 0.8rem; }
+h4 { font-family: 'Crimson Pro', serif; font-size: 1.1rem; font-weight: 600; color: var(--heading); margin-top: 1.5rem; margin-bottom: 0.6rem; }
+
+p { margin-bottom: 1rem; text-align: justify; hyphens: auto; }
+
+/* --- Boxes --- */
+.box { border-radius: 5px; padding: 1.2rem 1.4rem; margin: 1.5rem 0; border-left: 4px solid; position: relative; }
+.box-title { font-family: 'Source Sans 3', sans-serif; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.6rem; display: block; }
+.definition { background: var(--def-bg); border-color: var(--def-border); }
+.definition .box-title { color: #f0c040; }
+.theorem { background: var(--prop-bg); border-color: var(--accent2); }
+.theorem .box-title { color: var(--accent2); }
+.proposition { background: var(--prop-bg); border-color: var(--prop-border); }
+.proposition .box-title { color: var(--accent2); }
+.exercise-box { background: var(--exercise-bg); border-color: var(--exercise-border); }
+.exercise-box .box-title { color: #c0a080; }
+.warning-box { background: var(--warn-bg); border-color: var(--warn-border); }
+.warning-box .box-title { color: #f08080; }
+.remark-box { background: #3a3a40; border-color: #6a6a80; }
+.remark-box .box-title { color: #a0a0d0; }
+.box p:last-child { margin-bottom: 0; }
+
+.proof { margin: 1rem 0 1.5rem; padding-left: 1rem; border-left: 2px solid var(--border); }
+.proof-label { font-style: italic; font-weight: 500; color: #a0a0a0; }
+.proof::after { content: "□"; display: block; text-align: right; color: #666; margin-top: 0.3rem; }
+
+ol, ul { margin-bottom: 1rem; padding-left: 1.5rem; }
+li { margin-bottom: 0.4rem; }
+
+.answer { display: none; }
+.answer-btn {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.78rem; font-weight: 600;
+  color: var(--accent2); background: none; border: 1.5px solid var(--accent2);
+  border-radius: 4px; padding: 0.15rem 0.55rem; margin-left: 0.4rem;
+  cursor: pointer; transition: all 0.2s; vertical-align: middle;
+}
+.answer-btn:hover { background: var(--accent2); color: #fff; }
+.answer-btn.revealed { border-color: var(--border); color: #888888; }
+.answer-btn.revealed:hover { background: var(--exercise-bg); color: #a0a0a0; }
+.answer-revealed {
+  display: inline; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem;
+  color: var(--accent2); margin-left: 0.3rem; animation: fadeIn 0.25s ease;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-2px); } to { opacity: 1; transform: translateY(0); } }
+
+hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+.key-formula {
+  background: linear-gradient(135deg, #3a3a3a, #353535);
+  border: 1.5px solid var(--def-border); border-radius: 5px;
+  padding: 1rem 1.4rem; margin: 1.2rem 0; text-align: center;
+}
+
+/* --- MCQ Phase System --- */
+.mcq { background: #333; border: 1.5px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; }
+.mcq-title { font-family: 'Source Sans 3', sans-serif; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 0.8rem; }
+.mcq-problem { margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border); }
+.mcq-phase { margin-bottom: 1rem; padding: 1rem; border-radius: 6px; background: #2a2a2a; border: 1.5px solid #444; transition: all 0.3s; }
+.mcq-phase.locked { opacity: 0.4; pointer-events: none; filter: grayscale(0.3); }
+.mcq-phase.active { border-color: var(--accent); box-shadow: 0 2px 8px rgba(138,180,248,0.15); }
+.mcq-phase.completed { border-color: var(--accent2); background: #2a3530; }
+.phase-label { font-family: 'Source Sans 3', sans-serif; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.5rem; }
+.phase-label .phase-tag { background: var(--accent); color: #1a1a1a; padding: 0.15rem 0.5rem; border-radius: 3px; font-size: 0.65rem; }
+.mcq-phase.completed .phase-label .phase-tag { background: var(--accent2); }
+.phase-label .phase-name { color: #888; }
+.strategy-outline { background: #353535; border-radius: 4px; padding: 0.8rem 1rem; margin: 0.8rem 0; border-left: 3px solid var(--accent2); }
+.strategy-outline-title { font-family: 'Source Sans 3', sans-serif; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin-bottom: 0.4rem; }
+.strategy-step { font-size: 0.9rem; padding: 0.3rem 0; color: var(--text); display: flex; align-items: flex-start; gap: 0.5rem; }
+.strategy-step::before { content: "✓"; color: var(--accent2); font-weight: 700; flex-shrink: 0; }
+.mcq-step { margin-bottom: 0.8rem; }
+.mcq-step.locked { display: none; }
+.mcq-step.completed .mcq-options { opacity: 0.6; }
+.mcq-step-label { font-family: 'Source Sans 3', sans-serif; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin-bottom: 0.5rem; }
+.mcq-question { margin-bottom: 0.6rem; font-size: 0.95rem; }
+.mcq-options { display: flex; flex-direction: column; gap: 0.4rem; }
+.mcq-option { font-family: 'Crimson Pro', serif; font-size: 0.95rem; text-align: left; padding: 0.5rem 0.8rem; border: 1.5px solid #555; border-radius: 5px; background: #2a2a2a; color: var(--text); cursor: pointer; transition: all 0.2s; line-height: 1.5; }
+.mcq-option:hover { border-color: var(--accent); background: rgba(138,180,248,0.1); }
+.mcq-option.correct { border-color: var(--accent2); background: rgba(129,201,149,0.15); cursor: default; }
+.mcq-option.correct::before { content: "✓ "; color: var(--accent2); font-weight: 700; }
+.mcq-option.wrong { border-color: #f08080; background: rgba(240,128,128,0.15); cursor: default; }
+.mcq-option.wrong::before { content: "✗ "; color: #f08080; font-weight: 700; }
+.mcq-option.disabled { pointer-events: none; opacity: 0.5; }
+.mcq-feedback { display: none; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; padding: 0.5rem 0.8rem; border-radius: 4px; margin-top: 0.5rem; line-height: 1.5; }
+.mcq-feedback.correct-fb { display: block; background: rgba(129,201,149,0.15); color: var(--accent2); border: 1px solid var(--accent2); }
+.mcq-feedback.wrong-fb { display: block; background: rgba(240,128,128,0.15); color: #f08080; border: 1px solid #f08080; }
+.mcq-result { display: none; font-family: 'Source Sans 3', sans-serif; font-size: 0.9rem; font-weight: 600; color: var(--accent2); padding: 0.8rem 1rem; background: rgba(129,201,149,0.15); border-radius: 6px; border: 1.5px solid var(--accent2); text-align: center; margin-top: 1rem; }
+.phase-transition { display: none; text-align: center; padding: 0.6rem; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: var(--accent2); background: rgba(129,201,149,0.1); border-radius: 4px; margin: 0.5rem 0; }
+
+@media (min-width: 901px) { .toc { display: none; } }
+@media (max-width: 900px) {
+  .page-wrapper { display: block; } .sidebar { display: none; }
+  html { font-size: 16px; } .container { padding: 1rem; max-width: 100%; }
+  .title-block h1 { font-size: 1.8rem; } h2 { font-size: 1.5rem; } .box { padding: 1rem; }
+}
+@media print {
+  .sidebar { display: none; } .page-wrapper { display: block; }
+  body { font-size: 11pt; } .container { max-width: 100%; }
+  .box { break-inside: avoid; } h2 { break-after: avoid; } .toc { display: block; }
+}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+
+<!-- ===== SIDEBAR ===== -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-title">Contents</div>
+  <ol>
+    <li><a href="#sec-repeated">Repeated Roots</a>
+      <ol>
+        <li><a href="#sec-main-theorem">Main Theorem</a></li>
+        <li><a href="#sec-frobenius">Frobenius Method</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec-reduction">Reduction of Order</a>
+      <ol>
+        <li><a href="#sec-substitution">Substitution Method</a></li>
+        <li><a href="#sec-general">General Coefficients</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec-examples">Examples</a></li>
+    <li><a href="#sec-exercises">Exercises</a></li>
+    <li><a href="#sec-practice">Practice MCQ</a></li>
+  </ol>
+</nav>
+
+<div class="container">
+
+<!-- ===== TITLE ===== -->
+<div class="title-block">
+  <h1>Second Order Equations: Repeated Characteristic Roots</h1>
+  <div class="author">Edmund Chiang</div>
+  <div class="course">MATH2351 / 2352 — Boyce &amp; DiPrima §3.4</div>
+  <div class="date">February 20, 2026</div>
+</div>
+
+<!-- ===== TOC (mobile) ===== -->
+<nav class="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#sec-repeated">Repeated Roots</a></li>
+    <li><a href="#sec-reduction">Reduction of Order</a></li>
+    <li><a href="#sec-examples">Examples</a></li>
+    <li><a href="#sec-exercises">Exercises</a></li>
+  </ol>
+</nav>
+
+<!-- ============================================================ -->
+<h2 id="sec-repeated">1 &ensp; Repeated Roots</h2>
+
+<h3 id="sec-main-theorem">1.1 &ensp; Main Theorem</h3>
+
+<div class="box theorem">
+  <span class="box-title">Theorem — Three Cases for Characteristic Roots</span>
+  <p>Consider the DE</p>
+  $$ay'' + by' + cy = 0,$$
+  <p>where $a$, $b$, $c$ are constants. Then the characteristic roots are given by</p>
+  $$r_{1,2} = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}.$$
+  <p>Then</p>
+  <ol>
+    <li><strong>(Distinct real roots)</strong> we have a fundamental set of solutions $\{e^{r_1 t},\, e^{r_2 t}\}$;</li>
+    <li><strong>(Complex conjugate roots)</strong> we have a fundamental set of solutions $\{e^{\lambda t}\cos\mu t,\, e^{\lambda t}\sin\mu t\}$ where $\lambda = \Re(r_1) = \Re(r_2)$ and $\mu = \Im(r_1) = -\Im(r_2)$;</li>
+    <li><strong>(Repeated root)</strong> we have a fundamental set of solutions $\{e^{rt},\, te^{rt}\}$, where $r = -\dfrac{b}{2a}$.</li>
+  </ol>
+</div>
+
+<h3 id="sec-frobenius">1.2 &ensp; Proof via Frobenius Method</h3>
+
+<p>It remains to prove the case of repeated roots $r_1 = r_2 = -\dfrac{b}{2a}$.</p>
+
+<p>We follow an idea due originally to Frobenius (1849–1917). Let $r$ be a variable, and let</p>
+
+$$L = a\frac{d^2}{dt^2} + b\frac{d}{dt} + c = aD^2 + bD + c.$$
+
+<p>Then</p>
+
+\begin{align}
+L(e^{rt}) &= \Big(a\frac{d^2}{dt^2} + b\frac{d}{dt} + c\Big)e^{rt} \\[6pt]
+&= a\frac{d^2}{dt^2}e^{rt} + b\frac{d}{dt}e^{rt} + ce^{rt} = (ar^2 + br + c)e^{rt} \\[6pt]
+&= (ar^2 + br + c)e^{rt} - (ar_1^2 + br_1 + c)e^{rt} \\[6pt]
+&= a(r - r_1)^2 e^{rt}
+\end{align}
+
+<p>where we have used $r_1 = -\dfrac{b}{2a}$. Clearly $L(e^{r_1 t}) = 0$ which reconfirms that $y = e^{r_1 t}$ is a solution.</p>
+
+<p>Let us differentiate the $L(e^{rt})$ with respect to $r$:</p>
+
+$$\frac{\partial L(e^{rt})}{\partial r} = 2a(r - r_1)L(e^{rt}) + a(r - r_1)^2 tL(e^{rt}).$$
+
+<p>Substituting $r = r_1$ yields</p>
+
+$$L(te^{r_1 t}) = \frac{\partial L(e^{rt})}{\partial r}\Big|_{r=r_1} = 2a(r_1 - r_1)L(e^{r_1 t}) + a(r_1 - r_1)^2 te^{r_1 t} = 0,$$
+
+<p>thus showing that the function $y = te^{r_1 t}$ is also a solution to the DE.</p>
+
+<p>It remains to show that the $e^{r_1 t}$, $te^{r_1 t}$ are linearly independent:</p>
+
+$$W\big(te^{-\frac{b}{2a}t},\, e^{-\frac{b}{2a}t}\big) = \begin{vmatrix} e^{-\frac{b}{2a}t} & te^{-\frac{b}{2a}t} \\[4pt] -\frac{b}{2a}e^{-\frac{b}{2a}t} & \big(1 - \frac{bt}{2a}\big)e^{-\frac{b}{2a}t} \end{vmatrix} = e^{-\frac{b}{2a}t}$$
+
+<p>which never vanishes. So according to an earlier theorem about Wronskians, the $e^{r_1 t}$, $te^{r_1 t}$ are linearly independent and so they form a fundamental set of solutions to the original DE.</p>
+
+<hr>
+
+<!-- ============================================================ -->
+<h2 id="sec-reduction">2 &ensp; Reduction of Order</h2>
+
+<h3 id="sec-substitution">2.1 &ensp; Substitution Method</h3>
+
+<div class="box definition">
+  <span class="box-title">Substitution</span>
+  <p>Let</p>
+  $$y(t) = v(t)y_1(t) = v(t)\,e^{-\frac{b}{2a}t}.$$
+</div>
+
+<p>Suppose the $y$ so defined above is a solution to the original DE. Then</p>
+
+$$y'(t) = \Big(v'(t) - \frac{b}{2a}v(t)\Big)e^{-\frac{b}{2a}t}$$
+
+<p>and similarly,</p>
+
+$$y''(t) = \Big(v''(t) - \frac{b}{a}v'(t) + \frac{b^2}{(2a)^2}v(t)\Big)e^{-\frac{b}{2a}t}.$$
+
+<p>Substitute them into the original equation yields:</p>
+
+\begin{align}
+ay'' + by' + cy &= a\Big(v''(t) - \frac{b}{a}v'(t) + \frac{b^2}{(2a)^2}v(t)\Big)e^{-\frac{b}{2a}t} \\[6pt]
+&\quad + b\Big(v'(t) - \frac{b}{2a}v(t)\Big)e^{-\frac{b}{2a}t} + cv(t)\,e^{-\frac{b}{2a}t} \\[6pt]
+&= \Big[av''(t) + 0 \cdot v'(t) + \Big(\frac{4ac - b^2}{4a}\Big)v(t)\Big]e^{-\frac{b}{2a}t} \\[6pt]
+&= \Big[av''(t) + \Big(\frac{4ac - b^2}{4a}\Big)v(t)\Big]e^{-\frac{b}{2a}t}
+\end{align}
+
+<p>But we have $b^2 - 4ac = 0$. So the above equation reduces to</p>
+
+$$v''(t) = 0,$$
+
+<p>and thus</p>
+
+$$v(t) = At + B.$$
+
+<p>Without loss of generality, we may choose $A = 1$ so that $v(t) = t + B$. Hence</p>
+
+$$y(t) = (t + B)\,e^{-\frac{b}{2a}t} = te^{-\frac{b}{2a}t} + Be^{-\frac{b}{2a}t}.$$
+
+<p>But the expression $Be^{-\frac{b}{2a}t} = By_1(t)$ and so it can be combined with the original $y_1$. The expression $te^{-\frac{b}{2a}t}$ is really new which we denote by</p>
+
+<div class="key-formula">
+$$y_2(t) = te^{-\frac{b}{2a}t}.$$
+</div>
+
+<hr>
+
+<h3 id="sec-general">2.2 &ensp; General Consideration</h3>
+
+<p>The reduction of order method introduced for linear second order equations with constant coefficients also works on more general coefficients. Let $y_1(t)$ be a solution of</p>
+
+$$y'' + p(t)y' + q(t)y = 0.$$
+
+<p>Let</p>
+
+$$y = v(t)y_1.$$
+
+<p>Then</p>
+
+$$y' = vy_1' + v'y_1,$$
+
+<p>and</p>
+
+$$y'' = vy_1'' + 2v'y_1' + v''y_1.$$
+
+<p>Substitute $y'$ and $y''$ into the DE:</p>
+
+$$y_1 v'' + (2y_1' + p(t)y_1)v' + [y_1'' + p(t)y_1' + q(t)y_1]v = 0.$$
+
+<p>That is,</p>
+
+$$y_1 v'' + (2y_1' + p(t)y_1)v' = 0.$$
+
+<p>Let $u = v'$. Then the equation becomes</p>
+
+$$y_1 u' + (2y_1' + p(t)y_1)u = 0.$$
+
+<p>We now solve this first order DE in $u$. Then solve for $v$ to get $vy_1$.</p>
+
+<hr>
+
+<!-- ============================================================ -->
+<h2 id="sec-examples">3 &ensp; Examples</h2>
+
+<p><strong>Example 1.</strong> Solve the IVP $y'' + 2y' + y = 0$, $y(0) = 1$, $y'(0) = 0$.</p>
+
+<p>We have the characteristic equation</p>
+
+$$(r + 1)^2 = 0,$$
+
+<p>so that we have repeated characteristic root $r = -1$. Thus the first solution is $y_1(t) = e^{-t}$, and according to the above derivation the second linearly independent solution is $y_2(t) = te^{-t}$.</p>
+
+<p>Let $y = Ae^{-t} + Bte^{-t}$. Taking into consideration of the IC,</p>
+
+$$1 = y(0) = A,$$
+
+<p>and</p>
+
+$$y'(t) = -e^{-t} + Be^{-t} - Bte^{-t},$$
+
+<p>hence</p>
+
+$$0 = y'(0) = -1 + B,$$
+
+<p>so that $B = 1$. We deduce</p>
+
+<div class="key-formula">
+$$y(t) = e^{-t} + te^{-t} = (1 + t)e^{-t}.$$
+</div>
+
+<hr>
+
+<p><strong>Example 2.</strong> Solve $y'' - y' + 0.25y = 0$, $y(0) = 2$, $y'(0) = 1/3$.</p>
+
+<p>We have the characteristic equation</p>
+
+$$r^2 - r + \frac{1}{4} = \Big(r - \frac{1}{2}\Big)^2 = 0,$$
+
+<p>so we have repeated root $r = \frac{1}{2}$. We have linearly independent solutions</p>
+
+$$e^{t/2}, \quad te^{t/2}.$$
+
+<p>The IC implies</p>
+
+<div class="key-formula">
+$$y(t) = 2e^{t/2} - \frac{2}{3}te^{t/2}.$$
+</div>
+
+<hr>
+
+<!-- ============================================================ -->
+<h2 id="sec-exercises">4 &ensp; Exercises</h2>
+
+<div class="box exercise-box">
+  <span class="box-title">Exercise — Basic Repeated Roots</span>
+  <p>Solve the following DEs:</p>
+  <ol>
+    <li>$y'' - 10y' + 25y = 0$ <button class="answer-btn">Answer</button><span class="answer">$c_1 e^{5t} + c_2 te^{5t}$</span></li>
+    <li>$9y'' + 6y' + y = 0$ <button class="answer-btn">Answer</button><span class="answer">$c_1 e^{-t/3} + c_2 te^{-t/3}$</span></li>
+    <li>$y'' - 6y' + 9y = 0$ <button class="answer-btn">Answer</button><span class="answer">$c_1 e^{3t} + c_2 te^{3t}$</span></li>
+  </ol>
+</div>
+
+<div class="box exercise-box">
+  <span class="box-title">Exercise — IVPs with Repeated Roots</span>
+  <p>Solve the following IVPs:</p>
+  <ol>
+    <li>$y'' + 2y' + y = 0$, $y(0) = 0$, $y'(0) = 1$ <button class="answer-btn">Answer</button><span class="answer">$xe^{-x}$</span></li>
+    <li>$y'' + 2y' + y = 0$, $y(0) = 1$, $y'(0) = 1$ <button class="answer-btn">Answer</button><span class="answer">$(2x + 1)e^{-x}$</span></li>
+    <li>$9y'' + 12y' + 4y = 0$, $y(0) = a$, $y'(0) = -1$.<br>
+    Then find the critical value of $a$ that separates solutions that become negative from those that are always positive. <button class="answer-btn">Answer</button><span class="answer">$ae^{-2t/3} + \big(\frac{2}{3}a - 1\big)te^{-2t/3}$; $a = \frac{3}{2}$</span></li>
+  </ol>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec-practice">5 &ensp; Practice MCQ</h2>
+
+<!-- MCQ 1: Repeated Roots IVP -->
+<div class="mcq" id="mcq-repeated-ivp">
+  <div class="mcq-title">Practice: Solve an IVP with Repeated Roots</div>
+  <div class="mcq-problem">
+    <p>Solve the initial value problem:</p>
+    $$y'' + 2y' + y = 0, \quad y(0) = 1, \quad y'(0) = 0$$
+  </div>
+
+  <!-- PHASE 0: Classification -->
+  <div class="mcq-phase active" data-phase="0">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE 0</span>
+      <span class="phase-name">Identify the Root Type</span>
+    </div>
+    <div class="mcq-step" data-step="classify">
+      <p class="mcq-question">The characteristic equation is $r^2 + 2r + 1 = 0$. What type of roots does it have?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="false" data-hint="Check the discriminant: $b^2 - 4ac = 4 - 4 = 0$. Not distinct real.">Distinct real roots ($b^2 - 4ac > 0$)</button>
+        <button class="mcq-option" data-correct="true" data-hint="Correct! $b^2 - 4ac = 4 - 4 = 0$, so we get a repeated root.">Repeated real root ($b^2 - 4ac = 0$)</button>
+        <button class="mcq-option" data-correct="false" data-hint="$b^2 - 4ac = 0$, not negative. Not complex roots.">Complex conjugate roots ($b^2 - 4ac < 0$)</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+    <div class="phase-transition">Correct! Now let's find the solution form...</div>
+  </div>
+
+  <!-- PHASE A: Strategy -->
+  <div class="mcq-phase locked" data-phase="A">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE A</span>
+      <span class="phase-name">Build the Strategy</span>
+    </div>
+    <div class="strategy-outline" style="display:none;">
+      <div class="strategy-outline-title">Solution Outline</div>
+      <div class="strategy-steps"></div>
+    </div>
+
+    <div class="mcq-step" data-step="A1">
+      <p class="mcq-question">For a repeated root $r$, what form does the general solution take?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="false" data-hint="This form is for distinct real roots, not repeated." data-step-text="">$y = c_1 e^{r_1 t} + c_2 e^{r_2 t}$</button>
+        <button class="mcq-option" data-correct="true" data-hint="Correct! For repeated root $r$, we need $e^{rt}$ and $te^{rt}$." data-step-text="Use form: $y = c_1 e^{rt} + c_2 te^{rt}$">$y = c_1 e^{rt} + c_2 te^{rt}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="This form is for complex roots." data-step-text="">$y = e^{\lambda t}(c_1 \cos\mu t + c_2 \sin\mu t)$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="A2">
+      <p class="mcq-question">The repeated root is $r = -1$. What is the general solution?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct!" data-step-text="General solution: $y = c_1 e^{-t} + c_2 te^{-t}$">$y = c_1 e^{-t} + c_2 te^{-t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The root is $-1$, not $+1$." data-step-text="">$y = c_1 e^{t} + c_2 te^{t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Don't forget the $te^{rt}$ term for repeated roots." data-step-text="">$y = c_1 e^{-t} + c_2 e^{-t}$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+    <div class="phase-transition">Now apply the initial conditions...</div>
+  </div>
+
+  <!-- PHASE B: Execution -->
+  <div class="mcq-phase locked" data-phase="B">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE B</span>
+      <span class="phase-name">Solve for Constants</span>
+    </div>
+
+    <div class="mcq-step" data-step="B1">
+      <div class="mcq-step-label">Step B1</div>
+      <p class="mcq-question">From $y(0) = 1$: $c_1 e^0 + c_2(0)e^0 = 1$. What is $c_1$?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$c_1 = 1$</button>
+        <button class="mcq-option" data-correct="false" data-hint="At $t=0$: $c_1(1) + c_2(0)(1) = c_1 = 1$.">$c_1 = 0$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The $te^{-t}$ term vanishes at $t=0$.">$c_1 = 2$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="B2">
+      <div class="mcq-step-label">Step B2</div>
+      <p class="mcq-question">We need $y'$. Differentiating $y = c_1 e^{-t} + c_2 te^{-t}$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$y' = -c_1 e^{-t} + c_2 e^{-t} - c_2 te^{-t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Use product rule on $te^{-t}$: $(te^{-t})' = e^{-t} - te^{-t}$.">$y' = -c_1 e^{-t} - c_2 te^{-t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Don't forget the chain rule gives negative signs.">$y' = c_1 e^{-t} + c_2 e^{-t} + c_2 te^{-t}$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="B3">
+      <div class="mcq-step-label">Step B3</div>
+      <p class="mcq-question">From $y'(0) = 0$ with $c_1 = 1$: $-1 + c_2 = 0$. What is $c_2$?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$c_2 = 1$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$y'(0) = -c_1 + c_2 = -1 + c_2 = 0$, so $c_2 = 1$.">$c_2 = -1$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Solve $-1 + c_2 = 0$.">$c_2 = 0$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="B4">
+      <div class="mcq-step-label">Step B4</div>
+      <p class="mcq-question">The solution to the IVP is:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$y = e^{-t} + te^{-t} = (1+t)e^{-t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Both $c_1 = 1$ and $c_2 = 1$.">$y = e^{-t} - te^{-t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The exponent is $-t$, not $+t$.">$y = (1+t)e^{t}$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+  </div>
+
+  <div class="mcq-result">Excellent! The solution is $y = (1+t)e^{-t}$.</div>
+</div>
+
+</div><!-- container -->
+</div><!-- page-wrapper -->
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // --- Shuffle MCQ Options on Load ---
+  document.querySelectorAll('.mcq-options').forEach(function(container) {
+    var options = Array.from(container.querySelectorAll('.mcq-option'));
+    for (var i = options.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      container.appendChild(options[j]);
+      options.splice(j, 1);
+    }
+    container.appendChild(options[0]);
+  });
+
+  // --- Three-Phase MCQ Logic ---
+  document.querySelectorAll('.mcq').forEach(function (mcq) {
+    var phases = mcq.querySelectorAll('.mcq-phase');
+    var result = mcq.querySelector('.mcq-result');
+    var currentPhaseIdx = 0;
+    var strategySteps = [];
+
+    function updateStrategyOutline(phase) {
+      var outline = phase.querySelector('.strategy-outline');
+      if (!outline) return;
+      var stepsContainer = outline.querySelector('.strategy-steps');
+      if (!stepsContainer) return;
+      stepsContainer.innerHTML = '';
+      strategySteps.forEach(function(stepText) {
+        var stepEl = document.createElement('div');
+        stepEl.className = 'strategy-step';
+        stepEl.innerHTML = stepText;
+        stepsContainer.appendChild(stepEl);
+      });
+      if (window.MathJax && MathJax.typeset) MathJax.typeset([stepsContainer]);
+    }
+
+    function isPhaseComplete(phase) {
+      var steps = phase.querySelectorAll('.mcq-step');
+      var completedSteps = phase.querySelectorAll('.mcq-step.completed');
+      return steps.length === completedSteps.length;
+    }
+
+    function unlockNextPhase() {
+      var currentPhase = phases[currentPhaseIdx];
+      var transition = currentPhase.querySelector('.phase-transition');
+      if (transition) transition.style.display = 'block';
+      currentPhase.classList.remove('active');
+      currentPhase.classList.add('completed');
+
+      if (currentPhaseIdx + 1 < phases.length) {
+        setTimeout(function() {
+          currentPhaseIdx++;
+          var nextPhase = phases[currentPhaseIdx];
+          nextPhase.classList.remove('locked');
+          nextPhase.classList.add('active');
+          var firstStep = nextPhase.querySelector('.mcq-step.locked');
+          if (firstStep) firstStep.classList.remove('locked');
+          var outline = nextPhase.querySelector('.strategy-outline');
+          if (outline && strategySteps.length > 0) {
+            outline.style.display = 'block';
+            updateStrategyOutline(nextPhase);
+          }
+          if (window.MathJax && MathJax.typeset) MathJax.typeset([nextPhase]);
+        }, 600);
+      } else {
+        setTimeout(function() {
+          if (result) result.style.display = 'block';
+        }, 600);
+      }
+    }
+
+    phases.forEach(function(phase) {
+      var steps = phase.querySelectorAll('.mcq-step');
+      steps.forEach(function(step) {
+        var options = step.querySelectorAll('.mcq-option');
+        var feedback = step.querySelector('.mcq-feedback');
+
+        options.forEach(function(opt) {
+          opt.addEventListener('click', function() {
+            if (opt.classList.contains('correct') || opt.classList.contains('wrong') || opt.classList.contains('disabled')) return;
+            var isCorrect = opt.getAttribute('data-correct') === 'true';
+            var hint = opt.getAttribute('data-hint') || '';
+
+            if (isCorrect) {
+              opt.classList.add('correct');
+              options.forEach(function(o) { if (o !== opt) o.classList.add('disabled'); });
+              step.classList.add('completed');
+              feedback.textContent = hint || 'Correct!';
+              feedback.className = 'mcq-feedback correct-fb';
+
+              var stepText = opt.getAttribute('data-step-text');
+              if (stepText && phase.getAttribute('data-phase') === 'A') {
+                strategySteps.push(stepText);
+                updateStrategyOutline(phase);
+              }
+              if (window.MathJax && MathJax.typeset) MathJax.typeset([step]);
+
+              if (isPhaseComplete(phase)) {
+                setTimeout(unlockNextPhase, 500);
+              } else {
+                var nextStep = step.nextElementSibling;
+                while (nextStep && !nextStep.classList.contains('mcq-step')) {
+                  nextStep = nextStep.nextElementSibling;
+                }
+                if (nextStep && nextStep.classList.contains('locked')) {
+                  setTimeout(function() {
+                    nextStep.classList.remove('locked');
+                    if (window.MathJax && MathJax.typeset) MathJax.typeset([nextStep]);
+                  }, 400);
+                }
+              }
+            } else {
+              opt.classList.add('wrong');
+              feedback.innerHTML = hint || 'Try again.';
+              feedback.className = 'mcq-feedback wrong-fb';
+              if (window.MathJax && MathJax.typeset) MathJax.typeset([feedback]);
+              setTimeout(function() {
+                opt.classList.remove('wrong');
+                feedback.style.display = 'none';
+                feedback.className = 'mcq-feedback';
+                setTimeout(function() { feedback.style.display = ''; }, 50);
+              }, 3000);
+            }
+          });
+        });
+      });
+    });
+  });
+
+  // --- Scroll-spy ---
+  var sidebarLinks = document.querySelectorAll('.sidebar a[href^="#"]');
+  var sections = [];
+  sidebarLinks.forEach(function (link) {
+    var id = link.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) sections.push({ id: id, el: el, link: link });
+  });
+
+  function updateActive() {
+    var scrollY = window.scrollY + 80, current = null;
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i].el.offsetTop <= scrollY) current = sections[i];
+    }
+    sidebarLinks.forEach(function (l) { l.classList.remove('active'); });
+    if (current) current.link.classList.add('active');
+  }
+  window.addEventListener('scroll', updateActive, { passive: true });
+  updateActive();
+
+  // --- Answer toggle ---
+  document.querySelectorAll('.answer-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var ans = this.nextElementSibling;
+      if (ans.style.display === 'inline') {
+        ans.style.display = 'none';
+        ans.classList.remove('answer-revealed');
+        this.textContent = 'Answer';
+        this.classList.remove('revealed');
+      } else {
+        ans.style.display = 'inline';
+        ans.classList.add('answer-revealed');
+        this.textContent = 'Hide';
+        this.classList.add('revealed');
+    }
+  });
+});
+}); // Close DOMContentLoaded
+</script>
+</body>
+</html>

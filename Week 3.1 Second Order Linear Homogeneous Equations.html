@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MATH2351/2352 – Second Order Linear Homogeneous Equations</title>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    tags: 'ams'
+  },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg: #2d2d2d;
+  --text: #e0e0e0;
+  --heading: #ffffff;
+  --accent: #8ab4f8;
+  --accent2: #81c995;
+  --border: #4a4a4a;
+  --def-bg: #3a3a3a;
+  --def-border: #6a6a6a;
+  --prop-bg: #353535;
+  --prop-border: #5a5a5a;
+  --exercise-bg: #383838;
+  --exercise-border: #5a5a5a;
+  --warn-bg: #3d3535;
+  --warn-border: #7a5a5a;
+  --code-bg: #333333;
+  --shadow: rgba(0, 0, 0, 0.3);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 18px; scroll-behavior: smooth; }
+
+body {
+  font-family: 'Crimson Pro', Georgia, serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page-wrapper { display: flex; min-height: 100vh; }
+
+/* --- Sidebar --- */
+.sidebar {
+  position: sticky; top: 0; align-self: flex-start;
+  width: 280px; min-width: 280px; height: 100vh;
+  overflow-y: auto; padding: 2rem 1.2rem 2rem 1.4rem;
+  border-right: 1.5px solid var(--border); background: #252525;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+.sidebar::-webkit-scrollbar { width: 5px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+.sidebar .sidebar-title {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.72rem;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: #888888; margin-bottom: 1rem; font-weight: 600;
+}
+
+.sidebar ol { list-style: none; padding: 0; margin: 0; counter-reset: sidebar-counter; }
+.sidebar > ol > li { counter-increment: sidebar-counter; margin-bottom: 0.15rem; }
+.sidebar > ol > li > a::before {
+  content: counter(sidebar-counter) ". "; font-weight: 600;
+  color: var(--accent); font-size: 0.8rem;
+}
+
+.sidebar a {
+  display: block; font-family: 'Source Sans 3', sans-serif; font-size: 0.82rem;
+  color: var(--text); text-decoration: none; padding: 0.2rem 0.5rem;
+  border-radius: 4px; border-left: 2.5px solid transparent;
+  transition: all 0.2s; line-height: 1.4;
+}
+.sidebar a:hover { color: var(--accent); background: rgba(138,180,248,0.1); }
+.sidebar a.active {
+  color: var(--accent); font-weight: 600;
+  background: rgba(138,180,248,0.15); border-left-color: var(--accent);
+}
+
+.sidebar ol ol { margin-left: 1rem; margin-top: 0.1rem; counter-reset: none; }
+.sidebar ol ol li { margin-bottom: 0.05rem; }
+.sidebar ol ol a { font-size: 0.78rem; }
+.sidebar ol ol a::before { display: none; }
+
+.container {
+  max-width: 780px; margin: 0 auto; padding: 2rem 1.5rem 4rem;
+  flex: 1; min-width: 0;
+}
+
+/* --- Title Block --- */
+.title-block {
+  text-align: center; padding: 3rem 0 2.5rem;
+  border-bottom: 2px solid var(--border); margin-bottom: 2.5rem;
+}
+.title-block h1 {
+  font-family: 'Crimson Pro', serif; font-size: 2.4rem; font-weight: 700;
+  color: var(--heading); line-height: 1.2; margin-bottom: 0.5rem; letter-spacing: -0.02em;
+}
+.title-block .author { font-family: 'Source Sans 3', sans-serif; font-size: 1rem; color: #a0a0a0; }
+.title-block .course {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: #888888;
+  margin-top: 0.2rem; letter-spacing: 0.04em; text-transform: uppercase;
+}
+.title-block .date { font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: #888888; margin-top: 0.3rem; }
+
+/* --- TOC (mobile) --- */
+.toc {
+  background: var(--def-bg); border: 1px solid var(--border);
+  border-radius: 6px; padding: 1.5rem 2rem; margin-bottom: 2.5rem;
+}
+.toc h2 {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.8rem;
+  text-transform: uppercase; letter-spacing: 0.12em; color: #888888;
+  margin-bottom: 0.8rem; font-weight: 600;
+}
+.toc ol { list-style: none; counter-reset: toc-counter; }
+.toc > ol > li { counter-increment: toc-counter; margin-bottom: 0.3rem; }
+.toc > ol > li::before {
+  content: counter(toc-counter) "."; font-weight: 600; color: var(--accent);
+  margin-right: 0.5rem; font-family: 'Source Sans 3', sans-serif; font-size: 0.9rem;
+}
+.toc a { color: var(--text); text-decoration: none; font-size: 0.95rem; transition: color 0.2s; }
+.toc a:hover { color: var(--accent); }
+
+/* --- Headings --- */
+h2 {
+  font-family: 'Crimson Pro', serif; font-size: 1.8rem; font-weight: 700;
+  color: var(--heading); margin-top: 3rem; margin-bottom: 1rem;
+  padding-bottom: 0.4rem; border-bottom: 1.5px solid var(--border); line-height: 1.3;
+}
+h3 { font-family: 'Crimson Pro', serif; font-size: 1.35rem; font-weight: 600; color: var(--heading); margin-top: 2rem; margin-bottom: 0.8rem; }
+h4 { font-family: 'Crimson Pro', serif; font-size: 1.1rem; font-weight: 600; color: var(--heading); margin-top: 1.5rem; margin-bottom: 0.6rem; }
+
+p { margin-bottom: 1rem; text-align: justify; hyphens: auto; }
+
+/* --- Boxes --- */
+.box { border-radius: 5px; padding: 1.2rem 1.4rem; margin: 1.5rem 0; border-left: 4px solid; position: relative; }
+.box-title { font-family: 'Source Sans 3', sans-serif; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.6rem; display: block; }
+.definition { background: var(--def-bg); border-color: var(--def-border); }
+.definition .box-title { color: #f0c040; }
+.theorem { background: var(--prop-bg); border-color: var(--accent2); }
+.theorem .box-title { color: var(--accent2); }
+.proposition { background: var(--prop-bg); border-color: var(--prop-border); }
+.proposition .box-title { color: var(--accent2); }
+.exercise-box { background: var(--exercise-bg); border-color: var(--exercise-border); }
+.exercise-box .box-title { color: #c0a080; }
+.warning-box { background: var(--warn-bg); border-color: var(--warn-border); }
+.warning-box .box-title { color: #f08080; }
+.remark-box { background: #3a3a40; border-color: #6a6a80; }
+.remark-box .box-title { color: #a0a0d0; }
+.box p:last-child { margin-bottom: 0; }
+
+.proof { margin: 1rem 0 1.5rem; padding-left: 1rem; border-left: 2px solid var(--border); }
+.proof-label { font-style: italic; font-weight: 500; color: #a0a0a0; }
+.proof::after { content: "□"; display: block; text-align: right; color: #666; margin-top: 0.3rem; }
+
+ol, ul { margin-bottom: 1rem; padding-left: 1.5rem; }
+li { margin-bottom: 0.4rem; }
+
+.answer { display: none; }
+.answer-btn {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.78rem; font-weight: 600;
+  color: var(--accent2); background: none; border: 1.5px solid var(--accent2);
+  border-radius: 4px; padding: 0.15rem 0.55rem; margin-left: 0.4rem;
+  cursor: pointer; transition: all 0.2s; vertical-align: middle;
+}
+.answer-btn:hover { background: var(--accent2); color: #fff; }
+.answer-btn.revealed { border-color: var(--border); color: #888888; }
+.answer-btn.revealed:hover { background: var(--exercise-bg); color: #a0a0a0; }
+.answer-revealed {
+  display: inline; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem;
+  color: var(--accent2); margin-left: 0.3rem; animation: fadeIn 0.25s ease;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-2px); } to { opacity: 1; transform: translateY(0); } }
+
+hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+.key-formula {
+  background: linear-gradient(135deg, #3a3a3a, #353535);
+  border: 1.5px solid var(--def-border); border-radius: 5px;
+  padding: 1rem 1.4rem; margin: 1.2rem 0; text-align: center;
+}
+
+/* --- MCQ Phase System --- */
+.mcq { background: #333; border: 1.5px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; }
+.mcq-title { font-family: 'Source Sans 3', sans-serif; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 0.8rem; }
+.mcq-problem { margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border); }
+
+.mcq-phase { margin-bottom: 1rem; padding: 1rem; border-radius: 6px; background: #2a2a2a; border: 1.5px solid #444; transition: all 0.3s; }
+.mcq-phase.locked { opacity: 0.4; pointer-events: none; filter: grayscale(0.3); }
+.mcq-phase.active { border-color: var(--accent); box-shadow: 0 2px 8px rgba(138,180,248,0.15); }
+.mcq-phase.completed { border-color: var(--accent2); background: #2a3530; }
+
+.phase-label { font-family: 'Source Sans 3', sans-serif; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.5rem; }
+.phase-label .phase-tag { background: var(--accent); color: #1a1a1a; padding: 0.15rem 0.5rem; border-radius: 3px; font-size: 0.65rem; }
+.mcq-phase.completed .phase-label .phase-tag { background: var(--accent2); }
+.phase-label .phase-name { color: #888; }
+
+.strategy-outline { background: #353535; border-radius: 4px; padding: 0.8rem 1rem; margin: 0.8rem 0; border-left: 3px solid var(--accent2); }
+.strategy-outline-title { font-family: 'Source Sans 3', sans-serif; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin-bottom: 0.4rem; }
+.strategy-step { font-size: 0.9rem; padding: 0.3rem 0; color: var(--text); display: flex; align-items: flex-start; gap: 0.5rem; }
+.strategy-step::before { content: "✓"; color: var(--accent2); font-weight: 700; flex-shrink: 0; }
+
+.mcq-step { margin-bottom: 0.8rem; }
+.mcq-step.locked { display: none; }
+.mcq-step.completed .mcq-options { opacity: 0.6; }
+.mcq-step-label { font-family: 'Source Sans 3', sans-serif; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin-bottom: 0.5rem; }
+.mcq-question { margin-bottom: 0.6rem; font-size: 0.95rem; }
+.mcq-options { display: flex; flex-direction: column; gap: 0.4rem; }
+.mcq-option { font-family: 'Crimson Pro', serif; font-size: 0.95rem; text-align: left; padding: 0.5rem 0.8rem; border: 1.5px solid #555; border-radius: 5px; background: #2a2a2a; color: var(--text); cursor: pointer; transition: all 0.2s; line-height: 1.5; }
+.mcq-option:hover { border-color: var(--accent); background: rgba(138,180,248,0.1); }
+.mcq-option.correct { border-color: var(--accent2); background: rgba(129,201,149,0.15); cursor: default; }
+.mcq-option.correct::before { content: "✓ "; color: var(--accent2); font-weight: 700; }
+.mcq-option.wrong { border-color: #f08080; background: rgba(240,128,128,0.15); cursor: default; }
+.mcq-option.wrong::before { content: "✗ "; color: #f08080; font-weight: 700; }
+.mcq-option.disabled { pointer-events: none; opacity: 0.5; }
+.mcq-feedback { display: none; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; padding: 0.5rem 0.8rem; border-radius: 4px; margin-top: 0.5rem; line-height: 1.5; }
+.mcq-feedback.correct-fb { display: block; background: rgba(129,201,149,0.15); color: var(--accent2); border: 1px solid var(--accent2); }
+.mcq-feedback.wrong-fb { display: block; background: rgba(240,128,128,0.15); color: #f08080; border: 1px solid #f08080; }
+.mcq-result { display: none; font-family: 'Source Sans 3', sans-serif; font-size: 0.9rem; font-weight: 600; color: var(--accent2); padding: 0.8rem 1rem; background: rgba(129,201,149,0.15); border-radius: 6px; border: 1.5px solid var(--accent2); text-align: center; margin-top: 1rem; }
+
+.phase-transition { display: none; text-align: center; padding: 0.6rem; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: var(--accent2); background: rgba(129,201,149,0.1); border-radius: 4px; margin: 0.5rem 0; animation: fadeIn 0.3s ease; }
+
+@media (min-width: 901px) { .toc { display: none; } }
+@media (max-width: 900px) {
+  .page-wrapper { display: block; } .sidebar { display: none; }
+  html { font-size: 16px; } .container { padding: 1rem; max-width: 100%; }
+  .title-block h1 { font-size: 1.8rem; } h2 { font-size: 1.5rem; } .box { padding: 1rem; }
+}
+@media print {
+  .sidebar { display: none; } .page-wrapper { display: block; }
+  body { font-size: 11pt; } .container { max-width: 100%; }
+  .box { break-inside: avoid; } h2 { break-after: avoid; } .toc { display: block; }
+}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+
+<!-- ===== SIDEBAR ===== -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-title">Contents</div>
+  <ol>
+    <li><a href="#sec-constant-coeff">Constant Coefficients</a>
+      <ol>
+        <li><a href="#sec-char-eq">Characteristic Equation</a></li>
+        <li><a href="#sec-superposition">Superposition Principle</a></li>
+        <li><a href="#sec-distinct-roots">Distinct Real Roots</a></li>
+        <li><a href="#sec-examples-real">Examples (Real Roots)</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec-complex">Complex Roots</a>
+      <ol>
+        <li><a href="#sec-complex-theorem">Main Theorem</a></li>
+        <li><a href="#sec-complex-examples">Examples</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec-phase-shift">Phase Shift Solutions</a>
+      <ol>
+        <li><a href="#sec-trig-identity">Trigonometric Identity</a></li>
+        <li><a href="#sec-amplitude-phase">Amplitude-Phase Form</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec-exercises">Exercises</a></li>
+    <li><a href="#sec-practice">Practice MCQ</a></li>
+  </ol>
+</nav>
+
+<div class="container">
+
+<!-- ===== TITLE ===== -->
+<div class="title-block">
+  <h1>Second Order Equations: Homogeneous with Constant Coefficients</h1>
+  <div class="author">Edmund Chiang</div>
+  <div class="course">MATH2351 / 2352 — Boyce &amp; DiPrima §3.1</div>
+  <div class="date">February 20, 2026</div>
+</div>
+
+<!-- ===== TOC (mobile) ===== -->
+<nav class="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#sec-constant-coeff">Homogeneous DEs with Constant Coefficients</a></li>
+    <li><a href="#sec-complex">Complex Roots</a></li>
+    <li><a href="#sec-phase-shift">Phase Shift Solutions</a></li>
+    <li><a href="#sec-exercises">Exercises</a></li>
+    <li><a href="#sec-practice">Practice MCQ</a></li>
+  </ol>
+</nav>
+
+<!-- ============================================================ -->
+<h2 id="sec-constant-coeff">1 &ensp; Homogeneous DEs with Constant Coefficients</h2>
+
+<p>We consider second order linear differential equations of the form</p>
+
+$$y'' = f(t, y, y') = g(t) - p(t)y' - q(t)y$$
+
+<p>or equivalently</p>
+
+$$y'' + p(t)y' + q(t)y = g(t),$$
+
+<p>where $p$, $q$ and $g$ are continuous functions of $t$.</p>
+
+<h3 id="sec-char-eq">1.1 &ensp; The Characteristic Equation</h3>
+
+<p><strong>Example.</strong> Solve $y'' + 5y' + 6y = 0.$</p>
+
+<p>The main idea is to try</p>
+
+$$y(t) = e^{rt},$$
+
+<p>for some constant $r$. Then $y'(t) = re^{rt} = ry$ and $y''(t) = r^2 e^{rt} = r^2 y$. Substituting this $y$ into the DE yields</p>
+
+$$(r^2 + 5r + 6)\,e^{rt} = 0.$$
+
+<p>Since $e^{rt} \neq 0$, we must have</p>
+
+$$r^2 + 5r + 6 = 0.$$
+
+<p>Thus $r = -2$ and $r = -3$. Hence $y_1 = e^{-2t}$ and $y_2 = e^{-3t}$ are both solutions to the DE above. We can easily verify (as your exercise) that any linear combination</p>
+
+<div class="key-formula">
+$$y = c_1 y_1 + c_2 y_2 = c_1 e^{-2t} + c_2 e^{-3t}$$
+</div>
+
+<p>where $c_1$ and $c_2$ are arbitrary constants, is also a solution to the DE.</p>
+
+<hr>
+
+<div class="box definition">
+  <span class="box-title">Definition — Characteristic Equation</span>
+  <p>Given constants $a$, $b$, $c$ and the homogeneous DE</p>
+  $$ay'' + by' + cy = 0. \tag{1}$$
+  <p>Let $y = e^{rt}$. Then the quadratic equation</p>
+  $$ar^2 + br + c = 0$$
+  <p>is called the <em>characteristic equation</em> and its roots $r_1$ and $r_2$ are called <em>characteristic roots</em> of the DE.</p>
+</div>
+
+<p>This immediately implies:</p>
+
+<div class="box proposition">
+  <span class="box-title">Proposition</span>
+  <p>Suppose $r_1$ and $r_2$ where</p>
+  $$r_{1,2} = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$$
+  <p>are characteristic roots of $ar^2 + br + c = 0$. Then</p>
+  $$y_1 = e^{r_1 t}, \qquad y_2 = e^{r_2 t}$$
+  <p>are both solutions to the DE (1).</p>
+</div>
+
+<div class="box remark-box">
+  <span class="box-title">Remark</span>
+  <p>We note that the characteristic roots $r_1$, $r_2$ could be complex numbers. This would lead to important consequences just as when the roots are real. There is also a possibility of having a real double root $r_1 = r_2$. We shall discuss these two important issues in due course.</p>
+</div>
+
+<hr>
+
+<h3 id="sec-superposition">1.2 &ensp; The Superposition Principle</h3>
+
+<div class="box theorem">
+  <span class="box-title">Theorem — Superposition Principle</span>
+  <p>Suppose $y_1$ and $y_2$ are solutions to</p>
+  $$ay'' + by' + cy = 0. \tag{2}$$
+  <p>Then $c_1 y_1 + c_2 y_2$, where $c_1$, $c_2$ are arbitrary (including complex) constants, is also a solution to the DE (2).</p>
+</div>
+
+<div class="proof">
+  <span class="proof-label">Proof.</span> Let us denote
+  $$L(y) = \Big(a\frac{d^2}{dx^2} + b\frac{d}{dx} + c\Big)y.$$
+  <p>Then the DE (2) can be simply rewritten as $L(y) = 0$. Suppose that $y_1$, $y_2$ are both solutions to (2). Let $c_1$, $c_2$ be arbitrary constants. Then</p>
+  \begin{align}
+  L(c_1 y_1 + c_2 y_2) &= \Big(a\frac{d^2}{dx^2} + b\frac{d}{dx} + c\Big)(c_1 y_1 + c_2 y_2) \\[6pt]
+  &= c_1(ay_1'' + by_1' + cy_1) + c_2(ay_2'' + by_2' + cy_2) \\[6pt]
+  &= c_1 L(y_1) + c_2 L(y_2) = 0 + 0 = 0.
+  \end{align}
+  <p>Hence the $c_1 y_1 + c_2 y_2$ is also a solution to the (2).</p>
+</div>
+
+<div class="box remark-box">
+  <span class="box-title">Remark</span>
+  <p>Suppose we know that $y_1, y_2, \cdots, y_n$ are solutions to the DE. Then</p>
+  $$c_1 y_1 + c_2 y_2 + \cdots + c_n y_n$$
+  <p>for arbitrary constants $c_1, c_2, \cdots, c_n$, is also a solution to the (2).</p>
+</div>
+
+<hr>
+
+<h3 id="sec-distinct-roots">1.3 &ensp; General Solution for Distinct Real Roots</h3>
+
+<div class="box theorem">
+  <span class="box-title">Theorem — Distinct Real Roots</span>
+  <p>Let $a$, $b$, $c$ be given constants. Suppose the characteristic roots $r_1$, $r_2$ of the second order linear DE</p>
+  $$ay'' + by' + cy = 0$$
+  <p>are <strong>distinct</strong>. Then</p>
+  <ol>
+    <li>the general solution is given by
+      $$y(t) = A\,e^{r_1 t} + B\,e^{r_2 t}$$
+      for some constants $A$, $B$;
+    </li>
+    <li>the IVP with $y(t_0) = y_0$ and $y'(t_0) = y_0'$ admits a solution of the form
+      $$y(t) = \Big(\frac{y_0' - r_2 y_0}{r_1 - r_2}\Big)e^{-r_1 t_0} \cdot e^{r_1 t} + \Big(\frac{y_0 r_1 - y_0'}{r_1 - r_2}\Big)e^{-r_2 t_0} \cdot e^{r_2 t}.$$
+    </li>
+  </ol>
+</div>
+
+<div class="proof">
+  <span class="proof-label">Proof.</span> We derive such a solution here. Let
+  $$y(t) = c_1\,e^{r_1 t} + c_2\,e^{r_2 t}$$
+  <p>where $c_1$, $c_2$ are two arbitrary constants. Substitute $y$ into the DE yields</p>
+  \begin{align}
+  ay'' + by' + cy &= c_1(ar^2 + br + c)e^{r_1 t} + c_2(ar^2 + br + c)e^{r_2 t} \\[6pt]
+  &= 0 + 0.
+  \end{align}
+  <p>This shows that the $y(t)$ is a solution to the DE. Let $t = t_0$. Then</p>
+  $$y_0 = y(t_0) = c_1\,e^{r_1 t_0} + c_2\,e^{r_2 t_0}. \tag{3}$$
+  <p>Differentiating $y$ and substituting $t = t_0$ yields</p>
+  $$y_0' = y'(t_0) = c_1 r_1\,e^{r_1 t_0} + c_2 r_2\,e^{r_2 t_0}. \tag{4}$$
+  <p>For example, we could write</p>
+  $$c_2 = y_0 e^{-r_2 t_0} - c_1 e^{(r_1 - r_2)t_0}$$
+  <p>from the (4). Substitute this $c_2$ into the equation (3) yielding, under the assumption $r_1 \neq r_2$,</p>
+  $$c_1 = \Big(\frac{y_0' - r_2 y_0}{r_1 - r_2}\Big)e^{-r_1 t_0}$$
+  <p>after simplification. Substituting this $c_1$ back into the equation (4) and simplifying yields</p>
+  $$c_2 = \Big(\frac{y_0 r_1 - y_0'}{r_1 - r_2}\Big)e^{-r_2 t_0}$$
+  <p>as asserted. This completes the proof.</p>
+</div>
+
+<hr>
+
+<h3 id="sec-examples-real">1.4 &ensp; Examples with Real Roots</h3>
+
+<div class="box exercise-box">
+  <span class="box-title">Example — Find the Solutions</span>
+  <ol>
+    <li>$y'' + 2y' - 15 = 0$ <span class="answer">(Ans. $e^{3t}$, $e^{-5t}$)</span></li>
+    <li>$y'' + y' - 2 = 0$ <span class="answer">(Ans. $e^{t}$, $e^{-2t}$)</span></li>
+    <li>$y'' + 3y' + 2y = 0$ <span class="answer">(Ans. $e^{-2t}$, $e^{-3t}$)</span></li>
+    <li>$y'' - 9y' + 9y = 0$ <span class="answer">(Ans. $e^{\frac{1}{2}(9+3\sqrt{5})t}$, $e^{-\frac{1}{2}(9+3\sqrt{5})t}$)</span></li>
+  </ol>
+</div>
+
+<hr>
+
+<p><strong>Example (IVP).</strong> Solve $y'' + 5y' + 6y = 0$, $y(0) = 2$, $y'(0) = 3$.</p>
+
+<p>We have already found the characteristic roots to be $-2$, $-3$ and hence two solutions $e^{-2t}$, $e^{-3t}$. According to the last Theorem, we know that</p>
+
+$$y(t) = c_1\,e^{-2t} + c_2\,e^{-3t}$$
+
+<p>is also a solution to the DE. We substitute IC $y(0) = 2$ into this $y$. This yields</p>
+
+$$2 = c_1 + c_2.$$
+
+<p>Differentiating $y$ and substitute IC $y'(0) = 3$ yields</p>
+
+$$3 = y'(0) = -2c_1 - 3c_2.$$
+
+<p>Solving the above two equations in $c_1$, $c_2$ yields $c_1 = 9$ and $c_2 = -7$. Hence</p>
+
+<div class="key-formula">
+$$y(t) = 9\,e^{-2t} - 7\,e^{-3t}.$$
+</div>
+
+<p>One can easily verify that $y(0) = 2$, $y'(0) = 3$ hold.</p>
+
+<hr>
+
+<p><strong>Example.</strong> Solve $y'' - y = 0$, $y(0) = 2$, $y'(0) = \beta$. Find $\beta$ if $y \to 0$ as $t \to \infty$.</p>
+
+<p>It is easy to check that the characteristic equation is</p>
+
+$$4r^2 - 1 = 0,$$
+
+<p>and hence characteristic roots $r = \pm 1/2$. Thus we have</p>
+
+$$y(t) = c_1\,e^{t/2} + c_2\,e^{-t/2}.$$
+
+<p>The IC $y(0) = 2$, $y'(0) = \beta$ yields</p>
+
+$$2 = y(0) = c_1 + c_2,$$
+
+<p>and</p>
+
+$$\beta = y'(0) = c_1/2 - c_2/2.$$
+
+<p>That is $2\beta = c_1 - c_2$. Solving these two equations in $c_1$, $c_2$ yields $c_1 = 1 + \beta$ and $c_2 = 1 - \beta$. Hence</p>
+
+$$y(t) = (1 + \beta)e^{t/2} + (1 - \beta)\,e^{-t/2}.$$
+
+<p>If $y \to 0$ as $t \to \infty$, then $1 + \beta = 0$ or $\beta = -1$ and $y(t) = 2\,e^{-t/2}$.</p>
+
+<hr>
+
+<div class="box exercise-box">
+  <span class="box-title">Exercise (Stewart §3.1)</span>
+  <p>Solve the following IVP</p>
+  <ol>
+    <li>$y'' + y' - 2y = 0$, $y(0) = 1$, $y'(0) = 1$ <span class="answer">(Ans. $y(t) = e^t$)</span></li>
+    <li>$y'' + 4y' + 3y = 0$, $y(0) = 3$, $y'(0) = -1$ <span class="answer">(Ans. $y(t) = 4e^{-t} - 3e^{-3t}$)</span></li>
+  </ol>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec-complex">2 &ensp; Complex Roots</h2>
+
+<h3 id="sec-complex-theorem">2.1 &ensp; Main Theorem</h3>
+
+<div class="box theorem">
+  <span class="box-title">Theorem — Complex Conjugate Roots</span>
+  <p>Suppose that the DE</p>
+  $$ay'' + by' + cy = 0,$$
+  <p>has characteristic equation</p>
+  $$ar^2 + br + c = 0$$
+  <p>that admits two complex (conjugate) roots</p>
+  $$r_{1,2} = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a} := \lambda \pm i\mu$$
+  <p>(i.e., $b^2 - 4ac < 0$). Then any solution $y$ can be written in the form</p>
+  $$y(t) = d_1 e^{\lambda t}\cos\mu t + d_2 e^{\lambda t}\sin\mu t.$$
+</div>
+
+<div class="proof">
+  <span class="proof-label">Proof.</span> We first note that
+  $$r = \begin{cases}
+  r_1 = -\dfrac{b}{2a} + i\dfrac{\sqrt{4ac - b^2}}{2a} := \lambda + i\mu, \\[12pt]
+  r_2 = -\dfrac{b}{2a} - i\dfrac{\sqrt{4ac - b^2}}{2a} := \lambda - i\mu
+  \end{cases}$$
+  <p>We see that $\overline{r_1} = r_2$, that is, the two complex roots must be conjugate to each other, and hence they must be distinct.</p>
+  <p>We now note the superposition principle asserts that if $e^{r_1 t}$, $e^{r_2 t}$ are two solutions to the DE, then so are the functions</p>
+  $$\frac{1}{2}(e^{r_1 t} + e^{r_2 t}), \qquad \frac{1}{2i}(e^{r_1 t} - e^{r_2 t}).$$
+  <p>But</p>
+  $$\frac{1}{2}(e^{r_1 t} + e^{r_2 t}) = e^{\lambda t}\frac{1}{2}(e^{i\mu t} + e^{-i\mu t}) = e^{\lambda t}\cos\mu t,$$
+  <p>and</p>
+  $$\frac{1}{2i}(e^{r_1 t} - e^{r_2 t}) = e^{\lambda t}\frac{1}{2i}(e^{i\mu t} - e^{-i\mu t}) = e^{\lambda t}\sin\mu t.$$
+  <p>We deduce that the $\{e^{\lambda x}\cos\mu x,\; e^{\lambda x}\sin\mu x\}$ is another pair of (linearly independent, i.e., "different") solutions to the DE. In particular, the general solution to the DE can be expressed in the form</p>
+  $$y(t) = d_1 e^{\lambda t}\cos\mu t + d_2 e^{\lambda t}\sin\mu t$$
+  <p>where $d_1$ and $d_2$ can be any constants.</p>
+  <p>Another way is to start from the general solution</p>
+  \begin{align}
+  y &= c_1 e^{r_1 t} + c_2 e^{r_2 t} = c_1 e^{(\lambda + i\mu)t} + c_2 e^{(\lambda - i\mu)t} \\[6pt]
+  &= c_1 e^{\lambda t}(\cos\mu t + i\sin\mu t) + c_2 e^{\lambda t}(\cos\mu t - i\sin\mu t) \\[6pt]
+  &= (c_1 + c_2)e^{\lambda t}\cos\mu t + i(c_1 - c_2)e^{\lambda t}\sin\mu t \\[6pt]
+  &= C_1 e^{\lambda t}\cos\mu t + C_2 e^{\lambda t}\sin\mu t
+  \end{align}
+  <p>where $C_1 = c_1 + c_2$ and $C_2 = i(c_1 - c_2)$. This discussion shows that both $e^{\lambda}\cos\mu$ and $e^{\lambda}\sin\mu$ are also solution to the DE for complex characteristic roots $r_1$ and $r_2$ defined above.</p>
+</div>
+
+<hr>
+
+<h3 id="sec-complex-examples">2.2 &ensp; Examples with Complex Roots</h3>
+
+<p><strong>Example.</strong> Solve $y'' + y' + y = 0$.</p>
+
+<p>Clearly the characteristic equation is</p>
+
+$$r^2 + r + 1 = 0$$
+
+<p>so that the characteristic roots are</p>
+
+$$r_{1,2} = -\frac{1}{2} \pm \frac{\sqrt{1 - 4}}{2} = -\frac{1}{2} \pm i\frac{\sqrt{3}}{2}.$$
+
+<p>So the general solution is</p>
+
+$$y = d_1 e^{-\frac{1}{2}t}\cos\frac{\sqrt{3}t}{2} + d_2 e^{-\frac{1}{2}t}\sin\frac{\sqrt{3}t}{2}.$$
+
+<p>Notice that</p>
+
+$$y(t) = e^{-\frac{1}{2}t}\Big(d_1\cos\frac{\sqrt{3}t}{2} + d_2\sin\frac{\sqrt{3}t}{2}\Big) \to 0$$
+
+<p>as $t \to \infty$. This result is independent of $d_1$, $d_2$.</p>
+
+<hr>
+
+<p><strong>Example.</strong> Solve $y'' + 9y = 0$.</p>
+
+<p>The characteristic equation of the DE is $r^2 + 9 = 0$. Hence $r = \pm 3i$. So the general solution is given by</p>
+
+\begin{align}
+y &= e^{0}(d_1\cos 3t + d_2\sin 3t) \\[6pt]
+&= d_1\cos 3t + d_2\sin 3t
+\end{align}
+
+<p>We note that this solution is bounded (oscillates between fixed values).</p>
+
+<hr>
+
+<p><strong>Example (IVP).</strong> Solve the IVP $16y'' - 8y' + 145y = 0$, $y(0) = -2$, $y'(0) = 1$.</p>
+
+<p>We need to solve</p>
+
+$$16r^2 - 8r + 145 = 0.$$
+
+<p>So</p>
+
+$$r = \frac{8 \pm \sqrt{64 - 4(16)(145)}}{32} = \frac{1}{4} \pm 3i.$$
+
+<p>Thus</p>
+
+$$y = e^{t/4}(c_1\cos 3t + c_2\sin 3t).$$
+
+<p>The IC gives</p>
+
+$$-2 = y(0) = c_1\cos 0 + 0 = c_1.$$
+
+<p>Thus $c_1 = -2$. Differentiating $y$ yields</p>
+
+$$y' = \frac{1}{4}e^{t/4}(c_1\cos 3t + c_2\sin 3t) + e^{t/4}(-3c_1\sin 3t + 3c_2\cos 3t).$$
+
+<p>Substitute $t = 0$ yields</p>
+
+$$1 = y'(0) = \frac{1}{4}c_1 + 3c_2.$$
+
+<p>Hence $c_2 = 1/2$ and</p>
+
+<div class="key-formula">
+$$y(t) = e^{t/4}\Big(-2\cos 3t + \frac{1}{2}\sin 3t\Big).$$
+</div>
+
+<p>We see that $y(t) \to \infty$ as $t \to \infty$ (growing oscillation).</p>
+
+<hr>
+
+<p><strong>Exercise (Ex. 3.4, Q. 7).</strong> Solve $y'' - 2y' + 2y = 0$.</p>
+
+<p>Thus the characteristic roots are</p>
+
+$$r_{1,2} = \frac{2 \pm \sqrt{4 - 4(1)(2)}}{2} = 1 \pm i.$$
+
+<p>Thus</p>
+
+$$y(t) = e^t(c_1\cos t + c_2\sin t).$$
+
+<hr>
+
+<div class="box exercise-box">
+  <span class="box-title">Exercise — General Solution</span>
+  <p>Solve for the general solution of:</p>
+  <ol>
+    <li>$y'' - 4y' + 13y = 0$ <span class="answer">(Ans. $e^{2x}\cos 3x$, $e^{2x}\sin 3x$)</span></li>
+    <li>$y'' + 25y = 0$ <span class="answer">(Ans. $\cos 5x$, $\sin 5x$)</span></li>
+    <li>$y'' + y' + 1.25y = 0$ <span class="answer">(Ans. $e^{-t/2}\cos t$, $e^{-t/2}\sin t$)</span></li>
+    <li>$y'' + 4y' + 6.25y = 0$ <span class="answer">(Ans. $e^{-t/2}\cos 3t/2$, $e^{-t/2}\sin 3t/2$)</span></li>
+  </ol>
+</div>
+
+<div class="box exercise-box">
+  <span class="box-title">Exercise (B&amp;D) — IVP with Behavior</span>
+  <p>Solve for the following initial value problems and describe its behaviour for increasing $t$.</p>
+  <ol>
+    <li>$y'' + 4y = 0$, $y(0) = 0$, $y'(0) = 1$ <span class="answer">(Ans. $\frac{1}{2}\sin 2t$, steady oscillation)</span></li>
+    <li>$y'' + 4y' + 5y = 0$, $y(0) = 1$, $y'(0) = 0$ <span class="answer">(Ans. $e^{-2t}(\cos t + 2\sin t)$, decaying oscillation)</span></li>
+    <li>$y'' - 2y' + 5y = 0$, $y(\frac{\pi}{2}) = 0$, $y'(\frac{\pi}{2}) = 2$ <span class="answer">(Ans. $-e^{t-\pi/2}\sin 2t$, growing oscillation)</span></li>
+    <li>$y'' + y = 0$, $y(\frac{\pi}{3}) = 2$, $y'(\frac{\pi}{3}) = -4$ <span class="answer">(Ans. $(1 + 2\sqrt{3})\cos t - (2 - \sqrt{3})\sin t$; steady oscillation)</span></li>
+  </ol>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec-phase-shift">3 &ensp; Phase Shift Solutions</h2>
+
+<h3 id="sec-trig-identity">3.1 &ensp; Trigonometric Identity</h3>
+
+<p>Let us recall an trigonometric identity, namely the</p>
+
+$$\cos(t + \phi) = \cos t \cos\phi + \cos t \cos\phi.$$
+
+<p>Then for any given constants $A$ and $B$, we can write</p>
+
+\begin{align}
+A\cos t + B\sin t &= \sqrt{A^2 + B^2}\Big[\frac{A}{\sqrt{A^2 + B^2}}\cos t + \frac{B}{\sqrt{A^2 + B^2}}\sin t\Big] \\[6pt]
+&= \cos t \cos\phi + \sin t \sin\phi \\[6pt]
+&= \sqrt{A^2 + B^2}\cos(t + \phi)
+\end{align}
+
+<p>where we have identified</p>
+
+$$\cos\phi = \frac{A}{\sqrt{A^2 + B^2}}, \quad \sin\phi = \frac{B}{\sqrt{A^2 + B^2}}, \quad \tan\phi = \frac{B}{A}.$$
+
+<hr>
+
+<h3 id="sec-amplitude-phase">3.2 &ensp; Amplitude-Phase Form</h3>
+
+<div class="box theorem">
+  <span class="box-title">Theorem — Amplitude-Phase Form</span>
+  <p>Suppose that the DE</p>
+  $$ay'' + by' + cy = 0,$$
+  <p>has characteristic equation $ar^2 + br + c = 0$ which admits two complex (conjugate) roots</p>
+  $$r_{1,2} = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a} := \lambda \pm i\mu$$
+  <p>(i.e., $b^2 - 4ac < 0$). Then the general solution $y$ can be written in the form</p>
+  $$y(t) = Ce^{\lambda t}\cos(\mu t + \phi),$$
+  <p>for some constants $C$ and $\phi$.</p>
+</div>
+
+<div class="proof">
+  <span class="proof-label">Proof.</span> It follows from the last theorem that since the characteristic roots are complex numbers $\lambda \pm i\mu$. So the general solution can be written in terms of $e^{\lambda t}\cos\mu t$ and $e^{\lambda t}\sin\mu t$. Hence
+  \begin{align}
+  y &= d_1 e^{\lambda t}\cos\mu t + d_2 e^{\lambda t}\sin\mu t \\[6pt]
+  &= \sqrt{d_1^2 + d_2^2}\,e^{\lambda t}\Big[\frac{d_1}{\sqrt{d_1^2 + d_2^2}}\cos\mu t + \frac{d_2}{\sqrt{d_1^2 + d_2^2}}\cos\mu t\Big) \\[6pt]
+  &= \sqrt{d_1^2 + d_2^2}\,e^{\lambda t}\sin(\mu t + \phi)
+  \end{align}
+  <p>where $\phi = \arctan(d_2/d_1)$.</p>
+</div>
+
+<div class="box remark-box">
+  <span class="box-title">Remark</span>
+  <p>The constants $d_1$, $d_2$ (i.e., $\phi$) are determined by initial conditions of the given problem concerned.</p>
+</div>
+
+<hr>
+
+<p><strong>Example (revisited).</strong> Let us reconsider the IVP</p>
+
+$$16y'' - 8y' + 145y = 0, \quad y(0) = -2,\; y'(0) = 1$$
+
+<p>that we studied earlier in this section. We have found that the characteristic roots are $\frac{1}{4} \pm 3i$. Hence the initial conditions $y(0) = -2$, $y'(0) = 1$ implies that the solution is</p>
+
+$$y(t) = e^{t/4}\Big(-2\cos 3t + \frac{1}{2}\sin 3t\Big).$$
+
+<p>We have $d_1 = 1/2$, $d_2 = -2$ so that $C = \sqrt{d_1^2 + d_2^2} = \sqrt{17}/2$. Thus</p>
+
+$$\phi = \arctan(-2/\tfrac{1}{2}) = \arctan(-4) \approx -1.33 \approx -76°.$$
+
+<p>So</p>
+
+$$y(t) \approx \frac{\sqrt{17}}{2}e^{t/4}\sin(3t - 1.33) = \frac{\sqrt{17}}{2}e^{t/4}\sin 3(t - 1.33/3).$$
+
+<hr>
+
+<div class="box exercise-box">
+  <span class="box-title">Exercise (B&amp;D)</span>
+  <p>Determine $\omega_0$, $R$ and $\delta$ of the following trigonometric expressions when written into the form $u = R\cos(\omega_0 t - \delta)$.</p>
+  <ol>
+    <li>$u = 3\cos 2t + 4\sin 2t$ <span class="answer">(Ans. $5\cos(2t - \delta)$, $\delta = \tan^{-1}\frac{4}{3}$)</span></li>
+    <li>$u = 4\cos 3t - 2\sin 3t$ <span class="answer">(Ans. $2\sqrt{5}\cos(3t - \delta)$, $\delta = -\tan^{-1}\frac{1}{2}$)</span></li>
+  </ol>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec-exercises">4 &ensp; Exercises</h2>
+
+<div class="box exercise-box">
+  <span class="box-title">Summary — Three Cases for $ay'' + by' + cy = 0$</span>
+  <p>The characteristic equation is $ar^2 + br + c = 0$ with discriminant $\Delta = b^2 - 4ac$.</p>
+  <ol>
+    <li><strong>$\Delta > 0$ (distinct real roots):</strong> $r_1 \neq r_2$ real. General solution:
+      $$y = c_1 e^{r_1 t} + c_2 e^{r_2 t}$$
+    </li>
+    <li><strong>$\Delta = 0$ (repeated root):</strong> $r_1 = r_2 = r$. General solution:
+      $$y = (c_1 + c_2 t)e^{rt}$$
+      (This case is covered in Week 3.2)
+    </li>
+    <li><strong>$\Delta < 0$ (complex conjugate roots):</strong> $r = \lambda \pm i\mu$. General solution:
+      $$y = e^{\lambda t}(c_1 \cos\mu t + c_2 \sin\mu t) = Ce^{\lambda t}\cos(\mu t + \phi)$$
+    </li>
+  </ol>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec-practice">5 &ensp; Practice MCQ</h2>
+
+<!-- MCQ 1: Real Distinct Roots -->
+<div class="mcq" id="mcq-real-roots">
+  <div class="mcq-title">Practice 1: Solve a 2nd Order DE (Real Distinct Roots)</div>
+  <div class="mcq-problem">
+    <p>Solve the differential equation:</p>
+    $$y'' + 3y' + 2y = 0$$
+  </div>
+
+  <!-- PHASE 0: Classification -->
+  <div class="mcq-phase active" data-phase="0">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE 0</span>
+      <span class="phase-name">Identify the Method</span>
+    </div>
+    <div class="mcq-step" data-step="classify">
+      <p class="mcq-question">What type of DE is this and what should we try?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! This is a 2nd order linear homogeneous DE with constant coefficients. We try $y = e^{rt}$.">2nd order linear homogeneous with constant coefficients — try $y = e^{rt}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="This isn't separable — we can't separate $y$ and $t$ terms. The $y''$, $y'$, and $y$ terms are mixed.">Separable — separate variables</button>
+        <button class="mcq-option" data-correct="false" data-hint="This is homogeneous (RHS = 0), but the method for 'homogeneous equations' ($y = vx$ substitution) is for first-order DEs where $M$ and $N$ have the same degree.">Homogeneous — substitute $y = vx$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Exact equation methods are for first-order DEs of the form $M\,dx + N\,dy = 0$. This is second-order.">Exact equation method</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+    <div class="phase-transition">Correct! Now let's build the solution strategy...</div>
+  </div>
+
+  <!-- PHASE A: Strategy -->
+  <div class="mcq-phase locked" data-phase="A">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE A</span>
+      <span class="phase-name">Build the Strategy</span>
+    </div>
+    <div class="strategy-outline" style="display:none;">
+      <div class="strategy-outline-title">Solution Outline</div>
+      <div class="strategy-steps"></div>
+    </div>
+
+    <div class="mcq-step" data-step="A1">
+      <p class="mcq-question">What's the <strong>first</strong> step?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! Substituting $y = e^{rt}$ gives us the characteristic equation." data-step-text="Write the characteristic equation $ar^2 + br + c = 0$">Write the characteristic equation</button>
+        <button class="mcq-option" data-correct="false" data-hint="We need to find what $r$ values work first by setting up the characteristic equation." data-step-text="">Guess values of $r$</button>
+        <button class="mcq-option" data-correct="false" data-hint="We need to find the general solution before applying any initial conditions." data-step-text="">Apply initial conditions</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="A2">
+      <p class="mcq-question">After getting the characteristic equation, what's <strong>next</strong>?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! Factor or use the quadratic formula to find $r_1$ and $r_2$." data-step-text="Solve for characteristic roots $r_1, r_2$">Solve for the characteristic roots $r_1$, $r_2$</button>
+        <button class="mcq-option" data-correct="false" data-hint="We need to find the roots first before we can write the solution." data-step-text="">Write $y = c_1 e^{r_1 t} + c_2 e^{r_2 t}$ immediately</button>
+        <button class="mcq-option" data-correct="false" data-hint="Checking the discriminant tells us the type of roots, but we should just solve and see." data-step-text="">Check if discriminant is positive, zero, or negative</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="A3">
+      <p class="mcq-question">Once we have distinct real roots $r_1 \neq r_2$, the general solution is?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! For distinct real roots, this is the general solution." data-step-text="Write general solution: $y = c_1 e^{r_1 t} + c_2 e^{r_2 t}$">$y = c_1 e^{r_1 t} + c_2 e^{r_2 t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="This form $(c_1 + c_2 t)e^{rt}$ is for repeated roots, not distinct roots.">$y = (c_1 + c_2 t)e^{rt}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The $\cos$ and $\sin$ form is for complex roots, not real roots.">$y = e^{\lambda t}(c_1 \cos\mu t + c_2 \sin\mu t)$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+    <div class="phase-transition">Strategy complete! Now let's compute...</div>
+  </div>
+
+  <!-- PHASE B: Execution -->
+  <div class="mcq-phase locked" data-phase="B">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE B</span>
+      <span class="phase-name">Execute the Computation</span>
+    </div>
+
+    <div class="mcq-step" data-step="B1">
+      <div class="mcq-step-label">Step B1</div>
+      <p class="mcq-question">For $y'' + 3y' + 2y = 0$, the characteristic equation is:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$r^2 + 3r + 2 = 0$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The coefficients should match the DE: $a=1$, $b=3$, $c=2$.">$r^2 + 2r + 3 = 0$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check the signs — all coefficients in the DE are positive.">$r^2 - 3r + 2 = 0$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The characteristic equation has the same coefficients as the DE.">$r^2 + 3r - 2 = 0$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="B2">
+      <div class="mcq-step-label">Step B2</div>
+      <p class="mcq-question">Factor $r^2 + 3r + 2 = 0$. The roots are:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$r = -1$ and $r = -2$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check: $(r+1)(r+2) = r^2 + 3r + 2$. Setting each factor to zero gives $r = -1, -2$.">$r = 1$ and $r = 2$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Factor: $r^2 + 3r + 2 = (r+1)(r+2)$, not $(r+2)(r+3)$.">$r = -2$ and $r = -3$</button>
+        <button class="mcq-option" data-correct="false" data-hint="These aren't conjugate complex roots — the discriminant $9 - 8 = 1 > 0$.">$r = -\frac{3}{2} \pm \frac{i}{2}$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="B3">
+      <div class="mcq-step-label">Step B3</div>
+      <p class="mcq-question">The general solution is:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="false" data-hint="The roots are $-1$ and $-2$, so the exponents should be negative.">$y = c_1 e^{t} + c_2 e^{2t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check the roots: they are $-1$ and $-2$, not $-2$ and $-3$.">$y = c_1 e^{-2t} + c_2 e^{-3t}$</button>
+        <button class="mcq-option" data-correct="true">$y = c_1 e^{-t} + c_2 e^{-2t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="We have distinct roots, not a repeated root. Don't use the $te^{rt}$ form.">$y = (c_1 + c_2 t)e^{-t}$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+  </div>
+
+  <div class="mcq-result">Excellent! The general solution is $y = c_1 e^{-t} + c_2 e^{-2t}$.</div>
+</div>
+
+<!-- MCQ 2: Complex Roots -->
+<div class="mcq" id="mcq-complex-roots">
+  <div class="mcq-title">Practice 2: Solve a 2nd Order DE (Complex Roots)</div>
+  <div class="mcq-problem">
+    <p>Solve the differential equation:</p>
+    $$y'' + 2y' + 5y = 0$$
+  </div>
+
+  <!-- PHASE 0: Classification -->
+  <div class="mcq-phase active" data-phase="0">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE 0</span>
+      <span class="phase-name">Identify the Root Type</span>
+    </div>
+    <div class="mcq-step" data-step="classify">
+      <p class="mcq-question">The characteristic equation is $r^2 + 2r + 5 = 0$. What type of roots does it have?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="false" data-hint="Check the discriminant: $b^2 - 4ac = 4 - 20 = -16 < 0$. Not real distinct.">Real distinct roots ($b^2 - 4ac > 0$)</button>
+        <button class="mcq-option" data-correct="false" data-hint="$b^2 - 4ac = 4 - 20 = -16 \neq 0$. Not a repeated root.">Repeated real root ($b^2 - 4ac = 0$)</button>
+        <button class="mcq-option" data-correct="true" data-hint="Correct! $b^2 - 4ac = 4 - 20 = -16 < 0$, so we get complex conjugate roots.">Complex conjugate roots ($b^2 - 4ac < 0$)</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+    <div class="phase-transition">Correct! Now let's find the complex roots...</div>
+  </div>
+
+  <!-- PHASE A: Strategy -->
+  <div class="mcq-phase locked" data-phase="A">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE A</span>
+      <span class="phase-name">Build the Strategy</span>
+    </div>
+    <div class="strategy-outline" style="display:none;">
+      <div class="strategy-outline-title">Solution Outline</div>
+      <div class="strategy-steps"></div>
+    </div>
+
+    <div class="mcq-step" data-step="A1">
+      <p class="mcq-question">For complex roots $r = \lambda \pm i\mu$, what form does the general solution take?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="false" data-hint="This form is for distinct real roots, not complex roots." data-step-text="">$y = c_1 e^{r_1 t} + c_2 e^{r_2 t}$</button>
+        <button class="mcq-option" data-correct="true" data-hint="Correct! This is the real-valued form for complex conjugate roots." data-step-text="Use form: $y = e^{\lambda t}(c_1 \cos\mu t + c_2 \sin\mu t)$">$y = e^{\lambda t}(c_1 \cos\mu t + c_2 \sin\mu t)$</button>
+        <button class="mcq-option" data-correct="false" data-hint="This form is for repeated roots, not complex roots." data-step-text="">$y = (c_1 + c_2 t)e^{rt}$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="A2">
+      <p class="mcq-question">In $r = \lambda \pm i\mu$, what do $\lambda$ and $\mu$ represent from the quadratic formula?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! $\lambda = -b/(2a)$ is the real part, $\mu = \sqrt{4ac-b^2}/(2a)$ is the imaginary coefficient." data-step-text="Identify $\lambda = -b/(2a)$ and $\mu = \sqrt{4ac-b^2}/(2a)$">$\lambda = \dfrac{-b}{2a}$, $\mu = \dfrac{\sqrt{4ac - b^2}}{2a}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The $\lambda$ and $\mu$ are from the quadratic formula with a negative discriminant." data-step-text="">$\lambda = b$, $\mu = c$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check the quadratic formula — the real part is $-b/(2a)$." data-step-text="">$\lambda = \dfrac{b}{2a}$, $\mu = \dfrac{\sqrt{b^2 - 4ac}}{2a}$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+    <div class="phase-transition">Strategy set! Now let's compute the values...</div>
+  </div>
+
+  <!-- PHASE B: Execution -->
+  <div class="mcq-phase locked" data-phase="B">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE B</span>
+      <span class="phase-name">Execute the Computation</span>
+    </div>
+
+    <div class="mcq-step" data-step="B1">
+      <div class="mcq-step-label">Step B1</div>
+      <p class="mcq-question">For $r^2 + 2r + 5 = 0$ (where $a=1$, $b=2$, $c=5$), compute $\lambda = -b/(2a)$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$\lambda = -1$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$\lambda = -b/(2a) = -2/(2 \cdot 1) = -1$, not $+1$.">$\lambda = 1$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$\lambda = -2/2 = -1$, not $-2$.">$\lambda = -2$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check: $-b/(2a) = -2/2 = -1$.">$\lambda = -\frac{1}{2}$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="B2">
+      <div class="mcq-step-label">Step B2</div>
+      <p class="mcq-question">Compute $\mu = \sqrt{4ac - b^2}/(2a) = \sqrt{4(1)(5) - 4}/2$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$\mu = 2$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$\sqrt{20 - 4}/2 = \sqrt{16}/2 = 4/2 = 2$, not $4$.">$\mu = 4$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$\sqrt{16} = 4$, then divide by $2$ to get $2$.">$\mu = \sqrt{5}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$\sqrt{20-4} = \sqrt{16} = 4$, and $4/2 = 2$.">$\mu = 1$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="B3">
+      <div class="mcq-step-label">Step B3</div>
+      <p class="mcq-question">With $\lambda = -1$ and $\mu = 2$, the general solution is:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$y = e^{-t}(c_1 \cos 2t + c_2 \sin 2t)$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The exponent should be $\lambda t = -t$, not $+t$.">$y = e^{t}(c_1 \cos 2t + c_2 \sin 2t)$</button>
+        <button class="mcq-option" data-correct="false" data-hint="We found $\mu = 2$, so the argument of cos/sin should be $2t$, not $t$.">$y = e^{-t}(c_1 \cos t + c_2 \sin t)$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check both values: $\lambda = -1$, $\mu = 2$.">$y = e^{-2t}(c_1 \cos t + c_2 \sin t)$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+  </div>
+
+  <div class="mcq-result">Excellent! The general solution is $y = e^{-t}(c_1 \cos 2t + c_2 \sin 2t)$. This represents a decaying oscillation.</div>
+</div>
+
+<!-- MCQ 3: IVP with Real Roots -->
+<div class="mcq" id="mcq-ivp">
+  <div class="mcq-title">Practice 3: Solve an IVP</div>
+  <div class="mcq-problem">
+    <p>Solve the initial value problem:</p>
+    $$y'' + 5y' + 6y = 0, \quad y(0) = 2, \quad y'(0) = 3$$
+  </div>
+
+  <!-- PHASE 0 -->
+  <div class="mcq-phase active" data-phase="0">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE 0</span>
+      <span class="phase-name">Find General Solution</span>
+    </div>
+    <div class="mcq-step" data-step="classify">
+      <p class="mcq-question">The characteristic equation $r^2 + 5r + 6 = 0$ factors as $(r+2)(r+3) = 0$. The general solution is:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! Roots are $r = -2, -3$, both real and distinct.">$y = c_1 e^{-2t} + c_2 e^{-3t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The roots are $-2$ and $-3$ (negative), not $+2$ and $+3$.">$y = c_1 e^{2t} + c_2 e^{3t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="This form is for complex roots. Here we have real distinct roots.">$y = e^{-2t}(c_1 \cos 3t + c_2 \sin 3t)$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+    <div class="phase-transition">Now apply the initial conditions...</div>
+  </div>
+
+  <!-- PHASE A -->
+  <div class="mcq-phase locked" data-phase="A">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE A</span>
+      <span class="phase-name">Set Up the System</span>
+    </div>
+    <div class="strategy-outline" style="display:none;">
+      <div class="strategy-outline-title">Solution Outline</div>
+      <div class="strategy-steps"></div>
+    </div>
+
+    <div class="mcq-step" data-step="A1">
+      <p class="mcq-question">From $y(0) = 2$, substituting $t = 0$ into $y = c_1 e^{-2t} + c_2 e^{-3t}$ gives:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! At $t=0$: $e^0 = 1$, so $y(0) = c_1 + c_2 = 2$." data-step-text="From $y(0) = 2$: $c_1 + c_2 = 2$">$c_1 + c_2 = 2$</button>
+        <button class="mcq-option" data-correct="false" data-hint="At $t = 0$, both $e^{-2(0)} = 1$ and $e^{-3(0)} = 1$." data-step-text="">$c_1 - c_2 = 2$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$e^0 = 1$, not $e^0 = 0$." data-step-text="">$2c_1 + 3c_2 = 2$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="A2">
+      <p class="mcq-question">We need $y'$. Differentiating $y = c_1 e^{-2t} + c_2 e^{-3t}$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! Chain rule: $(e^{-2t})' = -2e^{-2t}$ and $(e^{-3t})' = -3e^{-3t}$." data-step-text="Differentiate: $y' = -2c_1 e^{-2t} - 3c_2 e^{-3t}$">$y' = -2c_1 e^{-2t} - 3c_2 e^{-3t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Don't forget the chain rule — differentiate the exponent too.">$y' = c_1 e^{-2t} + c_2 e^{-3t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The signs should be negative from the chain rule.">$y' = 2c_1 e^{-2t} + 3c_2 e^{-3t}$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="A3">
+      <p class="mcq-question">From $y'(0) = 3$, substituting $t = 0$ gives:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! $y'(0) = -2c_1 - 3c_2 = 3$." data-step-text="From $y'(0) = 3$: $-2c_1 - 3c_2 = 3$">$-2c_1 - 3c_2 = 3$</button>
+        <button class="mcq-option" data-correct="false" data-hint="At $t=0$, we get $-2c_1(1) - 3c_2(1) = -2c_1 - 3c_2$.">$2c_1 + 3c_2 = 3$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check the signs from the derivative.">$-2c_1 + 3c_2 = 3$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+    <div class="phase-transition">Now solve the system...</div>
+  </div>
+
+  <!-- PHASE B -->
+  <div class="mcq-phase locked" data-phase="B">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE B</span>
+      <span class="phase-name">Solve for Constants</span>
+    </div>
+
+    <div class="mcq-step" data-step="B1">
+      <div class="mcq-step-label">Step B1</div>
+      <p class="mcq-question">Solve the system: $c_1 + c_2 = 2$ and $-2c_1 - 3c_2 = 3$. Find $c_1$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$c_1 = 9$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Multiply first equation by 2: $2c_1 + 2c_2 = 4$. Add to second: $-c_2 = 7$, so $c_2 = -7$. Then $c_1 = 2 - (-7) = 9$.">$c_1 = 7$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check your algebra. From $c_2 = -7$ and $c_1 + c_2 = 2$, we get $c_1 = 9$.">$c_1 = -7$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Solve the system carefully using elimination or substitution.">$c_1 = 2$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="B2">
+      <div class="mcq-step-label">Step B2</div>
+      <p class="mcq-question">Find $c_2$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$c_2 = -7$</button>
+        <button class="mcq-option" data-correct="false" data-hint="From $c_1 + c_2 = 2$ with $c_1 = 9$: $c_2 = 2 - 9 = -7$.">$c_2 = 7$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$c_1 + c_2 = 2$ means $9 + c_2 = 2$, so $c_2 = -7$.">$c_2 = -9$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check: $9 + c_2 = 2$ gives $c_2 = -7$.">$c_2 = 2$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="B3">
+      <div class="mcq-step-label">Step B3</div>
+      <p class="mcq-question">The solution to the IVP is:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$y = 9e^{-2t} - 7e^{-3t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$c_1 = 9$ and $c_2 = -7$, so the coefficient of $e^{-3t}$ is $-7$.">$y = 9e^{-2t} + 7e^{-3t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check the values: $c_1 = 9$, $c_2 = -7$.">$y = 7e^{-2t} - 9e^{-3t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The exponents should be negative: $-2t$ and $-3t$.">$y = 9e^{2t} - 7e^{3t}$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+  </div>
+
+  <div class="mcq-result">Excellent! The solution is $y = 9e^{-2t} - 7e^{-3t}$. You can verify: $y(0) = 9 - 7 = 2$ ✓ and $y'(0) = -18 + 21 = 3$ ✓</div>
+</div>
+
+<hr>
+<p style="text-align:center;color:#aaa;font-size:0.85rem;margin-top:3rem;">— End of Second Order Homogeneous Equations Notes —</p>
+
+</div><!-- /.container -->
+</div><!-- /.page-wrapper -->
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // --- Interactive answers ---
+  document.querySelectorAll('.answer').forEach(function (span) {
+    var btn = document.createElement('button');
+    btn.className = 'answer-btn'; btn.textContent = 'Show'; btn.setAttribute('type', 'button');
+    span.parentNode.insertBefore(btn, span);
+    btn.addEventListener('click', function () {
+      var visible = span.classList.toggle('answer-revealed');
+      span.style.display = visible ? 'inline' : 'none';
+      btn.textContent = visible ? 'Hide' : 'Show';
+      btn.classList.toggle('revealed', visible);
+      if (visible && window.MathJax && MathJax.typeset) MathJax.typeset([span]);
+    });
+  });
+
+  // --- Shuffle MCQ Options on Load ---
+  document.querySelectorAll('.mcq-options').forEach(function(container) {
+    var options = Array.from(container.querySelectorAll('.mcq-option'));
+    for (var i = options.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      container.appendChild(options[j]);
+      options.splice(j, 1);
+    }
+    container.appendChild(options[0]);
+  });
+
+  // --- Three-Phase MCQ Logic ---
+  document.querySelectorAll('.mcq').forEach(function (mcq) {
+    var phases = mcq.querySelectorAll('.mcq-phase');
+    var result = mcq.querySelector('.mcq-result');
+    var currentPhaseIdx = 0;
+    var strategySteps = [];
+
+    function updateStrategyOutline(phase) {
+      var outline = phase.querySelector('.strategy-outline');
+      if (!outline) return;
+      var stepsContainer = outline.querySelector('.strategy-steps');
+      if (!stepsContainer) return;
+      stepsContainer.innerHTML = '';
+      strategySteps.forEach(function(stepText) {
+        var stepEl = document.createElement('div');
+        stepEl.className = 'strategy-step';
+        stepEl.innerHTML = stepText;
+        stepsContainer.appendChild(stepEl);
+      });
+      if (window.MathJax && MathJax.typeset) MathJax.typeset([stepsContainer]);
+    }
+
+    function isPhaseComplete(phase) {
+      var steps = phase.querySelectorAll('.mcq-step');
+      var completedSteps = phase.querySelectorAll('.mcq-step.completed');
+      return steps.length === completedSteps.length;
+    }
+
+    function unlockNextPhase() {
+      var currentPhase = phases[currentPhaseIdx];
+      var transition = currentPhase.querySelector('.phase-transition');
+      if (transition) transition.style.display = 'block';
+      currentPhase.classList.remove('active');
+      currentPhase.classList.add('completed');
+
+      if (currentPhaseIdx + 1 < phases.length) {
+        setTimeout(function() {
+          currentPhaseIdx++;
+          var nextPhase = phases[currentPhaseIdx];
+          nextPhase.classList.remove('locked');
+          nextPhase.classList.add('active');
+          var firstStep = nextPhase.querySelector('.mcq-step.locked');
+          if (firstStep) firstStep.classList.remove('locked');
+          var outline = nextPhase.querySelector('.strategy-outline');
+          if (outline && strategySteps.length > 0) {
+            outline.style.display = 'block';
+            updateStrategyOutline(nextPhase);
+          }
+          if (window.MathJax && MathJax.typeset) MathJax.typeset([nextPhase]);
+        }, 600);
+      } else {
+        setTimeout(function() {
+          if (result) result.style.display = 'block';
+        }, 600);
+      }
+    }
+
+    phases.forEach(function(phase) {
+      var steps = phase.querySelectorAll('.mcq-step');
+      steps.forEach(function(step) {
+        var options = step.querySelectorAll('.mcq-option');
+        var feedback = step.querySelector('.mcq-feedback');
+
+        options.forEach(function(opt) {
+          opt.addEventListener('click', function() {
+            if (opt.classList.contains('correct') || opt.classList.contains('wrong') || opt.classList.contains('disabled')) return;
+            var isCorrect = opt.getAttribute('data-correct') === 'true';
+            var hint = opt.getAttribute('data-hint') || '';
+
+            if (isCorrect) {
+              opt.classList.add('correct');
+              options.forEach(function(o) { if (o !== opt) o.classList.add('disabled'); });
+              step.classList.add('completed');
+              feedback.textContent = hint || 'Correct!';
+              feedback.className = 'mcq-feedback correct-fb';
+
+              var stepText = opt.getAttribute('data-step-text');
+              if (stepText && phase.getAttribute('data-phase') === 'A') {
+                strategySteps.push(stepText);
+                updateStrategyOutline(phase);
+              }
+              if (window.MathJax && MathJax.typeset) MathJax.typeset([step]);
+
+              if (isPhaseComplete(phase)) {
+                setTimeout(unlockNextPhase, 500);
+              } else {
+                var nextStep = step.nextElementSibling;
+                while (nextStep && !nextStep.classList.contains('mcq-step')) {
+                  nextStep = nextStep.nextElementSibling;
+                }
+                if (nextStep && nextStep.classList.contains('locked')) {
+                  setTimeout(function() {
+                    nextStep.classList.remove('locked');
+                    if (window.MathJax && MathJax.typeset) MathJax.typeset([nextStep]);
+                  }, 400);
+                }
+              }
+            } else {
+              opt.classList.add('wrong');
+              feedback.innerHTML = hint || 'Try again.';
+              feedback.className = 'mcq-feedback wrong-fb';
+              if (window.MathJax && MathJax.typeset) MathJax.typeset([feedback]);
+              setTimeout(function() {
+                opt.classList.remove('wrong');
+                feedback.style.display = 'none';
+                feedback.className = 'mcq-feedback';
+                setTimeout(function() { feedback.style.display = ''; }, 50);
+              }, 3000);
+            }
+          });
+        });
+      });
+    });
+  });
+
+  // --- Scroll-spy ---
+  var sidebarLinks = document.querySelectorAll('.sidebar a[href^="#"]');
+  var sections = [];
+  sidebarLinks.forEach(function (link) {
+    var id = link.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) sections.push({ id: id, el: el, link: link });
+  });
+
+  function updateActive() {
+    var scrollY = window.scrollY + 80, current = null;
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i].el.offsetTop <= scrollY) current = sections[i];
+    }
+    sidebarLinks.forEach(function (l) { l.classList.remove('active'); });
+    if (current) {
+      current.link.classList.add('active');
+      var sidebar = document.getElementById('sidebar');
+      var linkTop = current.link.offsetTop, sidebarH = sidebar.clientHeight;
+      if (linkTop < sidebar.scrollTop + 40 || linkTop > sidebar.scrollTop + sidebarH - 40)
+        sidebar.scrollTo({ top: linkTop - sidebarH / 3, behavior: 'smooth' });
+    }
+  }
+  window.addEventListener('scroll', updateActive, { passive: true });
+  updateActive();
+});
+</script>
+</body>
+</html>

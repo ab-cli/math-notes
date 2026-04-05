@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 4.2 – Non-homogeneous Equations</title>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    tags: 'ams'
+  },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg: #2d2d2d;
+  --text: #e0e0e0;
+  --heading: #ffffff;
+  --accent: #8ab4f8;
+  --accent2: #81c995;
+  --border: #4a4a4a;
+  --def-bg: #3a3a3a;
+  --def-border: #6a6a6a;
+  --prop-bg: #353535;
+  --prop-border: #5a5a5a;
+  --exercise-bg: #383838;
+  --exercise-border: #5a5a5a;
+  --warn-bg: #3d3535;
+  --warn-border: #7a5a5a;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 18px; scroll-behavior: smooth; }
+
+body {
+  font-family: 'Crimson Pro', Georgia, serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page-wrapper { display: flex; min-height: 100vh; }
+
+.sidebar {
+  position: sticky; top: 0; align-self: flex-start;
+  width: 280px; min-width: 280px; height: 100vh;
+  overflow-y: auto; padding: 2rem 1.2rem 2rem 1.4rem;
+  border-right: 1.5px solid var(--border); background: #252525;
+}
+.sidebar .sidebar-title {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.72rem;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: #888888; margin-bottom: 1rem; font-weight: 600;
+}
+.sidebar ol { list-style: none; padding: 0; margin: 0; counter-reset: sidebar-counter; }
+.sidebar > ol > li { counter-increment: sidebar-counter; margin-bottom: 0.15rem; }
+.sidebar > ol > li > a::before { content: counter(sidebar-counter) ". "; font-weight: 600; color: var(--accent); font-size: 0.8rem; }
+.sidebar a {
+  display: block; font-family: 'Source Sans 3', sans-serif; font-size: 0.82rem;
+  color: var(--text); text-decoration: none; padding: 0.2rem 0.5rem;
+  border-radius: 4px; border-left: 2.5px solid transparent; transition: all 0.2s;
+}
+.sidebar a:hover { color: var(--accent); background: rgba(138,180,248,0.1); }
+.sidebar a.active { color: var(--accent); font-weight: 600; background: rgba(138,180,248,0.15); border-left-color: var(--accent); }
+.sidebar ol ol { margin-left: 1rem; margin-top: 0.1rem; }
+.sidebar ol ol a { font-size: 0.78rem; }
+.sidebar ol ol a::before { display: none; }
+
+.container { max-width: 780px; margin: 0 auto; padding: 2rem 1.5rem 4rem; flex: 1; min-width: 0; }
+
+.title-block { text-align: center; padding: 3rem 0 2.5rem; border-bottom: 2px solid var(--border); margin-bottom: 2.5rem; }
+.title-block h1 { font-family: 'Crimson Pro', serif; font-size: 2.4rem; font-weight: 700; color: var(--heading); line-height: 1.2; margin-bottom: 0.5rem; }
+.title-block .author { font-family: 'Source Sans 3', sans-serif; font-size: 1rem; color: #a0a0a0; }
+.title-block .course { font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: #888888; margin-top: 0.2rem; letter-spacing: 0.04em; text-transform: uppercase; }
+.title-block .date { font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: #888888; margin-top: 0.3rem; }
+
+.toc { background: var(--def-bg); border: 1px solid var(--border); border-radius: 6px; padding: 1.5rem 2rem; margin-bottom: 2.5rem; }
+.toc h2 { font-family: 'Source Sans 3', sans-serif; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; color: #888888; margin-bottom: 0.8rem; font-weight: 600; }
+.toc ol { list-style: none; counter-reset: toc-counter; }
+.toc > ol > li { counter-increment: toc-counter; margin-bottom: 0.3rem; }
+.toc > ol > li::before { content: counter(toc-counter) "."; font-weight: 600; color: var(--accent); margin-right: 0.5rem; }
+.toc a { color: var(--text); text-decoration: none; font-size: 0.95rem; }
+.toc a:hover { color: var(--accent); }
+
+h2 { font-family: 'Crimson Pro', serif; font-size: 1.8rem; font-weight: 700; color: var(--heading); margin-top: 3rem; margin-bottom: 1rem; padding-bottom: 0.4rem; border-bottom: 1.5px solid var(--border); }
+h3 { font-family: 'Crimson Pro', serif; font-size: 1.35rem; font-weight: 600; color: var(--heading); margin-top: 2rem; margin-bottom: 0.8rem; }
+
+p { margin-bottom: 1rem; text-align: justify; hyphens: auto; }
+
+.box { border-radius: 5px; padding: 1.2rem 1.4rem; margin: 1.5rem 0; border-left: 4px solid; }
+.box-title { font-family: 'Source Sans 3', sans-serif; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.6rem; display: block; }
+.definition { background: var(--def-bg); border-color: var(--def-border); }
+.definition .box-title { color: #f0c040; }
+.theorem { background: var(--prop-bg); border-color: var(--accent2); }
+.theorem .box-title { color: var(--accent2); }
+.remark-box { background: #3a3a40; border-color: #6a6a80; }
+.remark-box .box-title { color: #a0a0d0; }
+.exercise-box { background: var(--exercise-bg); border-color: var(--exercise-border); }
+.exercise-box .box-title { color: #c0a080; }
+.box p:last-child { margin-bottom: 0; }
+
+ol, ul { margin-bottom: 1rem; padding-left: 1.5rem; }
+li { margin-bottom: 0.4rem; }
+
+hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+.key-formula { background: linear-gradient(135deg, #3a3a3a, #353535); border: 1.5px solid var(--def-border); border-radius: 5px; padding: 1rem 1.4rem; margin: 1.2rem 0; text-align: center; }
+
+/* --- MCQ Phase System --- */
+.mcq { background: #333; border: 1.5px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; }
+.mcq-title { font-family: 'Source Sans 3', sans-serif; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 0.8rem; }
+.mcq-problem { margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border); }
+.mcq-phase { margin-bottom: 1rem; padding: 1rem; border-radius: 6px; background: #2a2a2a; border: 1.5px solid #444; transition: all 0.3s; }
+.mcq-phase.locked { opacity: 0.4; pointer-events: none; filter: grayscale(0.3); }
+.mcq-phase.active { border-color: var(--accent); box-shadow: 0 2px 8px rgba(138,180,248,0.15); }
+.mcq-phase.completed { border-color: var(--accent2); background: #2a3530; }
+.phase-label { font-family: 'Source Sans 3', sans-serif; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.5rem; }
+.phase-label .phase-tag { background: var(--accent); color: #1a1a1a; padding: 0.15rem 0.5rem; border-radius: 3px; font-size: 0.65rem; }
+.mcq-phase.completed .phase-label .phase-tag { background: var(--accent2); }
+.phase-label .phase-name { color: #888; }
+.strategy-outline { background: #353535; border-radius: 4px; padding: 0.8rem 1rem; margin: 0.8rem 0; border-left: 3px solid var(--accent2); }
+.strategy-outline-title { font-family: 'Source Sans 3', sans-serif; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin-bottom: 0.4rem; }
+.strategy-step { font-size: 0.9rem; padding: 0.3rem 0; color: var(--text); display: flex; align-items: flex-start; gap: 0.5rem; }
+.strategy-step::before { content: "✓"; color: var(--accent2); font-weight: 700; flex-shrink: 0; }
+.mcq-step { margin-bottom: 0.8rem; }
+.mcq-step.locked { display: none; }
+.mcq-step.completed .mcq-options { opacity: 0.6; }
+.mcq-step-label { font-family: 'Source Sans 3', sans-serif; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin-bottom: 0.5rem; }
+.mcq-question { margin-bottom: 0.6rem; font-size: 0.95rem; }
+.mcq-options { display: flex; flex-direction: column; gap: 0.4rem; }
+.mcq-option { font-family: 'Crimson Pro', serif; font-size: 0.95rem; text-align: left; padding: 0.5rem 0.8rem; border: 1.5px solid #555; border-radius: 5px; background: #2a2a2a; color: var(--text); cursor: pointer; transition: all 0.2s; line-height: 1.5; }
+.mcq-option:hover { border-color: var(--accent); background: rgba(138,180,248,0.1); }
+.mcq-option.correct { border-color: var(--accent2); background: rgba(129,201,149,0.15); cursor: default; }
+.mcq-option.correct::before { content: "✓ "; color: var(--accent2); font-weight: 700; }
+.mcq-option.wrong { border-color: #f08080; background: rgba(240,128,128,0.15); cursor: default; }
+.mcq-option.wrong::before { content: "✗ "; color: #f08080; font-weight: 700; }
+.mcq-option.disabled { pointer-events: none; opacity: 0.5; }
+.mcq-feedback { display: none; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; padding: 0.5rem 0.8rem; border-radius: 4px; margin-top: 0.5rem; line-height: 1.5; }
+.mcq-feedback.correct-fb { display: block; background: rgba(129,201,149,0.15); color: var(--accent2); border: 1px solid var(--accent2); }
+.mcq-feedback.wrong-fb { display: block; background: rgba(240,128,128,0.15); color: #f08080; border: 1px solid #f08080; }
+.mcq-result { display: none; font-family: 'Source Sans 3', sans-serif; font-size: 0.9rem; font-weight: 600; color: var(--accent2); padding: 0.8rem 1rem; background: rgba(129,201,149,0.15); border-radius: 6px; border: 1.5px solid var(--accent2); text-align: center; margin-top: 1rem; }
+.phase-transition { display: none; text-align: center; padding: 0.6rem; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: var(--accent2); background: rgba(129,201,149,0.1); border-radius: 4px; margin: 0.5rem 0; }
+
+.answer { display: none; }
+.answer-btn { font-family: 'Source Sans 3', sans-serif; font-size: 0.78rem; font-weight: 600; color: var(--accent2); background: none; border: 1.5px solid var(--accent2); border-radius: 4px; padding: 0.15rem 0.55rem; margin-left: 0.4rem; cursor: pointer; }
+.answer-btn:hover { background: var(--accent2); color: #fff; }
+.answer-revealed { display: inline; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: var(--accent2); margin-left: 0.3rem; }
+
+@media (min-width: 901px) { .toc { display: none; } }
+@media (max-width: 900px) { .page-wrapper { display: block; } .sidebar { display: none; } html { font-size: 16px; } .container { padding: 1rem; } .title-block h1 { font-size: 1.8rem; } }
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-title">Contents</div>
+  <ol>
+    <li><a href="#sec-main">Main Results</a>
+      <ol>
+        <li><a href="#sec-structure">Solution Structure</a></li>
+        <li><a href="#sec-particular">Particular Integral</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec-undetermined">Undetermined Coefficients</a>
+      <ol>
+        <li><a href="#sec-exp">Exponential RHS</a></li>
+        <li><a href="#sec-trig">Trigonometric RHS</a></li>
+        <li><a href="#sec-mixed">Mixed Terms</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec-superposition">Superposition</a></li>
+    <li><a href="#sec-exercises">Exercises</a></li>
+    <li><a href="#sec-practice">Practice MCQ</a></li>
+  </ol>
+</nav>
+
+<div class="container">
+
+<div class="title-block">
+  <h1>Second Order Equations: Non-homogeneous DEs</h1>
+  <div class="author">Edmund Chiang</div>
+  <div class="course">MATH2351 / 2352 — Boyce &amp; DiPrima §3.5</div>
+  <div class="date">February 20, 2026</div>
+</div>
+
+<nav class="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#sec-main">Main Results</a></li>
+    <li><a href="#sec-undetermined">Method of Undetermined Coefficients</a></li>
+    <li><a href="#sec-superposition">Superposition for Multiple $g(t)$</a></li>
+    <li><a href="#sec-exercises">Exercises</a></li>
+  </ol>
+</nav>
+
+<!-- ============================================================ -->
+<h2 id="sec-main">1 &ensp; Main Results</h2>
+
+<h3 id="sec-structure">1.1 &ensp; Solution Structure</h3>
+
+<div class="box theorem">
+  <span class="box-title">Theorem — Difference of Solutions</span>
+  <p>Let $Y_1$ and $Y_2$ be solutions of</p>
+  $$L(y) = y'' + p(t)y' + q(t)y = g(t),$$
+  <p>where $p(t)$, $q(t)$, $g(t)$ are continuous on $I = (\alpha, \beta)$. Then $Y_1 - Y_2$ is a solution to</p>
+  $$L(y) = y'' + p(t)y' + q(t)y = 0.$$
+  <p>That is, if $\{y_1, y_2\}$ is a fundamental set of solutions to the homogeneous $L(y) = 0$, then</p>
+  $$Y_1(t) - Y_2(t) = c_1 y_1(t) + c_2 y_2(t)$$
+  <p>for some constants $c_1$, $c_2$.</p>
+</div>
+
+<div class="box theorem">
+  <span class="box-title">Theorem — General Solution Structure</span>
+  <p>The general solution of</p>
+  $$L(y) = y'' + p(t)y' + q(t)y = g(t)$$
+  <p>can be written as</p>
+  $$y(t) = \phi(t) = c_1 y_1(t) + c_2 y_2(t) + Y(t),$$
+  <p>where $\{y_1, y_2\}$ is a fundamental set of solutions (called <em>complementary functions</em>) of the corresponding homogeneous DE, and $Y(t)$ is a specific solution (called a <em>particular integral</em>) of the DE.</p>
+</div>
+
+<div class="box remark-box">
+  <span class="box-title">Remark</span>
+  <ol>
+    <li>Note that $L(c_1 y_1 + c_2 y_2) = 0$ for all possible choices of $c_1$, $c_2$.</li>
+    <li>But $L(Y) = g(t)$.</li>
+    <li>We see that the general solution to the above non-homogeneous DE
+    $$y(t) = \phi(t) = c_1 y_1(t) + c_2 y_2(t) + Y(t),$$
+    is far from unique because of different choices of $c_1$, $c_2$.</li>
+  </ol>
+</div>
+
+<hr>
+
+<!-- ============================================================ -->
+<h2 id="sec-undetermined">2 &ensp; Method of Undetermined Coefficients</h2>
+
+<h3 id="sec-exp">2.1 &ensp; Exponential Right-Hand Side</h3>
+
+<p><strong>Example (B&amp;D).</strong> Solve</p>
+
+$$y'' - 3y' - 4y = 3e^{2t}. \tag{1}$$
+
+<p>We divide the process into two parts:</p>
+
+<p><strong>Part I:</strong> homogeneous equation. We solve</p>
+
+$$y'' - 3y' - 4y = 0.$$
+
+<p>This gives the characteristic equation</p>
+
+$$r^2 - 3r - 4 = (r + 1)(r - 4) = 0$$
+
+<p>so that complementary functions are $\{e^{-t}, e^{4t}\}$.</p>
+
+<p><strong>Part II:</strong></p>
+
+<p>Since $g(t) = 3e^{2t}$ and it satisfies (1), so it is reasonable to try $Y(t) = Ae^{2t}$. Notice that</p>
+
+$$Y' = 2Ae^{2t}, \quad Y'' = 4Ae^{2t},$$
+
+<p>and substitute them into the (1) yields</p>
+
+$$(4A - 3(2A) - 4A)e^{2t} = 3e^{2t}.$$
+
+<p>Thus we must require</p>
+
+$$-6A = 3,$$
+
+<p>or $A = -1/2$. Thus the particular integral is $Y(t) = -\frac{1}{2}e^{2t}$. We deduce that the general solution is given by</p>
+
+<div class="key-formula">
+$$y(t) = c_1 e^{-t} + c_2 e^{4t} - \frac{1}{2}e^{2t}.$$
+</div>
+
+<p>A simple check by substituting this $y$ into the DE (1) easily verifies that our finding is correct.</p>
+
+<hr>
+
+<h3 id="sec-trig">2.2 &ensp; Trigonometric Right-Hand Side</h3>
+
+<p><strong>Example (B&amp;D).</strong> Solve</p>
+
+$$y'' - 3y' - 4y = 2\sin t. \tag{2}$$
+
+<p>The complementary functions are the same as before: $\{e^{-t}, e^{4t}\}$.</p>
+
+<p><strong>Part IIa:</strong> Since $g(t) = 2\sin t$, let us first substitute $Y(t) = A\sin t$ into the (2) and this yields</p>
+
+$$(-A\sin t) - 3(A\cos t) - 4(A\sin t) = 2\sin t.$$
+
+<p>That is,</p>
+
+$$(2 + 5A)\sin t + 3A\cos t = 0,$$
+
+<p>which is impossible (since $\cos t$ and $\sin t$ are linearly independent) unless both $3A = 0$ and $2 + 5A = 0$. The first equation gives $A = 0$. But then the second equation is impossible. This is a contradiction. Hence the choice of $Y(t) = A\sin t$ is incorrect.</p>
+
+<p><strong>Part IIb:</strong> Let us try $Y(t) = A\sin t + B\cos t$. Then</p>
+
+\begin{align}
+Y' &= A\cos t - B\sin t \\
+Y'' &= -A\sin t - B\cos t.
+\end{align}
+
+<p>Substitute them into the DE (2) yields</p>
+
+$$(-A + 3B - 4A)\sin t + (-B - 3A - 4B)\cos t = 2\sin t.$$
+
+<p>That is,</p>
+
+\begin{align}
+-5A + 3B &= 2; \\
+-3A - 5B &= 0.
+\end{align}
+
+<p>Thus, $A = -5/17$ and $B = 3/17$. So the general solution to the DE (2) is given by</p>
+
+<div class="key-formula">
+$$y(t) = c_1 e^{-t} + c_2 e^{4t} - \frac{5}{17}\sin t + \frac{3}{17}\cos t.$$
+</div>
+
+<hr>
+
+<h3 id="sec-mixed">2.3 &ensp; Mixed Exponential-Trigonometric Terms</h3>
+
+<p><strong>Example (B&amp;D).</strong> Solve</p>
+
+$$y'' - 3y' - 4y = -8e^t\cos 2t. \tag{3}$$
+
+<p>We note that the complementary functions are the same as in the earlier examples. We also learnt from the last example that we should allow both $\sin$ and $\cos$ whenever the non-homogeneous $g$ has the same. So let us try</p>
+
+$$Y(t) = Ae^t\cos t + Be^t\sin t.$$
+
+<p>We have</p>
+
+$$Y'(t) = (A + 2B)e^t\cos 2t + (-2A + B)e^t\sin 2t.$$
+
+<p>We also have</p>
+
+$$Y''(t) = (-3A + 4B)e^t\cos 2t + (-4A - 3B)e^t\sin 2t.$$
+
+<p>Substitute them into the DE (3) yields</p>
+
+$$10A + 2B = 8, \quad 2A - 10B = 0.$$
+
+<p>Hence $A = 10/13$ and $B = 2/13$. Thus, the particular integral is given by</p>
+
+<div class="key-formula">
+$$Y(t) = \frac{10}{13}e^t\cos 2t + \frac{2}{13}e^t\sin 2t.$$
+</div>
+
+<p>Thus the general solution is given by</p>
+
+$$y(t) = c_1 e^{-t} + c_2 e^{4t} + Y(t).$$
+
+<hr>
+
+<!-- ============================================================ -->
+<h2 id="sec-superposition">3 &ensp; Superposition for Multiple $g(t)$</h2>
+
+<p><strong>Example (B&amp;D) "Multiple" $g$.</strong> Solve</p>
+
+$$y'' - 3y' - 4y = 3e^{2t} + 2\sin t - 8e^t\cos 2t. \tag{4}$$
+
+<p>This may seem a difficult problem. But let us recall the following solved DEs:</p>
+
+\begin{align}
+y'' - 3y' - 4y &= 3e^{2t}, & Y_1(t) &= -\tfrac{1}{2}e^{2t}; \\
+y'' - 3y' - 4y &= 2\sin t, & Y_2(t) &= -\tfrac{5}{17}\sin t + \tfrac{3}{17}\cos t; \\
+y'' - 3y' - 4y &= -8e^t\cos 2t, & Y_3(t) &= \tfrac{10}{13}e^t\cos 2t + \tfrac{2}{13}e^t\sin 2t.
+\end{align}
+
+<p>We claim that the general solution is given by</p>
+
+<div class="key-formula">
+\begin{align}
+y(t) &= c_1 e^{-t} + c_2 e^{4t} + Y_1(t) + Y_2(t) + Y_3(t) \\[6pt]
+&= c_1 e^{-t} + c_2 e^{4t} - \frac{1}{2}e^{2t} - \frac{5}{17}\sin t + \frac{3}{17}\cos t + \frac{10}{13}e^t\cos 2t + \frac{2}{13}e^t\sin 2t
+\end{align}
+</div>
+
+<div class="box theorem">
+  <span class="box-title">Theorem — Superposition for Non-homogeneous Terms</span>
+  <p>Suppose $g(t) = \sum_{k=1}^n g_k(t)$. If we have solved</p>
+  $$L(y) = y'' + p(t)y' + q(t)y = g_k(t), \quad L(Y_k(t)) = g_k(t)$$
+  <p>for each $k = 1, \ldots, n$, then</p>
+  $$L(Y_1 + \cdots + Y_n) = L(Y_1) + \cdots + L(Y_n) = g_1 + \cdots + g_n,$$
+  <p>as required.</p>
+</div>
+
+<hr>
+
+<!-- ============================================================ -->
+<h2 id="sec-exercises">4 &ensp; Exercises</h2>
+
+<div class="box exercise-box">
+  <span class="box-title">Exercise — Undetermined Coefficients</span>
+  <p>Use the method of undetermined coefficients to find the general solution:</p>
+  <ol>
+    <li>$y'' - 2y' - 3y = 3e^{2t}$ <button class="answer-btn">Answer</button><span class="answer">$c_1 e^{3t} + c_2 e^{-t} - e^{2t}$</span></li>
+    <li>$y'' + 2y' + 5y = 4e^{-t}\cos 2t$ <button class="answer-btn">Answer</button><span class="answer">$e^{-t}(c_1\cos 2t + c_2\sin 2t) + te^{-t}\sin 2t$</span></li>
+    <li>$y'' - 2y' - 3y = -3te^{-t}$ <button class="answer-btn">Answer</button><span class="answer">$c_1 e^{3t} + c_2 e^{-t} + \frac{3}{4}te^{-t} + \frac{3}{16}e^{-t}$</span></li>
+  </ol>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec-practice">5 &ensp; Practice MCQ</h2>
+
+<!-- MCQ: Undetermined Coefficients -->
+<div class="mcq" id="mcq-undetermined">
+  <div class="mcq-title">Practice: Method of Undetermined Coefficients</div>
+  <div class="mcq-problem">
+    <p>Find a particular solution to:</p>
+    $$y'' - 3y' - 4y = 3e^{2t}$$
+  </div>
+
+  <!-- PHASE 0 -->
+  <div class="mcq-phase active" data-phase="0">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE 0</span>
+      <span class="phase-name">Choose the Trial Solution</span>
+    </div>
+    <div class="mcq-step" data-step="classify">
+      <p class="mcq-question">The RHS is $3e^{2t}$. What form should we try for the particular solution $Y(t)$?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! For $e^{kt}$ on RHS, try $Y = Ae^{kt}$.">$Y = Ae^{2t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="We only need $\sin$ and $\cos$ when RHS has trig functions.">$Y = A\sin 2t + B\cos 2t$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The $te^{2t}$ form is only needed if $e^{2t}$ is already a homogeneous solution.">$Y = Ate^{2t}$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+    <div class="phase-transition">Good! Now substitute and solve for $A$...</div>
+  </div>
+
+  <!-- PHASE A -->
+  <div class="mcq-phase locked" data-phase="A">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE A</span>
+      <span class="phase-name">Build the Strategy</span>
+    </div>
+    <div class="strategy-outline" style="display:none;">
+      <div class="strategy-outline-title">Solution Outline</div>
+      <div class="strategy-steps"></div>
+    </div>
+
+    <div class="mcq-step" data-step="A1">
+      <p class="mcq-question">With $Y = Ae^{2t}$, what are $Y'$ and $Y''$?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct!" data-step-text="Compute: $Y' = 2Ae^{2t}$, $Y'' = 4Ae^{2t}$">$Y' = 2Ae^{2t}$, $Y'' = 4Ae^{2t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Apply chain rule: $(e^{2t})' = 2e^{2t}$." data-step-text="">$Y' = Ae^{2t}$, $Y'' = Ae^{2t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$(e^{2t})'' = (2e^{2t})' = 4e^{2t}$, not $2e^{2t}$." data-step-text="">$Y' = 2Ae^{2t}$, $Y'' = 2Ae^{2t}$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="A2">
+      <p class="mcq-question">Substitute into $Y'' - 3Y' - 4Y = 3e^{2t}$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! $(4A - 6A - 4A)e^{2t} = -6Ae^{2t} = 3e^{2t}$." data-step-text="Substitute: $(4A - 6A - 4A)e^{2t} = 3e^{2t}$">$4Ae^{2t} - 6Ae^{2t} - 4Ae^{2t} = 3e^{2t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check: $Y'' = 4Ae^{2t}$, $3Y' = 6Ae^{2t}$, $4Y = 4Ae^{2t}$." data-step-text="">$4Ae^{2t} - 3Ae^{2t} - 4Ae^{2t} = 3e^{2t}$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+    <div class="phase-transition">Now solve for $A$...</div>
+  </div>
+
+  <!-- PHASE B -->
+  <div class="mcq-phase locked" data-phase="B">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE B</span>
+      <span class="phase-name">Solve for Coefficient</span>
+    </div>
+
+    <div class="mcq-step" data-step="B1">
+      <div class="mcq-step-label">Step B1</div>
+      <p class="mcq-question">From $-6Ae^{2t} = 3e^{2t}$, solve for $A$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$A = -\frac{1}{2}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$-6A = 3$ means $A = -3/6 = -1/2$.">$A = \frac{1}{2}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Divide: $A = 3/(-6) = -1/2$.">$A = -2$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="B2">
+      <div class="mcq-step-label">Step B2</div>
+      <p class="mcq-question">The particular solution is:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$Y(t) = -\frac{1}{2}e^{2t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="We found $A = -1/2$.">$Y(t) = \frac{1}{2}e^{2t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The exponent is $2t$, not $-2t$.">$Y(t) = -\frac{1}{2}e^{-2t}$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+  </div>
+
+  <div class="mcq-result">Excellent! The particular solution is $Y(t) = -\frac{1}{2}e^{2t}$.</div>
+</div>
+
+</div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // --- Shuffle MCQ Options ---
+  document.querySelectorAll('.mcq-options').forEach(function(container) {
+    var options = Array.from(container.querySelectorAll('.mcq-option'));
+    for (var i = options.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      container.appendChild(options[j]);
+      options.splice(j, 1);
+    }
+    container.appendChild(options[0]);
+  });
+
+  // --- Three-Phase MCQ Logic ---
+  document.querySelectorAll('.mcq').forEach(function (mcq) {
+    var phases = mcq.querySelectorAll('.mcq-phase');
+    var result = mcq.querySelector('.mcq-result');
+    var currentPhaseIdx = 0;
+    var strategySteps = [];
+
+    function updateStrategyOutline(phase) {
+      var outline = phase.querySelector('.strategy-outline');
+      if (!outline) return;
+      var stepsContainer = outline.querySelector('.strategy-steps');
+      if (!stepsContainer) return;
+      stepsContainer.innerHTML = '';
+      strategySteps.forEach(function(stepText) {
+        var stepEl = document.createElement('div');
+        stepEl.className = 'strategy-step';
+        stepEl.innerHTML = stepText;
+        stepsContainer.appendChild(stepEl);
+      });
+      if (window.MathJax && MathJax.typeset) MathJax.typeset([stepsContainer]);
+    }
+
+    function isPhaseComplete(phase) {
+      var steps = phase.querySelectorAll('.mcq-step');
+      var completedSteps = phase.querySelectorAll('.mcq-step.completed');
+      return steps.length === completedSteps.length;
+    }
+
+    function unlockNextPhase() {
+      var currentPhase = phases[currentPhaseIdx];
+      var transition = currentPhase.querySelector('.phase-transition');
+      if (transition) transition.style.display = 'block';
+      currentPhase.classList.remove('active');
+      currentPhase.classList.add('completed');
+
+      if (currentPhaseIdx + 1 < phases.length) {
+        setTimeout(function() {
+          currentPhaseIdx++;
+          var nextPhase = phases[currentPhaseIdx];
+          nextPhase.classList.remove('locked');
+          nextPhase.classList.add('active');
+          var firstStep = nextPhase.querySelector('.mcq-step.locked');
+          if (firstStep) firstStep.classList.remove('locked');
+          var outline = nextPhase.querySelector('.strategy-outline');
+          if (outline && strategySteps.length > 0) {
+            outline.style.display = 'block';
+            updateStrategyOutline(nextPhase);
+          }
+          if (window.MathJax && MathJax.typeset) MathJax.typeset([nextPhase]);
+        }, 600);
+      } else {
+        setTimeout(function() { if (result) result.style.display = 'block'; }, 600);
+      }
+    }
+
+    phases.forEach(function(phase) {
+      phase.querySelectorAll('.mcq-step').forEach(function(step) {
+        var options = step.querySelectorAll('.mcq-option');
+        var feedback = step.querySelector('.mcq-feedback');
+        options.forEach(function(opt) {
+          opt.addEventListener('click', function() {
+            if (opt.classList.contains('correct') || opt.classList.contains('wrong') || opt.classList.contains('disabled')) return;
+            var isCorrect = opt.getAttribute('data-correct') === 'true';
+            var hint = opt.getAttribute('data-hint') || '';
+            if (isCorrect) {
+              opt.classList.add('correct');
+              options.forEach(function(o) { if (o !== opt) o.classList.add('disabled'); });
+              step.classList.add('completed');
+              feedback.textContent = hint || 'Correct!';
+              feedback.className = 'mcq-feedback correct-fb';
+              var stepText = opt.getAttribute('data-step-text');
+              if (stepText && phase.getAttribute('data-phase') === 'A') {
+                strategySteps.push(stepText);
+                updateStrategyOutline(phase);
+              }
+              if (window.MathJax && MathJax.typeset) MathJax.typeset([step]);
+              if (isPhaseComplete(phase)) { setTimeout(unlockNextPhase, 500); }
+              else {
+                var nextStep = step.nextElementSibling;
+                while (nextStep && !nextStep.classList.contains('mcq-step')) nextStep = nextStep.nextElementSibling;
+                if (nextStep && nextStep.classList.contains('locked')) setTimeout(function() { nextStep.classList.remove('locked'); if (window.MathJax && MathJax.typeset) MathJax.typeset([nextStep]); }, 400);
+              }
+            } else {
+              opt.classList.add('wrong');
+              feedback.innerHTML = hint || 'Try again.';
+              feedback.className = 'mcq-feedback wrong-fb';
+              if (window.MathJax && MathJax.typeset) MathJax.typeset([feedback]);
+              setTimeout(function() { opt.classList.remove('wrong'); feedback.className = 'mcq-feedback'; }, 3000);
+            }
+          });
+        });
+      });
+    });
+  });
+
+  // --- Scroll-spy ---
+  var sidebarLinks = document.querySelectorAll('.sidebar a[href^="#"]');
+  var sections = [];
+  sidebarLinks.forEach(function(link) {
+    var id = link.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) sections.push({ el: el, link: link });
+  });
+  function updateActive() {
+    var scrollY = window.scrollY + 80, current = null;
+    for (var i = 0; i < sections.length; i++) { if (sections[i].el.offsetTop <= scrollY) current = sections[i]; }
+    sidebarLinks.forEach(function(l) { l.classList.remove('active'); });
+    if (current) current.link.classList.add('active');
+  }
+  window.addEventListener('scroll', updateActive, { passive: true });
+  updateActive();
+
+  // --- Answer toggle ---
+  document.querySelectorAll('.answer-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var ans = this.nextElementSibling;
+      if (ans.style.display === 'inline') { ans.style.display = 'none'; this.textContent = 'Answer'; }
+      else { ans.style.display = 'inline'; ans.classList.add('answer-revealed'); this.textContent = 'Hide'; }
+    });
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 4.3 – Variation of Parameters</title>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    tags: 'ams'
+  },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg: #2d2d2d;
+  --text: #e0e0e0;
+  --heading: #ffffff;
+  --accent: #8ab4f8;
+  --accent2: #81c995;
+  --border: #4a4a4a;
+  --def-bg: #3a3a3a;
+  --def-border: #6a6a6a;
+  --prop-bg: #353535;
+  --prop-border: #5a5a5a;
+  --exercise-bg: #383838;
+  --exercise-border: #5a5a5a;
+  --warn-bg: #3d3535;
+  --warn-border: #7a5a5a;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 18px; scroll-behavior: smooth; }
+
+body {
+  font-family: 'Crimson Pro', Georgia, serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page-wrapper { display: flex; min-height: 100vh; }
+
+.sidebar {
+  position: sticky; top: 0; align-self: flex-start;
+  width: 280px; min-width: 280px; height: 100vh;
+  overflow-y: auto; padding: 2rem 1.2rem 2rem 1.4rem;
+  border-right: 1.5px solid var(--border); background: #252525;
+}
+.sidebar .sidebar-title {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.72rem;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: #888888; margin-bottom: 1rem; font-weight: 600;
+}
+.sidebar ol { list-style: none; padding: 0; margin: 0; counter-reset: sidebar-counter; }
+.sidebar > ol > li { counter-increment: sidebar-counter; margin-bottom: 0.15rem; }
+.sidebar > ol > li > a::before { content: counter(sidebar-counter) ". "; font-weight: 600; color: var(--accent); font-size: 0.8rem; }
+.sidebar a {
+  display: block; font-family: 'Source Sans 3', sans-serif; font-size: 0.82rem;
+  color: var(--text); text-decoration: none; padding: 0.2rem 0.5rem;
+  border-radius: 4px; border-left: 2.5px solid transparent; transition: all 0.2s;
+}
+.sidebar a:hover { color: var(--accent); background: rgba(138,180,248,0.1); }
+.sidebar a.active { color: var(--accent); font-weight: 600; background: rgba(138,180,248,0.15); border-left-color: var(--accent); }
+.sidebar ol ol { margin-left: 1rem; margin-top: 0.1rem; }
+.sidebar ol ol a { font-size: 0.78rem; }
+.sidebar ol ol a::before { display: none; }
+
+.container { max-width: 780px; margin: 0 auto; padding: 2rem 1.5rem 4rem; flex: 1; min-width: 0; }
+
+.title-block { text-align: center; padding: 3rem 0 2.5rem; border-bottom: 2px solid var(--border); margin-bottom: 2.5rem; }
+.title-block h1 { font-family: 'Crimson Pro', serif; font-size: 2.4rem; font-weight: 700; color: var(--heading); line-height: 1.2; margin-bottom: 0.5rem; }
+.title-block .author { font-family: 'Source Sans 3', sans-serif; font-size: 1rem; color: #a0a0a0; }
+.title-block .course { font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: #888888; margin-top: 0.2rem; letter-spacing: 0.04em; text-transform: uppercase; }
+.title-block .date { font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: #888888; margin-top: 0.3rem; }
+
+.toc { background: var(--def-bg); border: 1px solid var(--border); border-radius: 6px; padding: 1.5rem 2rem; margin-bottom: 2.5rem; }
+.toc h2 { font-family: 'Source Sans 3', sans-serif; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; color: #888888; margin-bottom: 0.8rem; font-weight: 600; }
+.toc ol { list-style: none; counter-reset: toc-counter; }
+.toc > ol > li { counter-increment: toc-counter; margin-bottom: 0.3rem; }
+.toc > ol > li::before { content: counter(toc-counter) "."; font-weight: 600; color: var(--accent); margin-right: 0.5rem; }
+.toc a { color: var(--text); text-decoration: none; font-size: 0.95rem; }
+.toc a:hover { color: var(--accent); }
+
+h2 { font-family: 'Crimson Pro', serif; font-size: 1.8rem; font-weight: 700; color: var(--heading); margin-top: 3rem; margin-bottom: 1rem; padding-bottom: 0.4rem; border-bottom: 1.5px solid var(--border); }
+h3 { font-family: 'Crimson Pro', serif; font-size: 1.35rem; font-weight: 600; color: var(--heading); margin-top: 2rem; margin-bottom: 0.8rem; }
+
+p { margin-bottom: 1rem; text-align: justify; hyphens: auto; }
+
+.box { border-radius: 5px; padding: 1.2rem 1.4rem; margin: 1.5rem 0; border-left: 4px solid; }
+.box-title { font-family: 'Source Sans 3', sans-serif; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.6rem; display: block; }
+.definition { background: var(--def-bg); border-color: var(--def-border); }
+.definition .box-title { color: #f0c040; }
+.theorem { background: var(--prop-bg); border-color: var(--accent2); }
+.theorem .box-title { color: var(--accent2); }
+.remark-box { background: #3a3a40; border-color: #6a6a80; }
+.remark-box .box-title { color: #a0a0d0; }
+.exercise-box { background: var(--exercise-bg); border-color: var(--exercise-border); }
+.exercise-box .box-title { color: #c0a080; }
+.box p:last-child { margin-bottom: 0; }
+
+.proof { margin: 1rem 0 1.5rem; padding-left: 1rem; border-left: 2px solid var(--border); }
+.proof-label { font-style: italic; font-weight: 500; color: #a0a0a0; }
+.proof::after { content: "□"; display: block; text-align: right; color: #666; margin-top: 0.3rem; }
+
+ol, ul { margin-bottom: 1rem; padding-left: 1.5rem; }
+li { margin-bottom: 0.4rem; }
+
+hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+.key-formula { background: linear-gradient(135deg, #3a3a3a, #353535); border: 1.5px solid var(--def-border); border-radius: 5px; padding: 1rem 1.4rem; margin: 1.2rem 0; text-align: center; }
+
+/* --- MCQ Phase System --- */
+.mcq { background: #333; border: 1.5px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; }
+.mcq-title { font-family: 'Source Sans 3', sans-serif; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 0.8rem; }
+.mcq-problem { margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border); }
+.mcq-phase { margin-bottom: 1rem; padding: 1rem; border-radius: 6px; background: #2a2a2a; border: 1.5px solid #444; transition: all 0.3s; }
+.mcq-phase.locked { opacity: 0.4; pointer-events: none; filter: grayscale(0.3); }
+.mcq-phase.active { border-color: var(--accent); box-shadow: 0 2px 8px rgba(138,180,248,0.15); }
+.mcq-phase.completed { border-color: var(--accent2); background: #2a3530; }
+.phase-label { font-family: 'Source Sans 3', sans-serif; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.5rem; }
+.phase-label .phase-tag { background: var(--accent); color: #1a1a1a; padding: 0.15rem 0.5rem; border-radius: 3px; font-size: 0.65rem; }
+.mcq-phase.completed .phase-label .phase-tag { background: var(--accent2); }
+.phase-label .phase-name { color: #888; }
+.strategy-outline { background: #353535; border-radius: 4px; padding: 0.8rem 1rem; margin: 0.8rem 0; border-left: 3px solid var(--accent2); }
+.strategy-outline-title { font-family: 'Source Sans 3', sans-serif; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin-bottom: 0.4rem; }
+.strategy-step { font-size: 0.9rem; padding: 0.3rem 0; color: var(--text); display: flex; align-items: flex-start; gap: 0.5rem; }
+.strategy-step::before { content: "✓"; color: var(--accent2); font-weight: 700; flex-shrink: 0; }
+.mcq-step { margin-bottom: 0.8rem; }
+.mcq-step.locked { display: none; }
+.mcq-step.completed .mcq-options { opacity: 0.6; }
+.mcq-step-label { font-family: 'Source Sans 3', sans-serif; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin-bottom: 0.5rem; }
+.mcq-question { margin-bottom: 0.6rem; font-size: 0.95rem; }
+.mcq-options { display: flex; flex-direction: column; gap: 0.4rem; }
+.mcq-option { font-family: 'Crimson Pro', serif; font-size: 0.95rem; text-align: left; padding: 0.5rem 0.8rem; border: 1.5px solid #555; border-radius: 5px; background: #2a2a2a; color: var(--text); cursor: pointer; transition: all 0.2s; line-height: 1.5; }
+.mcq-option:hover { border-color: var(--accent); background: rgba(138,180,248,0.1); }
+.mcq-option.correct { border-color: var(--accent2); background: rgba(129,201,149,0.15); cursor: default; }
+.mcq-option.correct::before { content: "✓ "; color: var(--accent2); font-weight: 700; }
+.mcq-option.wrong { border-color: #f08080; background: rgba(240,128,128,0.15); cursor: default; }
+.mcq-option.wrong::before { content: "✗ "; color: #f08080; font-weight: 700; }
+.mcq-option.disabled { pointer-events: none; opacity: 0.5; }
+.mcq-feedback { display: none; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; padding: 0.5rem 0.8rem; border-radius: 4px; margin-top: 0.5rem; line-height: 1.5; }
+.mcq-feedback.correct-fb { display: block; background: rgba(129,201,149,0.15); color: var(--accent2); border: 1px solid var(--accent2); }
+.mcq-feedback.wrong-fb { display: block; background: rgba(240,128,128,0.15); color: #f08080; border: 1px solid #f08080; }
+.mcq-result { display: none; font-family: 'Source Sans 3', sans-serif; font-size: 0.9rem; font-weight: 600; color: var(--accent2); padding: 0.8rem 1rem; background: rgba(129,201,149,0.15); border-radius: 6px; border: 1.5px solid var(--accent2); text-align: center; margin-top: 1rem; }
+.phase-transition { display: none; text-align: center; padding: 0.6rem; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: var(--accent2); background: rgba(129,201,149,0.1); border-radius: 4px; margin: 0.5rem 0; }
+
+.answer { display: none; }
+.answer-btn { font-family: 'Source Sans 3', sans-serif; font-size: 0.78rem; font-weight: 600; color: var(--accent2); background: none; border: 1.5px solid var(--accent2); border-radius: 4px; padding: 0.15rem 0.55rem; margin-left: 0.4rem; cursor: pointer; }
+.answer-btn:hover { background: var(--accent2); color: #fff; }
+.answer-revealed { display: inline; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: var(--accent2); margin-left: 0.3rem; }
+
+@media (min-width: 901px) { .toc { display: none; } }
+@media (max-width: 900px) { .page-wrapper { display: block; } .sidebar { display: none; } html { font-size: 16px; } .container { padding: 1rem; } .title-block h1 { font-size: 1.8rem; } }
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-title">Contents</div>
+  <ol>
+    <li><a href="#sec-method">A General Method</a>
+      <ol>
+        <li><a href="#sec-motivation">Motivation</a></li>
+        <li><a href="#sec-example1">Example: $y'' + 4y = 3\csc t$</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec-theory">General Theory</a>
+      <ol>
+        <li><a href="#sec-formula">The Formula</a></li>
+        <li><a href="#sec-proof">Proof</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec-examples">Examples</a></li>
+    <li><a href="#sec-exercises">Exercises</a></li>
+    <li><a href="#sec-practice">Practice MCQ</a></li>
+  </ol>
+</nav>
+
+<div class="container">
+
+<div class="title-block">
+  <h1>Second Order Equations: Variation of Parameters</h1>
+  <div class="author">Edmund Chiang</div>
+  <div class="course">MATH2351 / 2352 — Boyce &amp; DiPrima §3.6</div>
+  <div class="date">February 20, 2026</div>
+</div>
+
+<nav class="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#sec-method">A General Method</a></li>
+    <li><a href="#sec-theory">General Theory</a></li>
+    <li><a href="#sec-examples">Examples</a></li>
+    <li><a href="#sec-exercises">Exercises</a></li>
+  </ol>
+</nav>
+
+<!-- ============================================================ -->
+<h2 id="sec-method">1 &ensp; A General Method</h2>
+
+<h3 id="sec-motivation">1.1 &ensp; Motivation</h3>
+
+<p>We introduce an ultimate method dealing with non-homogeneous second order linear DEs. It is difficult to apply undetermined coefficients method to the DE</p>
+
+$$y'' + 4y = 3\csc t \quad (\csc t = 1/\sin t).$$
+
+<h3 id="sec-example1">1.2 &ensp; Example</h3>
+
+<p><strong>Example.</strong> We modify the complementary function</p>
+
+$$y(t) = c_1\cos 2t + c_2\sin 2t,$$
+
+<p>for the homogeneous DE</p>
+
+$$y'' + 4y = 0$$
+
+<p>by</p>
+
+$$Y(t) = u_1(t)\cos 2t + u_2(t)\sin 2t,$$
+
+<p>where $u_1(t)$, $u_2(t)$ are now <em>functions</em>. Then</p>
+
+$$Y' = -2u_1(t)\sin 2t + 2u_2(t)\cos 2t + u_1'\cos 2t + u_2'\sin 2t.$$
+
+<p>We now <em>demand</em></p>
+
+$$u_1'(t)\cos 2t + u_2'\sin 2t = 0. \tag{1}$$
+
+<p>Hence</p>
+
+$$Y'' = -4u_1\cos 2t - 4u_2\sin 2t - 2u_1'\sin 2t + 2u_2'\cos 2t.$$
+
+<p>Substitute the $Y'$ and $Y''$ into the DE yields</p>
+
+\begin{align}
+3\csc t &= Y'' + 4Y \\
+&= [-4u_1\cos 2t - 4u_2\sin 2t - 2u_1'\sin 2t + 2u_2'\cos 2t] + 4[u_1(t)\cos 2t + u_2(t)\sin 2t] \\
+&= -2u_1'\sin 2t + 2u_2'\cos 2t.
+\end{align}
+
+<p>That is, we have</p>
+
+$$-2u_1'\sin 2t + 2u_2'\cos 2t = 3\csc t. \tag{2}$$
+
+<p>That is, the $u_1$, $u_2$ should satisfy the two equations (1) and (2). We deduce from (1) that</p>
+
+$$u_2' = -u_1'\frac{\cos 2t}{\sin 2t}. \tag{3}$$
+
+<p>Substitute this into (2) yields</p>
+
+\begin{align}
+3\csc t &= -2u_1'\sin 2t - 2u_1'\frac{\cos 2t}{\sin 2t}\cos 2t \\
+&= -2u_1'\frac{\sin^2 2t + \cos^2 2t}{\sin 2t} \\
+&= -2u_1'\frac{1}{\sin 2t}.
+\end{align}
+
+<p>That is,</p>
+
+$$u_1'(t) = -\frac{3\csc t\sin 2t}{2} = -3\cos t,$$
+
+<p>Substitute this into (3) yields</p>
+
+$$u_2'(t) = \frac{3\cos t\cos 2t}{\sin 2t} = \frac{3(1 - 2\sin^2 t)}{2\sin t} = \frac{3}{2}(\csc t - 2\sin t) = \frac{3}{2}\csc t - 3\sin t.$$
+
+<p>Thus we deduce</p>
+
+$$u_1(t) = -3\sin t + c_1,$$
+
+<p>and</p>
+
+$$u_2(t) = \frac{3}{2}\ln|\csc t - \cot t| + 3\cos t + c_2,$$
+
+<p>where we have used the following result in a step above</p>
+
+$$\int \frac{dt}{\sin t} = \int \csc t\,dt = \ln|\csc t - \cot t| = \ln\Big|\tan\frac{t}{2}\Big|.$$
+
+<p>We finally have</p>
+
+\begin{align}
+Y &= u_1\cos 2t + u_2\sin 2t \\
+&= (-3\sin t + c_1)\cos 2t + \Big(\frac{3}{2}\ln|\csc t - \cot t| + 3\cos t + c_2\Big)\sin 2t \\
+&= -3\sin t\cos 2t + \frac{3}{2}\ln|\csc t - \cot t|\sin 2t + 3\cos t\sin 2t + c_1\cos 2t + c_2\sin 2t \\
+&= 3\sin(2t - t) + \frac{3}{2}\ln|\csc t - \cot t|\sin 2t + c_1\cos 2t + c_2\sin 2t \\
+&= 3\sin t + \frac{3}{2}\ln|\csc t - \cot t|\sin 2t + c_1\cos 2t + c_2\sin 2t.
+\end{align}
+
+<p>But the terms $c_1\cos 2t + c_2\sin 2t$ can be combined with the complementary function so that the last expression is the general solution to the original DE.</p>
+
+<hr>
+
+<!-- ============================================================ -->
+<h2 id="sec-theory">2 &ensp; General Theory</h2>
+
+<h3 id="sec-formula">2.1 &ensp; The Formula</h3>
+
+<div class="box theorem">
+  <span class="box-title">Theorem — Variation of Parameters</span>
+  <p>Let $p$, $q$, $g$ be continuous on an open interval $I$. Suppose $y_1$, $y_2$ are a fundamental set of solutions of the homogeneous DE</p>
+  $$y'' + p(t)y' + q(t)y = g(t),$$
+  <p>that is, when $g(t) \equiv 0$. Then <em>particular integral</em> to the DE is given by</p>
+  <div class="key-formula">
+  $$Y(t) = -y_1(t)\int_{t_0}^t \frac{y_2(s)g(s)}{W(y_1, y_2)(s)}\,ds + y_2(t)\int_{t_0}^t \frac{y_1(s)g(s)}{W(y_1, y_2)(s)}\,ds$$
+  </div>
+  <p>where $t_0$ belongs to $I$. The general solution is given by</p>
+  $$y(t) = c_1 y_1(t) + c_2 y_2(t) + Y(t).$$
+  <p>The set of $y_1$, $y_2$ is also known as <em>complementary functions</em> of the non-homogeneous equation.</p>
+</div>
+
+<h3 id="sec-proof">2.2 &ensp; Proof</h3>
+
+<div class="proof">
+  <span class="proof-label">Proof.</span> Let
+  $$Y = u_1 y_1 + u_2 y_2.$$
+  <p>Then</p>
+  $$Y' = u_1 y_1' + u_2 y_2' + (u_1' y_1 + u_2' y_2).$$
+  <p>We demand the expression coloured in green to vanish identically:</p>
+  $$u_1' y_1 + u_2' y_2 = 0. \tag{4}$$
+  <p>That is,</p>
+  $$Y' = u_1 y_1' + u_2 y_2'. \tag{5}$$
+  <p>Hence</p>
+  $$Y'' = u_1' y_1' + u_2' y_2' + u_1 y_1'' + u_2 y_1''.$$
+  <p>Substitute the $Y'$ and $Y''$ into the DE and note that the blue expressions in blue and red in</p>
+  \begin{align}
+  g(t) &= y'' + p(t)y' + q(t)y(t) \\
+  &= u_2 y_1'' + u_1 y_2'' + u_1' y_1' + u_2' y_2' \\
+  &\quad + pu_1 y_1' + pu_2 y_2' \\
+  &\quad + qu_1 y_1 + qu_2 y_2 \\
+  &= 0 + 0 + u_1' y_1' + u_2' y_2' \tag{6}
+  \end{align}
+  <p>both vanish since $y_1$, $y_2$ is a fundamental set of solutions of the homogeneous DE. Multiplying $y_1'$ throughout the (4) and multiplying $y_1$ throughout the (6) yield</p>
+  \begin{align}
+  u_1' y_1 y_1' + u_2' y_2 y_1' &= 0 \\
+  u_1' y_1' y_1 + u_2' y_2' y_1 &= y_1 g.
+  \end{align}
+  <p>Subtracting the above equations yields</p>
+  $$u_2' = \frac{y_1 g}{W(y_1, y_2)}.$$
+  <p>Similarly we can deduce</p>
+  $$u_1' = -\frac{y_2 g}{W(y_1, y_2)}.$$
+  <p>Integrating the above two equations from a convenient point $t_0$ to $t$ results in the desired formula.</p>
+</div>
+
+<hr>
+
+<!-- ============================================================ -->
+<h2 id="sec-examples">3 &ensp; Examples</h2>
+
+<p><strong>Example.</strong> Solve</p>
+
+$$y'' - 5y' + 6y = 2e^t.$$
+
+<p>A fundamental set of solutions is given by $\{e^{2t}, e^{3t}\}$. Thus</p>
+
+$$W(e^{2t}, e^{3t}) = \begin{vmatrix} e^{2t} & e^{3t} \\ 2e^{2t} & 3e^{3t} \end{vmatrix} = 3e^{5t} - 2e^{5t} = e^{5t}.$$
+
+<p>Hence</p>
+
+\begin{align}
+Y &= -e^{2t}\int_{t_0}^t \frac{e^{3t}(2e^t)}{e^{5t}}\,dt + e^{3t}\int_{t_0}^t \frac{e^{2t}(2e^t)}{e^{5t}}\,dt \\
+&= -e^{2t}\int_{t_0}^t 2e^{-t}\,dt + e^{3t}\int_{t_0}^t 2e^{-2t}\,dt \\
+&= 2e^t - 2/2 \cdot e^{(3-2)t} \\
+&= e^t.
+\end{align}
+
+<p>We could have used the method of undetermined coefficients method learnt from the last section to solve this DE.</p>
+
+<hr>
+
+<!-- ============================================================ -->
+<h2 id="sec-exercises">4 &ensp; Exercises</h2>
+
+<div class="box exercise-box">
+  <span class="box-title">Exercise — Variation of Parameters</span>
+  <p>Use the method of variation of parameters to solve each of the following.</p>
+  <ol>
+    <li>$y'' - 5y' + 6y = 2e^t$ <button class="answer-btn">Answer</button><span class="answer">$c_1 e^{2t} + c_2 e^{3t} + e^t$</span></li>
+    <li>Find a particular solution to $y'' - y' - 2y = 2e^{-t}$ <button class="answer-btn">Answer</button><span class="answer">$-\frac{2}{3}te^{-t}$</span></li>
+  </ol>
+</div>
+
+<div class="box exercise-box">
+  <span class="box-title">Exercise — General Solution</span>
+  <p>Solve for the general solution of the following DEs.</p>
+  <ol>
+    <li>$y'' - 4y' + 4y = t^{-2}e^{-2t}$ <button class="answer-btn">Answer</button><span class="answer">$c_1 e^{-2t} + c_2 te^{-2t} - e^{-2t}\ln t$</span></li>
+    <li>$y'' + y = \tan t$ <button class="answer-btn">Answer</button><span class="answer">$c_1\cos t + c_2\sin t + \cos t\ln\frac{\cos\frac{t}{2} - \sin\frac{t}{2}}{\cos\frac{t}{2} + \sin\frac{t}{2}}$</span></li>
+    <li>$4y'' + y = 2\sec t/2$ $(|t| < \pi)$ <button class="answer-btn">Answer</button><span class="answer">$c_1\cos t/2 + c_2\sin t/2 + t\sin t/2 + 2[\ln\cos t/2]\cos t/2$</span></li>
+    <li>$y'' - 5y' + 6y = g(t)$ where the $g(t)$ is an arbitrary continuous function. <button class="answer-btn">Answer</button><span class="answer">$c_1 e^{2t} + c_2 e^{3t} + \frac{1}{2}\int[\sin 2(t-s)]g(s)\,ds$</span></li>
+  </ol>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec-practice">5 &ensp; Practice MCQ</h2>
+
+<!-- MCQ: Variation of Parameters -->
+<div class="mcq" id="mcq-variation">
+  <div class="mcq-title">Practice: Variation of Parameters</div>
+  <div class="mcq-problem">
+    <p>Use variation of parameters to find a particular solution to:</p>
+    $$y'' - 5y' + 6y = 2e^t$$
+    <p>Given: complementary functions are $y_1 = e^{2t}$, $y_2 = e^{3t}$.</p>
+  </div>
+
+  <!-- PHASE 0 -->
+  <div class="mcq-phase active" data-phase="0">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE 0</span>
+      <span class="phase-name">Compute the Wronskian</span>
+    </div>
+    <div class="mcq-step" data-step="classify">
+      <p class="mcq-question">What is $W(y_1, y_2) = W(e^{2t}, e^{3t})$?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! $W = e^{2t}(3e^{3t}) - e^{3t}(2e^{2t}) = 3e^{5t} - 2e^{5t} = e^{5t}$.">$e^{5t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check: $W = y_1 y_2' - y_2 y_1' = e^{2t}(3e^{3t}) - e^{3t}(2e^{2t})$.">$5e^{5t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The Wronskian is $e^{2t} \cdot 3e^{3t} - e^{3t} \cdot 2e^{2t} = e^{5t}$, not $e^{6t}$.">$e^{6t}$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+    <div class="phase-transition">Now apply the variation of parameters formula...</div>
+  </div>
+
+  <!-- PHASE A -->
+  <div class="mcq-phase locked" data-phase="A">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE A</span>
+      <span class="phase-name">Set Up the Integrals</span>
+    </div>
+    <div class="strategy-outline" style="display:none;">
+      <div class="strategy-outline-title">Solution Outline</div>
+      <div class="strategy-steps"></div>
+    </div>
+
+    <div class="mcq-step" data-step="A1">
+      <p class="mcq-question">By the formula, $u_1' = -\dfrac{y_2 g}{W}$. With $g = 2e^t$, what is $u_1'$?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! $u_1' = -\frac{e^{3t} \cdot 2e^t}{e^{5t}} = -2e^{-t}$." data-step-text="$u_1' = -\frac{e^{3t} \cdot 2e^t}{e^{5t}} = -2e^{-t}$">$u_1' = -2e^{-t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check: $-\frac{e^{3t} \cdot 2e^t}{e^{5t}} = -2e^{4t-5t} = -2e^{-t}$." data-step-text="">$u_1' = 2e^{-t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Simplify the exponents: $3t + t - 5t = -t$." data-step-text="">$u_1' = -2e^{t}$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="A2">
+      <p class="mcq-question">Similarly, $u_2' = \dfrac{y_1 g}{W}$. What is $u_2'$?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! $u_2' = \frac{e^{2t} \cdot 2e^t}{e^{5t}} = 2e^{-2t}$." data-step-text="$u_2' = \frac{e^{2t} \cdot 2e^t}{e^{5t}} = 2e^{-2t}$">$u_2' = 2e^{-2t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check: $\frac{e^{2t} \cdot 2e^t}{e^{5t}} = 2e^{3t-5t} = 2e^{-2t}$." data-step-text="">$u_2' = 2e^{2t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The sign should be positive for $u_2'$." data-step-text="">$u_2' = -2e^{-2t}$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+    <div class="phase-transition">Now integrate to find $u_1$ and $u_2$...</div>
+  </div>
+
+  <!-- PHASE B -->
+  <div class="mcq-phase locked" data-phase="B">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE B</span>
+      <span class="phase-name">Compute the Particular Solution</span>
+    </div>
+
+    <div class="mcq-step" data-step="B1">
+      <div class="mcq-step-label">Step B1</div>
+      <p class="mcq-question">Integrate $u_1' = -2e^{-t}$ to get $u_1$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$u_1 = 2e^{-t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$\int -2e^{-t}\,dt = -2 \cdot (-e^{-t}) = 2e^{-t}$.">$u_1 = -2e^{-t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Don't forget the factor of $-1$ from integrating $e^{-t}$.">$u_1 = 2e^{t}$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="B2">
+      <div class="mcq-step-label">Step B2</div>
+      <p class="mcq-question">Integrate $u_2' = 2e^{-2t}$ to get $u_2$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$u_2 = -e^{-2t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$\int 2e^{-2t}\,dt = 2 \cdot \frac{e^{-2t}}{-2} = -e^{-2t}$.">$u_2 = e^{-2t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Factor: $\int 2e^{-2t}\,dt = -e^{-2t}$, not $-2e^{-2t}$.">$u_2 = -2e^{-2t}$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="B3">
+      <div class="mcq-step-label">Step B3</div>
+      <p class="mcq-question">The particular solution is $Y = u_1 y_1 + u_2 y_2 = 2e^{-t} \cdot e^{2t} + (-e^{-2t}) \cdot e^{3t}$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$Y = 2e^{t} - e^{t} = e^{t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$2e^{-t+2t} + (-1)e^{-2t+3t} = 2e^t - e^t = e^t$.">$Y = 2e^{t} + e^{t} = 3e^{t}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Simplify: $e^{-t+2t} = e^t$ and $e^{-2t+3t} = e^t$.">$Y = e^{-t}$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+  </div>
+
+  <div class="mcq-result">Excellent! The particular solution is $Y(t) = e^t$.</div>
+</div>
+
+</div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // --- Shuffle MCQ Options ---
+  document.querySelectorAll('.mcq-options').forEach(function(container) {
+    var options = Array.from(container.querySelectorAll('.mcq-option'));
+    for (var i = options.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      container.appendChild(options[j]);
+      options.splice(j, 1);
+    }
+    container.appendChild(options[0]);
+  });
+
+  // --- Three-Phase MCQ Logic ---
+  document.querySelectorAll('.mcq').forEach(function (mcq) {
+    var phases = mcq.querySelectorAll('.mcq-phase');
+    var result = mcq.querySelector('.mcq-result');
+    var currentPhaseIdx = 0;
+    var strategySteps = [];
+
+    function updateStrategyOutline(phase) {
+      var outline = phase.querySelector('.strategy-outline');
+      if (!outline) return;
+      var stepsContainer = outline.querySelector('.strategy-steps');
+      if (!stepsContainer) return;
+      stepsContainer.innerHTML = '';
+      strategySteps.forEach(function(stepText) {
+        var stepEl = document.createElement('div');
+        stepEl.className = 'strategy-step';
+        stepEl.innerHTML = stepText;
+        stepsContainer.appendChild(stepEl);
+      });
+      if (window.MathJax && MathJax.typeset) MathJax.typeset([stepsContainer]);
+    }
+
+    function isPhaseComplete(phase) {
+      var steps = phase.querySelectorAll('.mcq-step');
+      var completedSteps = phase.querySelectorAll('.mcq-step.completed');
+      return steps.length === completedSteps.length;
+    }
+
+    function unlockNextPhase() {
+      var currentPhase = phases[currentPhaseIdx];
+      var transition = currentPhase.querySelector('.phase-transition');
+      if (transition) transition.style.display = 'block';
+      currentPhase.classList.remove('active');
+      currentPhase.classList.add('completed');
+
+      if (currentPhaseIdx + 1 < phases.length) {
+        setTimeout(function() {
+          currentPhaseIdx++;
+          var nextPhase = phases[currentPhaseIdx];
+          nextPhase.classList.remove('locked');
+          nextPhase.classList.add('active');
+          var firstStep = nextPhase.querySelector('.mcq-step.locked');
+          if (firstStep) firstStep.classList.remove('locked');
+          var outline = nextPhase.querySelector('.strategy-outline');
+          if (outline && strategySteps.length > 0) {
+            outline.style.display = 'block';
+            updateStrategyOutline(nextPhase);
+          }
+          if (window.MathJax && MathJax.typeset) MathJax.typeset([nextPhase]);
+        }, 600);
+      } else {
+        setTimeout(function() { if (result) result.style.display = 'block'; }, 600);
+      }
+    }
+
+    phases.forEach(function(phase) {
+      phase.querySelectorAll('.mcq-step').forEach(function(step) {
+        var options = step.querySelectorAll('.mcq-option');
+        var feedback = step.querySelector('.mcq-feedback');
+        options.forEach(function(opt) {
+          opt.addEventListener('click', function() {
+            if (opt.classList.contains('correct') || opt.classList.contains('wrong') || opt.classList.contains('disabled')) return;
+            var isCorrect = opt.getAttribute('data-correct') === 'true';
+            var hint = opt.getAttribute('data-hint') || '';
+            if (isCorrect) {
+              opt.classList.add('correct');
+              options.forEach(function(o) { if (o !== opt) o.classList.add('disabled'); });
+              step.classList.add('completed');
+              feedback.textContent = hint || 'Correct!';
+              feedback.className = 'mcq-feedback correct-fb';
+              var stepText = opt.getAttribute('data-step-text');
+              if (stepText && phase.getAttribute('data-phase') === 'A') {
+                strategySteps.push(stepText);
+                updateStrategyOutline(phase);
+              }
+              if (window.MathJax && MathJax.typeset) MathJax.typeset([step]);
+              if (isPhaseComplete(phase)) { setTimeout(unlockNextPhase, 500); }
+              else {
+                var nextStep = step.nextElementSibling;
+                while (nextStep && !nextStep.classList.contains('mcq-step')) nextStep = nextStep.nextElementSibling;
+                if (nextStep && nextStep.classList.contains('locked')) setTimeout(function() { nextStep.classList.remove('locked'); if (window.MathJax && MathJax.typeset) MathJax.typeset([nextStep]); }, 400);
+              }
+            } else {
+              opt.classList.add('wrong');
+              feedback.innerHTML = hint || 'Try again.';
+              feedback.className = 'mcq-feedback wrong-fb';
+              if (window.MathJax && MathJax.typeset) MathJax.typeset([feedback]);
+              setTimeout(function() { opt.classList.remove('wrong'); feedback.className = 'mcq-feedback'; }, 3000);
+            }
+          });
+        });
+      });
+    });
+  });
+
+  // --- Scroll-spy ---
+  var sidebarLinks = document.querySelectorAll('.sidebar a[href^="#"]');
+  var sections = [];
+  sidebarLinks.forEach(function(link) {
+    var id = link.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) sections.push({ el: el, link: link });
+  });
+  function updateActive() {
+    var scrollY = window.scrollY + 80, current = null;
+    for (var i = 0; i < sections.length; i++) { if (sections[i].el.offsetTop <= scrollY) current = sections[i]; }
+    sidebarLinks.forEach(function(l) { l.classList.remove('active'); });
+    if (current) current.link.classList.add('active');
+  }
+  window.addEventListener('scroll', updateActive, { passive: true });
+  updateActive();
+
+  // --- Answer toggle ---
+  document.querySelectorAll('.answer-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var ans = this.nextElementSibling;
+      if (ans.style.display === 'inline') { ans.style.display = 'none'; this.textContent = 'Answer'; }
+      else { ans.style.display = 'inline'; ans.classList.add('answer-revealed'); this.textContent = 'Hide'; }
+    });
+  });
+});
+</script>
+</body>
+</html>

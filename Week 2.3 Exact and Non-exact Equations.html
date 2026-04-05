@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MATH2351/2352 – Exact and Non-exact Equations</title>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    tags: 'ams'
+  },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg: #2d2d2d;
+  --text: #e0e0e0;
+  --heading: #ffffff;
+  --accent: #8ab4f8;
+  --accent2: #81c995;
+  --border: #4a4a4a;
+  --def-bg: #3a3a3a;
+  --def-border: #6a6a6a;
+  --prop-bg: #353535;
+  --prop-border: #5a5a5a;
+  --exercise-bg: #383838;
+  --exercise-border: #5a5a5a;
+  --warn-bg: #3d3535;
+  --warn-border: #7a5a5a;
+  --code-bg: #333333;
+  --shadow: rgba(0, 0, 0, 0.3);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 18px; scroll-behavior: smooth; }
+
+body {
+  font-family: 'Crimson Pro', Georgia, serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page-wrapper { display: flex; min-height: 100vh; }
+
+/* --- Sidebar --- */
+.sidebar {
+  position: sticky; top: 0; align-self: flex-start;
+  width: 280px; min-width: 280px; height: 100vh;
+  overflow-y: auto; padding: 2rem 1.2rem 2rem 1.4rem;
+  border-right: 1.5px solid var(--border); background: #252525;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+.sidebar::-webkit-scrollbar { width: 5px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+.sidebar .sidebar-title {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.72rem;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: #888888; margin-bottom: 1rem; font-weight: 600;
+}
+
+.sidebar ol { list-style: none; padding: 0; margin: 0; counter-reset: sidebar-counter; }
+.sidebar > ol > li { counter-increment: sidebar-counter; margin-bottom: 0.15rem; }
+.sidebar > ol > li > a::before {
+  content: counter(sidebar-counter) ". "; font-weight: 600;
+  color: var(--accent); font-size: 0.8rem;
+}
+
+.sidebar a {
+  display: block; font-family: 'Source Sans 3', sans-serif; font-size: 0.82rem;
+  color: var(--text); text-decoration: none; padding: 0.2rem 0.5rem;
+  border-radius: 4px; border-left: 2.5px solid transparent;
+  transition: all 0.2s; line-height: 1.4;
+}
+.sidebar a:hover { color: var(--accent); background: rgba(138,180,248,0.1); }
+.sidebar a.active {
+  color: var(--accent); font-weight: 600;
+  background: rgba(138,180,248,0.15); border-left-color: var(--accent);
+}
+
+.sidebar ol ol { margin-left: 1rem; margin-top: 0.1rem; counter-reset: none; }
+.sidebar ol ol li { margin-bottom: 0.05rem; }
+.sidebar ol ol a { font-size: 0.78rem; }
+.sidebar ol ol a::before { display: none; }
+
+.container {
+  max-width: 780px; margin: 0 auto; padding: 2rem 1.5rem 4rem;
+  flex: 1; min-width: 0;
+}
+
+/* --- Title Block --- */
+.title-block {
+  text-align: center; padding: 3rem 0 2.5rem;
+  border-bottom: 2px solid var(--border); margin-bottom: 2.5rem;
+}
+.title-block h1 {
+  font-family: 'Crimson Pro', serif; font-size: 2.4rem; font-weight: 700;
+  color: var(--heading); line-height: 1.2; margin-bottom: 0.5rem; letter-spacing: -0.02em;
+}
+.title-block .author { font-family: 'Source Sans 3', sans-serif; font-size: 1rem; color: #a0a0a0; }
+.title-block .course {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: #888888;
+  margin-top: 0.2rem; letter-spacing: 0.04em; text-transform: uppercase;
+}
+.title-block .date { font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: #888888; margin-top: 0.3rem; }
+
+/* --- TOC (mobile) --- */
+.toc {
+  background: var(--def-bg); border: 1px solid var(--border);
+  border-radius: 6px; padding: 1.5rem 2rem; margin-bottom: 2.5rem;
+}
+.toc h2 {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.8rem;
+  text-transform: uppercase; letter-spacing: 0.12em; color: #888888;
+  margin-bottom: 0.8rem; font-weight: 600;
+}
+.toc ol { list-style: none; counter-reset: toc-counter; }
+.toc > ol > li { counter-increment: toc-counter; margin-bottom: 0.3rem; }
+.toc > ol > li::before {
+  content: counter(toc-counter) "."; font-weight: 600; color: var(--accent);
+  margin-right: 0.5rem; font-family: 'Source Sans 3', sans-serif; font-size: 0.9rem;
+}
+.toc a { color: var(--text); text-decoration: none; font-size: 0.95rem; transition: color 0.2s; }
+.toc a:hover { color: var(--accent); }
+
+/* --- Headings --- */
+h2 {
+  font-family: 'Crimson Pro', serif; font-size: 1.8rem; font-weight: 700;
+  color: var(--heading); margin-top: 3rem; margin-bottom: 1rem;
+  padding-bottom: 0.4rem; border-bottom: 1.5px solid var(--border); line-height: 1.3;
+}
+h3 { font-family: 'Crimson Pro', serif; font-size: 1.35rem; font-weight: 600; color: var(--heading); margin-top: 2rem; margin-bottom: 0.8rem; }
+h4 { font-family: 'Crimson Pro', serif; font-size: 1.1rem; font-weight: 600; color: var(--heading); margin-top: 1.5rem; margin-bottom: 0.6rem; }
+
+p { margin-bottom: 1rem; text-align: justify; hyphens: auto; }
+
+/* --- Boxes --- */
+.box { border-radius: 5px; padding: 1.2rem 1.4rem; margin: 1.5rem 0; border-left: 4px solid; position: relative; }
+.box-title { font-family: 'Source Sans 3', sans-serif; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.6rem; display: block; }
+.definition { background: var(--def-bg); border-color: var(--def-border); }
+.definition .box-title { color: #f0c040; }
+.theorem { background: var(--prop-bg); border-color: var(--accent2); }
+.theorem .box-title { color: var(--accent2); }
+.proposition { background: var(--prop-bg); border-color: var(--prop-border); }
+.proposition .box-title { color: var(--accent2); }
+.exercise-box { background: var(--exercise-bg); border-color: var(--exercise-border); }
+.exercise-box .box-title { color: #c0a080; }
+.warning-box { background: var(--warn-bg); border-color: var(--warn-border); }
+.warning-box .box-title { color: #f08080; }
+.remark-box { background: #3a3a40; border-color: #6a6a80; }
+.remark-box .box-title { color: #a0a0d0; }
+.box p:last-child { margin-bottom: 0; }
+
+.proof { margin: 1rem 0 1.5rem; padding-left: 1rem; border-left: 2px solid var(--border); }
+.proof-label { font-style: italic; font-weight: 500; color: #a0a0a0; }
+.proof::after { content: "□"; display: block; text-align: right; color: #666; margin-top: 0.3rem; }
+
+ol, ul { margin-bottom: 1rem; padding-left: 1.5rem; }
+li { margin-bottom: 0.4rem; }
+
+.answer { display: none; }
+.answer-btn {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.78rem; font-weight: 600;
+  color: var(--accent2); background: none; border: 1.5px solid var(--accent2);
+  border-radius: 4px; padding: 0.15rem 0.55rem; margin-left: 0.4rem;
+  cursor: pointer; transition: all 0.2s; vertical-align: middle;
+}
+.answer-btn:hover { background: var(--accent2); color: #fff; }
+.answer-btn.revealed { border-color: var(--border); color: #888888; }
+.answer-btn.revealed:hover { background: var(--exercise-bg); color: #a0a0a0; }
+.answer-revealed {
+  display: inline; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem;
+  color: var(--accent2); margin-left: 0.3rem; animation: fadeIn 0.25s ease;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-2px); } to { opacity: 1; transform: translateY(0); } }
+
+hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+.key-formula {
+  background: linear-gradient(135deg, #3a3a3a, #353535);
+  border: 1.5px solid var(--def-border); border-radius: 5px;
+  padding: 1rem 1.4rem; margin: 1.2rem 0; text-align: center;
+}
+
+/* --- MCQ Phase System --- */
+.mcq { background: #333; border: 1.5px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; }
+.mcq-title { font-family: 'Source Sans 3', sans-serif; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 0.8rem; }
+.mcq-problem { margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border); }
+
+.mcq-phase { margin-bottom: 1rem; padding: 1rem; border-radius: 6px; background: #2a2a2a; border: 1.5px solid #444; transition: all 0.3s; }
+.mcq-phase.locked { opacity: 0.4; pointer-events: none; filter: grayscale(0.3); }
+.mcq-phase.active { border-color: var(--accent); box-shadow: 0 2px 8px rgba(138,180,248,0.15); }
+.mcq-phase.completed { border-color: var(--accent2); background: #2a3530; }
+
+.phase-label { font-family: 'Source Sans 3', sans-serif; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.5rem; }
+.phase-label .phase-tag { background: var(--accent); color: #1a1a1a; padding: 0.15rem 0.5rem; border-radius: 3px; font-size: 0.65rem; }
+.mcq-phase.completed .phase-label .phase-tag { background: var(--accent2); }
+.phase-label .phase-name { color: #888; }
+
+.strategy-outline { background: #353535; border-radius: 4px; padding: 0.8rem 1rem; margin: 0.8rem 0; border-left: 3px solid var(--accent2); }
+.strategy-outline-title { font-family: 'Source Sans 3', sans-serif; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin-bottom: 0.4rem; }
+.strategy-step { font-size: 0.9rem; padding: 0.3rem 0; color: var(--text); display: flex; align-items: flex-start; gap: 0.5rem; }
+.strategy-step::before { content: "✓"; color: var(--accent2); font-weight: 700; flex-shrink: 0; }
+
+.mcq-step { margin-bottom: 0.8rem; }
+.mcq-step.locked { display: none; }
+.mcq-step.completed .mcq-options { opacity: 0.6; }
+.mcq-step-label { font-family: 'Source Sans 3', sans-serif; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin-bottom: 0.5rem; }
+.mcq-question { margin-bottom: 0.6rem; font-size: 0.95rem; }
+.mcq-options { display: flex; flex-direction: column; gap: 0.4rem; }
+.mcq-option { font-family: 'Crimson Pro', serif; font-size: 0.95rem; text-align: left; padding: 0.5rem 0.8rem; border: 1.5px solid #555; border-radius: 5px; background: #2a2a2a; color: var(--text); cursor: pointer; transition: all 0.2s; line-height: 1.5; }
+.mcq-option:hover { border-color: var(--accent); background: rgba(138,180,248,0.1); }
+.mcq-option.correct { border-color: var(--accent2); background: rgba(129,201,149,0.15); cursor: default; }
+.mcq-option.correct::before { content: "✓ "; color: var(--accent2); font-weight: 700; }
+.mcq-option.wrong { border-color: #f08080; background: rgba(240,128,128,0.15); cursor: default; }
+.mcq-option.wrong::before { content: "✗ "; color: #f08080; font-weight: 700; }
+.mcq-option.disabled { pointer-events: none; opacity: 0.5; }
+.mcq-feedback { display: none; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; padding: 0.5rem 0.8rem; border-radius: 4px; margin-top: 0.5rem; line-height: 1.5; }
+.mcq-feedback.correct-fb { display: block; background: rgba(129,201,149,0.15); color: var(--accent2); border: 1px solid var(--accent2); }
+.mcq-feedback.wrong-fb { display: block; background: rgba(240,128,128,0.15); color: #f08080; border: 1px solid #f08080; }
+.mcq-result { display: none; font-family: 'Source Sans 3', sans-serif; font-size: 0.9rem; font-weight: 600; color: var(--accent2); padding: 0.8rem 1rem; background: rgba(129,201,149,0.15); border-radius: 6px; border: 1.5px solid var(--accent2); text-align: center; margin-top: 1rem; }
+
+.phase-transition { display: none; text-align: center; padding: 0.6rem; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: var(--accent2); background: rgba(129,201,149,0.1); border-radius: 4px; margin: 0.5rem 0; animation: fadeIn 0.3s ease; }
+
+@media (min-width: 901px) { .toc { display: none; } }
+@media (max-width: 900px) {
+  .page-wrapper { display: block; } .sidebar { display: none; }
+  html { font-size: 16px; } .container { padding: 1rem; max-width: 100%; }
+  .title-block h1 { font-size: 1.8rem; } h2 { font-size: 1.5rem; } .box { padding: 1rem; }
+}
+@media print {
+  .sidebar { display: none; } .page-wrapper { display: block; }
+  body { font-size: 11pt; } .container { max-width: 100%; }
+  .box { break-inside: avoid; } h2 { break-after: avoid; } .toc { display: block; }
+}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+
+<!-- ===== SIDEBAR ===== -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-title">Contents</div>
+  <ol>
+    <li><a href="#sec-exact">Exact Equations</a>
+      <ol>
+        <li><a href="#sec-motivation">Motivating Example</a></li>
+        <li><a href="#sec-chain-rule">Chain Rule for $\psi(x,y)$</a></li>
+        <li><a href="#sec-exact-def">Definition of Exact DEs</a></li>
+        <li><a href="#sec-exact-theorem">Exactness Theorem</a></li>
+        <li><a href="#sec-exact-proof">Proof of the Theorem</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec-exact-examples">Examples of Exact Equations</a>
+      <ol>
+        <li><a href="#sec-ex1">Example: $2x + y^2 + 2xyy' = 0$</a></li>
+        <li><a href="#sec-ex2">Example: $y\cos x + 2xe^y + \ldots$</a></li>
+        <li><a href="#sec-ex3">Non-exact Example</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec-integrating-factor">Integrating Factors</a>
+      <ol>
+        <li><a href="#sec-if-derivation">Derivation of $\mu(x)$</a></li>
+        <li><a href="#sec-if-example">Example: Making a DE Exact</a></li>
+        <li><a href="#sec-if-y">Integrating Factor $\mu(y)$</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec-exercises">Exercises</a></li>
+    <li><a href="#sec-practice">Practice MCQ</a></li>
+  </ol>
+</nav>
+
+<div class="container">
+
+<!-- ===== TITLE ===== -->
+<div class="title-block">
+  <h1>First Order Equations: Exact and Non-exact Equations</h1>
+  <div class="author">Edmund Chiang</div>
+  <div class="course">MATH2351 / 2352 — Boyce &amp; DiPrima §2.3</div>
+  <div class="date">February 9, 2026</div>
+</div>
+
+<!-- ===== TOC (mobile) ===== -->
+<nav class="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#sec-exact">Exact Equations</a></li>
+    <li><a href="#sec-exact-examples">Examples of Exact Equations</a></li>
+    <li><a href="#sec-integrating-factor">Integrating Factors</a></li>
+    <li><a href="#sec-exercises">Exercises</a></li>
+    <li><a href="#sec-practice">Practice MCQ</a></li>
+  </ol>
+</nav>
+
+<!-- ============================================================ -->
+<h2 id="sec-exact">1 &ensp; Exact Equations</h2>
+
+<h3 id="sec-motivation">1.1 &ensp; Motivating Example</h3>
+
+<p>We notice immediately that the integration factor method and separation of variables both do not work for the DE</p>
+
+$$2x + y^2 + 2xyy' = 0.$$
+
+<p>On the other hand, we notice that</p>
+
+$$0 = 2x + y^2 + 2xyy' = \frac{d}{dx}(x^2 + xy^2),$$
+
+<p>where $y = y(x)$. Hence</p>
+
+<div class="key-formula">
+$$x^2 + xy^2 = c$$
+</div>
+
+<p>for some constant $c$.</p>
+
+<hr>
+
+<h3 id="sec-chain-rule">1.2 &ensp; Chain Rule for $\psi(x, y)$</h3>
+
+<p>Let us recall the standard chain rule for partial derivatives of $\psi(x, y)$, where $x = x(t)$ and $y = y(t)$:</p>
+
+<div class="key-formula">
+$$\frac{d\psi}{dt} = \frac{\partial \psi}{\partial x}\frac{dx}{dt} + \frac{\partial \psi}{\partial y}\frac{dy}{dt}$$
+</div>
+
+<p>Let us now revisit the above example and write</p>
+
+$$\psi(x, y) = x^2 + xy^2.$$
+
+<p>Then we have by chain rule above that</p>
+
+$$0 = \frac{d}{dx}\psi(x, y) = \frac{\partial \psi}{\partial x}\frac{dx}{dx} + \frac{\partial \psi}{\partial y}\frac{dy}{dx} = \frac{\partial \psi}{\partial x} + \frac{\partial \psi}{\partial y}\frac{dy}{dx}$$
+
+<p>which was the calculation for $\psi = x^2 + xy^2$ we have computed above. So the conclusion is</p>
+
+$$\psi(x, y) = c$$
+
+<p>for some constant $c$. We note that if we denote $M(x, y) = \partial\psi/\partial x$ and $N(x, y) = \partial\psi/\partial y$, then we could write the DE $2x + y^2 + 2xyy' = 0$ in the form</p>
+
+$$M(x, y) + N(x, y)\,y'(x) = 0.$$
+
+<hr>
+
+<h3 id="sec-exact-def">1.3 &ensp; Definition of Exact Differential Equations</h3>
+
+<div class="box definition">
+  <span class="box-title">Definition — Exact Differential Equation</span>
+  <p>The equation</p>
+  $$M(x, y) + N(x, y)\,y'(x) = 0 \tag{1}$$
+  <p>is called <strong>exact</strong> if it can be integrated as</p>
+  $$\frac{d}{dx}[\psi(x, \phi)] = 0$$
+  <p>for $y = \phi(x)$. That is, $\psi(x, y(x)) = c$ for some constant $c$.</p>
+</div>
+
+<div class="box remark-box">
+  <span class="box-title">Remark — Separable as Special Case</span>
+  <p>We note that if $M(x, y) = M(x)$ and $N(x, y) = N(y)$ in the above consideration, then the DE becomes</p>
+  $$M(x) + N(y)\frac{dy}{dx} = 0$$
+  <p>which was the separable form DE considered earlier. In this case, the exactness of the DE criterion</p>
+  $$M_y = 0 = N_x$$
+  <p>holds in an appropriate $R$ automatically. Hence the DE can be integrated.</p>
+</div>
+
+<hr>
+
+<h3 id="sec-exact-theorem">1.4 &ensp; Exactness Theorem</h3>
+
+<div class="box theorem">
+  <span class="box-title">Theorem — Test for Exactness</span>
+  <p>Let $M(x, y)$, $N(x, y)$, $M_y(x, y)$, $N_x(x, y)$ be continuous functions defined in the rectangle $R$: $\alpha < x < \beta$; $\gamma < y < \delta$. Then</p>
+  $$M(x, y) + N(x, y)\frac{dy}{dx} = 0$$
+  <p>is <strong>exact</strong> in $R$ if and only if there is a $\psi = \psi(x, y)$ such that</p>
+  $$\frac{\partial \psi}{\partial x} = M(x, y), \qquad \frac{\partial \psi}{\partial y} = N(x, y)$$
+  <p>and</p>
+  <div class="key-formula">
+  $$\boxed{M_y(x, y) = N_x(x, y)}$$
+  </div>
+  <p>holds at each point of $R$. The equivalent statement is</p>
+  $$\frac{\partial^2 \psi}{\partial y\,\partial x} = \frac{\partial^2 \psi}{\partial x\,\partial y},$$
+  <p>holds at each point of $R$, i.e., the DE can be solved.</p>
+</div>
+
+<hr>
+
+<h3 id="sec-exact-proof">1.5 &ensp; Proof of the Exactness Theorem</h3>
+
+<div class="proof">
+  <span class="proof-label">Proof.</span>
+  <p><strong>($\Rightarrow$)</strong> Suppose first that the DE (1) is exact, that is, we can find a function $\psi(x, y)$ such that</p>
+  $$\psi_x = M(x, y), \qquad \psi_y = N(x, y)$$
+  <p>holds in $R$. But $\psi_x$ and $\psi_y$ are continuous, so</p>
+  $$\psi_{xy} = \psi_{yx}$$
+  <p>in $R$. But this is precisely the equation $M_y = N_x$.</p>
+
+  <p><strong>($\Leftarrow$)</strong> Suppose we now assume $M_y = N_x$. Let us integrate the first equation $\psi_x = M$ with respect to $x$ (keeping $y$ constant). This yields</p>
+  $$\psi(x, y) = Q(x, y) + h(y) = \int_{x_0}^{x} M(s, y)\,ds + h(y), \qquad \alpha < \alpha_0 < x < \beta_0 < \beta.$$
+  <p>We differentiate this equation both sides respect to $y$ and ask if the formula:</p>
+  $$\frac{\partial Q}{\partial y} + h'(y) = N(x, y)$$
+  <p>holds. This is, if</p>
+  $$h' = N(x, y) - \frac{\partial Q}{\partial y}.$$
+  <p>Differentiating the RHS with respect to $x$ yields</p>
+  $$\frac{\partial N}{\partial x} - \frac{\partial}{\partial x}\frac{\partial Q}{\partial y} = \frac{\partial N}{\partial x} - \frac{\partial}{\partial y}\frac{\partial Q}{\partial x} = \frac{\partial N}{\partial x} - \frac{\partial}{\partial y}M = 0$$
+  <p>since $M_y = N_x$. Hence</p>
+  $$0 = \frac{\partial h'(y)}{\partial x}$$
+  <p>holds and that the above $h'(y)$ and $h(y)$ are indeed functions of $y$ only. Upon integration of the above formula with respect to $y$ yields</p>
+  $$h(y) = \int N(x, t)\,dt - Q + c,$$
+  <p>for some constant $c$. We further notice that</p>
+  $$\psi(x, y) = Q(x, y) + h(y) = Q(x, y) + \int N(x, t)\,dt - Q + c = \int N(x, t)\,dt + c.$$
+  <p>Hence</p>
+  $$\frac{\partial \psi}{\partial y} = N(x, y).$$
+  <p>Since we have found a function $\psi(x, y)$ such that $\psi_x = M(x, y)$, $\psi_y = N(x, y)$, so the original DE is exact.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec-exact-examples">2 &ensp; Examples of Exact Equations</h2>
+
+<h3 id="sec-ex1">2.1 &ensp; Example: $2x + y^2 + 2xyy' = 0$ (Revisited)</h3>
+
+<p>The DE</p>
+$$2x + y^2 + 2xy\,y' = 0$$
+
+<p>with</p>
+$$M(x, y) = 2x + y^2, \qquad N(x, y) = 2xy,$$
+
+<p>is exact in the whole coordinate plane since</p>
+
+$$\frac{\partial M}{\partial y} = \frac{\partial}{\partial y}(2x + y^2) = 2y,$$
+
+<p>and</p>
+
+$$\frac{\partial N}{\partial x} = \frac{\partial}{\partial x}(2xy) = 2y$$
+
+<p>holds at every point of the $xy$-plane.</p>
+
+<hr>
+
+<h3 id="sec-ex2">2.2 &ensp; Example: $y\cos x + 2xe^y + (\sin x + x^2 e^y - 1)y' = 0$</h3>
+
+<p>Consider the equation</p>
+
+$$y\cos x + 2xe^y + (\sin x + x^2 e^y - 1)\frac{dy}{dx} = 0.$$
+
+<p>It is straightforward to check that</p>
+
+$$\frac{\partial M}{\partial y} = \cos x + 2xe^y = \frac{\partial N}{\partial x},$$
+
+<p>holds everywhere where</p>
+
+$$M(x, y) = y\cos x + 2xe^y, \qquad N(x, y) = \sin x + x^2 e^y - 1.$$
+
+<p>So the theorem asserts that there is a $\psi$ such that</p>
+
+\begin{align}
+\frac{\partial \psi}{\partial x} &= M = y\cos x + 2xe^y, \tag{2}\\[6pt]
+\frac{\partial \psi}{\partial y} &= N = \sin x + x^2 e^y - 1. \tag{3}
+\end{align}
+
+<p>Integrating the equation (2) with respect to $x$ yields</p>
+
+$$\psi(x, y) = y\sin x + x^2 e^y + h(y)$$
+
+<p>where $h(y)$ is a function of $y$ only. Differentiating this $\psi$ with respect to $y$ implies that</p>
+
+$$\psi_y = \sin x + 2e^y + h'(y),$$
+
+<p>so that a comparison with (3) yields</p>
+
+$$h'(y) = -1.$$
+
+<p>That is,</p>
+
+$$h(y) = -y$$
+
+<p>ignoring an integration constant.<sup>*</sup> We deduce</p>
+
+<div class="key-formula">
+$$\psi(x, y) = y\sin x + x^2 e^y - y = c$$
+</div>
+
+<p>where $c$ is a constant.</p>
+
+<p style="font-size:0.85rem; color:#6a5d50;"><sup>*</sup>Since this constant can be relegated to the constant in the final solution.</p>
+
+<div class="box remark-box">
+  <span class="box-title">Alternative Approach</span>
+  <p>We leave as an exercise to the readers to verify that one can derive the same solution should one integrate the equation (3) with respect to $y$ instead of integration of (2) with respect to $x$.</p>
+</div>
+
+<hr>
+
+<h3 id="sec-ex3">2.3 &ensp; Non-exact Example: $3xy + y^2 + (x^2 + xy)y' = 0$</h3>
+
+<p>Consider the equation</p>
+
+$$3xy + y^2 + (x^2 + xy)\,y' = 0.$$
+
+<p>Let</p>
+
+$$M(x, y) = 3xy + y^2, \qquad N(x, y) = x^2 + xy.$$
+
+<p>Then</p>
+
+\begin{align}
+M_y &= 3x + 2y \\[4pt]
+&\neq 2x + y = N_x.
+\end{align}
+
+<p>That is, $\psi_{yx} \neq \psi_{xy}$ so that the DE above is <strong>not exact</strong> unless at $(x, y) = (0, 0)$. So the DE cannot be integrated so solve for $\psi$.</p>
+
+<p>For suppose that there is such $\psi$, then we would have</p>
+
+$$\frac{\partial \psi}{\partial x} = M = 3xy + y^2,$$
+
+<p>so that</p>
+
+$$\psi(x, y) = \frac{3}{2}x^2 y + xy^2 + h(y)$$
+
+<p>where $h = h(y)$ is a function depends on $y$ only. We also have</p>
+
+$$\frac{\partial \psi}{\partial y} = N = x^2 + xy.$$
+
+<p>But then we must have, combining the two sources of $\psi_y$:</p>
+
+\begin{align}
+h'(y) &= \psi_y - \Big(\frac{3}{2}x^2 + 2xy\Big) \\[4pt]
+&= x^2 + xy - \Big(\frac{3}{2}x^2 + 2xy\Big) \\[4pt]
+&= -\frac{1}{2}x^2 - xy
+\end{align}
+
+<p>which is <strong>not</strong> a function of $y$ only, a contradiction to our earlier deduction that $h(y)$ is a function of $y$ only. Hence no such $\psi$ can exist.</p>
+
+<!-- ============================================================ -->
+<h2 id="sec-integrating-factor">3 &ensp; Integrating Factors for Non-exact Equations</h2>
+
+<p>We have just met an example of a DE that is not exact so that it cannot be integrated via the familiar method. However, there is a corresponding integrating factor method (not the same one we encountered earlier).</p>
+
+<h3 id="sec-if-derivation">3.1 &ensp; Derivation of $\mu(x)$</h3>
+
+<p>Suppose that</p>
+
+$$M_y \neq N_x,$$
+
+<p>but there is a $\mu = \mu(x, y)$ such that</p>
+
+$$[\mu(x, y)M(x, y)]_y = [\mu(x, y)N(x, y)]_x.$$
+
+<p>That is, we require</p>
+
+$$0 = [M_y - N_x]\mu + \mu_y M - \mu_x N$$
+
+<p>to hold. But such an integration factor is difficult to find and we resort to assume $\mu(x, y) = \mu(x)$. Then the above requirement simplifies to</p>
+
+$$0 = [M_y - N_x]\mu - \mu_x N$$
+
+<p>or</p>
+
+$$\mu_x N = [M_y - N_x]\mu,$$
+
+<p>and so</p>
+
+<div class="key-formula">
+$$\boxed{\frac{d\mu}{dx} = \frac{[M_y - N_x]}{N}\mu}$$
+</div>
+
+<p>This equation for $\mu(x)$ can be solved by separation method <strong>if the right hand-side is a function of $x$ only</strong>.</p>
+
+<hr>
+
+<h3 id="sec-if-example">3.2 &ensp; Example: Making $3xy + y^2 + (x^2 + xy)y' = 0$ Exact</h3>
+
+<p>Let us consider the non-exact DE</p>
+
+$$3xy + y^2 + (x^2 + xy)\,y' = 0.$$
+
+<p>Recall that</p>
+
+$$M(x, y) = 3xy + y^2, \qquad N(x, y) = x^2 + xy.$$
+
+<p>We check to see if the right hand-side of $\mu_x$ is a function of $x$ only:</p>
+
+\begin{align}
+\frac{\frac{d\mu}{dx}}{\mu} &= \frac{[M_y - N_x]}{N} = \frac{3x + 2y - (2x + y)}{x^2 + xy} \\[6pt]
+&= \frac{x + y}{x(x + y)} = \frac{1}{x},
+\end{align}
+
+<p>is indeed a function of $x$ only. Moreover, solving the above DE for $\mu$</p>
+
+$$\frac{1}{\mu}\frac{d\mu}{dx} = \frac{1}{x},$$
+
+<p>yields $\mu(x) = x$. Multiplying this $\mu$ on both sides of the original DE:</p>
+
+$$3x^2 y + xy^2 + (x^3 + x^2 y)\,y' = 0.$$
+
+<p>Let</p>
+
+$$\tilde{M} = 3x^2 y + xy^2, \qquad \tilde{N} = x^3 + x^2 y.$$
+
+<p>Then</p>
+
+$$\tilde{M}_y = 3x^2 + 2xy = \tilde{N}_x = 3x^2 + 2xy$$
+
+<p>thus verifying the new DE above is <strong>EXACT</strong>. It is left as an exercise to check that</p>
+
+<div class="key-formula">
+$$x^3 y + \frac{1}{2}x^2 y^2 = c,$$
+</div>
+
+<p>for some constant $c$.</p>
+
+<hr>
+
+<h3 id="sec-if-y">3.3 &ensp; Integrating Factor $\mu(y)$</h3>
+
+<div class="box remark-box">
+  <span class="box-title">Remark — Integrating Factor Depending on $y$</span>
+  <p>If it turns out that the non-exact DE</p>
+  $$M + Ny' = 0,$$
+  <p>has</p>
+  $$\frac{N_x - M_y}{M} = Q,$$
+  <p>is a function of $y$ only, that is $\mu(x, y) = \mu(y)$ instead, then one can show that it has an integration factor of the form</p>
+  <div class="key-formula">
+  $$\mu(y) = e^{\int Q(y)\,dy}.$$
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec-exercises">4 &ensp; Exercises</h2>
+
+<div class="box exercise-box">
+  <span class="box-title">Exercises — Exact Equations</span>
+  <p>Determine if the following DEs are exact and solve them if so.</p>
+  <ol>
+    <li>$(4x^3 y^3 - 2xy)\,dx + (3x^4 y^2 - x^2)\,dy = 0$ <span class="answer">(Ans. $x^4 y^3 - x^2 y = C$)</span></li>
+    <li>$(3e^{3x}y - 2x)\,dx + e^{3x}\,dy = 0$ <span class="answer">(Ans. $e^{3x}y - x^2 = C$)</span></li>
+    <li>$(\cos y + y\cos x)\,dx + (\sin x - x\sin y)\,dy = 0$ <span class="answer">(Ans. $x\cos y + y\sin x = C$)</span></li>
+  </ol>
+</div>
+
+<div class="box exercise-box">
+  <span class="box-title">Exercises — Non-exact Equations</span>
+  <p>Solve the following non-exact DEs:</p>
+  <ol>
+    <li>$(x^2 + y^2 + x)\,dx + xy\,dy = 0$ <span class="answer">(Ans. $3x^4 + 4x^3 + 6x^2 y^2 = C$)</span></li>
+    <li>$(2xy^4 e^y + 2xy^3 + y)\,dx + (x^2 y^4 e^y - x^2 y^2 - 3x)\,dy = 0$ <span class="answer">(Ans. $x^2 e^y + x^2/y + x/y^3 = C$)</span></li>
+  </ol>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec-practice">5 &ensp; Practice MCQ</h2>
+
+<!-- MCQ 1: Test for Exactness -->
+<div class="mcq" id="mcq-exact-test">
+  <div class="mcq-title">Practice 1: Test for Exactness (Three-Phase Approach)</div>
+  <div class="mcq-problem">
+    <p>Given the differential equation:</p>
+    $$y\cos x + 2xe^y + (\sin x + x^2 e^y - 1)\frac{dy}{dx} = 0$$
+  </div>
+
+  <!-- PHASE 0: Classification -->
+  <div class="mcq-phase active" data-phase="0">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE 0</span>
+      <span class="phase-name">Identify M and N</span>
+    </div>
+    <div class="mcq-step" data-step="classify">
+      <p class="mcq-question">In the form $M + N\frac{dy}{dx} = 0$, identify $M(x,y)$ and $N(x,y)$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! $M$ is the coefficient of $dx$ (or the term without $y'$), and $N$ is the coefficient of $dy/dx$.">$M = y\cos x + 2xe^y$, &nbsp; $N = \sin x + x^2 e^y - 1$</button>
+        <button class="mcq-option" data-correct="false" data-hint="You've swapped $M$ and $N$. Remember: $M$ is the term without $dy/dx$.">$M = \sin x + x^2 e^y - 1$, &nbsp; $N = y\cos x + 2xe^y$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check the signs and grouping. $M$ should include all terms not multiplied by $y'$.">$M = y\cos x$, &nbsp; $N = 2xe^y + \sin x + x^2 e^y - 1$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The $-1$ belongs with $N$, the coefficient of $dy/dx$.">$M = y\cos x + 2xe^y - 1$, &nbsp; $N = \sin x + x^2 e^y$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+    <div class="phase-transition">Good! Now let's test for exactness...</div>
+  </div>
+
+  <!-- PHASE A: Strategy Building -->
+  <div class="mcq-phase locked" data-phase="A">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE A</span>
+      <span class="phase-name">Test for Exactness</span>
+    </div>
+
+    <div class="strategy-outline" style="display:none;">
+      <div class="strategy-outline-title">Solution Outline</div>
+      <div class="strategy-steps"></div>
+    </div>
+
+    <div class="mcq-step" data-step="A1">
+      <p class="mcq-question">What condition must we check for exactness?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! If $M_y = N_x$, the equation is exact." data-step-text="Check if $M_y = N_x$">$M_y = N_x$ (i.e., $\frac{\partial M}{\partial y} = \frac{\partial N}{\partial x}$)</button>
+        <button class="mcq-option" data-correct="false" data-hint="That's the condition for separable equations, not exact equations." data-step-text="">$M$ depends only on $x$, $N$ depends only on $y$</button>
+        <button class="mcq-option" data-correct="false" data-hint="That would mean $M_y = N_x = 0$, which is too restrictive." data-step-text="">$M_x = N_y$</button>
+        <button class="mcq-option" data-correct="false" data-hint="We need mixed partial derivatives, not these." data-step-text="">$M_x = M_y$ and $N_x = N_y$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="A2">
+      <p class="mcq-question">Compute $M_y = \frac{\partial}{\partial y}(y\cos x + 2xe^y)$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! $\frac{\partial}{\partial y}(y\cos x) = \cos x$ and $\frac{\partial}{\partial y}(2xe^y) = 2xe^y$." data-step-text="$M_y = \cos x + 2xe^y$">$\cos x + 2xe^y$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check the derivative of $y\cos x$ with respect to $y$: it's $\cos x$, not $-y\sin x$." data-step-text="">$-y\sin x + 2xe^y$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$\cos x$ has no $y$ in it, so its derivative with respect to $y$ is not zero." data-step-text="">$2xe^y$</button>
+        <button class="mcq-option" data-correct="false" data-hint="You computed $M_x$ instead of $M_y$." data-step-text="">$-y\sin x + 2e^y$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="A3">
+      <p class="mcq-question">Compute $N_x = \frac{\partial}{\partial x}(\sin x + x^2 e^y - 1)$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! $\frac{\partial}{\partial x}(\sin x) = \cos x$, $\frac{\partial}{\partial x}(x^2 e^y) = 2xe^y$, and $\frac{\partial}{\partial x}(-1) = 0$." data-step-text="$N_x = \cos x + 2xe^y$">$\cos x + 2xe^y$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check: $\frac{\partial}{\partial x}(x^2 e^y) = 2xe^y$, not $x^2 e^y$." data-step-text="">$\cos x + x^2 e^y$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Don't forget the derivative of $\sin x$ with respect to $x$." data-step-text="">$2xe^y$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$\cos x$ should be positive, not negative." data-step-text="">$-\cos x + 2xe^y$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="A4">
+      <p class="mcq-question">Compare $M_y$ and $N_x$. Is the equation exact?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! Since $M_y = \cos x + 2xe^y = N_x$, the equation is exact." data-step-text="$M_y = N_x$ ✓ The equation IS exact">Yes — the equation is exact since $M_y = N_x$</button>
+        <button class="mcq-option" data-correct="false" data-hint="We found $M_y = \cos x + 2xe^y$ and $N_x = \cos x + 2xe^y$. They ARE equal!" data-step-text="">No — we need an integrating factor</button>
+        <button class="mcq-option" data-correct="false" data-hint="We have enough information: $M_y = N_x = \cos x + 2xe^y$." data-step-text="">Cannot determine without more information</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="phase-transition">The equation is exact! Now let's find $\psi(x,y)$...</div>
+  </div>
+
+  <!-- PHASE B: Execution -->
+  <div class="mcq-phase locked" data-phase="B">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE B</span>
+      <span class="phase-name">Find $\psi(x,y)$</span>
+    </div>
+
+    <div class="mcq-step" data-step="B1">
+      <div class="mcq-step-label">Step B1</div>
+      <p class="mcq-question">We need $\psi_x = M = y\cos x + 2xe^y$. Integrating with respect to $x$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$\psi = y\sin x + x^2 e^y + h(y)$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check: $\int y\cos x\,dx = y\sin x$, not $-y\sin x$.">$\psi = -y\sin x + x^2 e^y + h(y)$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$\int 2xe^y\,dx = x^2 e^y$ (treating $e^y$ as constant), not $2e^y$.">$\psi = y\sin x + 2e^y + h(y)$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Don't forget: the 'constant' of integration can depend on $y$, so we write $h(y)$, not just $c$.">$\psi = y\sin x + x^2 e^y + c$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="B2">
+      <div class="mcq-step-label">Step B2</div>
+      <p class="mcq-question">Now differentiate $\psi = y\sin x + x^2 e^y + h(y)$ with respect to $y$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$\psi_y = \sin x + x^2 e^y + h'(y)$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$\frac{\partial}{\partial y}(y\sin x) = \sin x$, not $y\cos x$.">$\psi_y = y\cos x + x^2 e^y + h'(y)$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$\frac{\partial}{\partial y}(x^2 e^y) = x^2 e^y$, not $2xe^y$.">$\psi_y = \sin x + 2xe^y + h'(y)$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Don't forget the $h'(y)$ term from differentiating $h(y)$.">$\psi_y = \sin x + x^2 e^y$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="B3">
+      <div class="mcq-step-label">Step B3</div>
+      <p class="mcq-question">We need $\psi_y = N = \sin x + x^2 e^y - 1$. Comparing with $\psi_y = \sin x + x^2 e^y + h'(y)$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$h'(y) = -1$, so $h(y) = -y$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Comparing: $\sin x + x^2 e^y + h'(y) = \sin x + x^2 e^y - 1$ gives $h'(y) = -1$, not $1$.">$h'(y) = 1$, so $h(y) = y$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$h(y)$ should come from integrating $h'(y) = -1$, giving $h(y) = -y$.">$h'(y) = 0$, so $h(y) = 0$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The $x^2 e^y$ terms cancel, leaving $h'(y) = -1$.">$h'(y) = -x^2 e^y$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="B4">
+      <div class="mcq-step-label">Step B4</div>
+      <p class="mcq-question">Final solution $\psi(x,y) = c$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$y\sin x + x^2 e^y - y = c$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The $h(y) = -y$, so the term should be $-y$, not $+y$.">$y\sin x + x^2 e^y + y = c$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Don't forget the $-y$ term from $h(y)$.">$y\sin x + x^2 e^y = c$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The sign on $y\sin x$ should be positive.">$-y\sin x + x^2 e^y - y = c$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+  </div>
+
+  <div class="mcq-result">Excellent! You've successfully solved the exact equation: $y\sin x + x^2 e^y - y = c$.</div>
+</div>
+
+<!-- MCQ 2: Determine if Exact -->
+<div class="mcq" id="mcq-exact-check">
+  <div class="mcq-title">Practice 2: Is This Equation Exact?</div>
+  <div class="mcq-problem">
+    <p>Determine if the following DE is exact:</p>
+    $$(3xy + y^2) + (x^2 + xy)\frac{dy}{dx} = 0$$
+  </div>
+
+  <div class="mcq-phase active" data-phase="single">
+    <div class="mcq-step" data-step="1">
+      <div class="mcq-step-label">Step 1</div>
+      <p class="mcq-question">Identify $M$ and $N$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$M = 3xy + y^2$, &nbsp; $N = x^2 + xy$</button>
+        <button class="mcq-option" data-correct="false" data-hint="You've swapped $M$ and $N$.">$M = x^2 + xy$, &nbsp; $N = 3xy + y^2$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="2">
+      <div class="mcq-step-label">Step 2</div>
+      <p class="mcq-question">Compute $M_y$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$M_y = 3x + 2y$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$\frac{\partial}{\partial y}(3xy) = 3x$, and $\frac{\partial}{\partial y}(y^2) = 2y$.">$M_y = 3y + 2y = 5y$</button>
+        <button class="mcq-option" data-correct="false" data-hint="That's $M_x$, not $M_y$.">$M_y = 3y$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="3">
+      <div class="mcq-step-label">Step 3</div>
+      <p class="mcq-question">Compute $N_x$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$N_x = 2x + y$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$\frac{\partial}{\partial x}(x^2) = 2x$, not $x$.">$N_x = x + y$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Don't forget the derivative of $xy$ with respect to $x$.">$N_x = 2x$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="4">
+      <div class="mcq-step-label">Step 4</div>
+      <p class="mcq-question">Is the equation exact?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="false" data-hint="Compare: $M_y = 3x + 2y$ but $N_x = 2x + y$. Since $3x + 2y \neq 2x + y$ in general, they're NOT equal.">Yes, it is exact</button>
+        <button class="mcq-option" data-correct="true">No, $M_y \neq N_x$ (since $3x + 2y \neq 2x + y$)</button>
+        <button class="mcq-option" data-correct="false" data-hint="We can determine this: $M_y = 3x + 2y$ and $N_x = 2x + y$ are different.">Cannot determine</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+  </div>
+
+  <div class="mcq-result">Correct! The equation is NOT exact. We need an integrating factor to solve it.</div>
+</div>
+
+<!-- MCQ 3: Find Integrating Factor -->
+<div class="mcq" id="mcq-integrating-factor">
+  <div class="mcq-title">Practice 3: Find an Integrating Factor (Three-Phase Approach)</div>
+  <div class="mcq-problem">
+    <p>Find an integrating factor for the non-exact DE:</p>
+    $$(3xy + y^2) + (x^2 + xy)\frac{dy}{dx} = 0$$
+    <p>(We showed this is not exact since $M_y = 3x + 2y \neq 2x + y = N_x$)</p>
+  </div>
+
+  <!-- PHASE 0: Classification -->
+  <div class="mcq-phase active" data-phase="0">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE 0</span>
+      <span class="phase-name">Strategy Selection</span>
+    </div>
+    <div class="mcq-step" data-step="classify">
+      <p class="mcq-question">To find an integrating factor $\mu$, we first try $\mu = \mu(x)$. What must we check?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! If $\frac{M_y - N_x}{N}$ depends only on $x$, then $\mu(x)$ exists.">Check if $\dfrac{M_y - N_x}{N}$ is a function of $x$ only</button>
+        <button class="mcq-option" data-correct="false" data-hint="That formula is for when $\mu = \mu(y)$, not $\mu(x)$.">Check if $\dfrac{N_x - M_y}{M}$ is a function of $x$ only</button>
+        <button class="mcq-option" data-correct="false" data-hint="We need to check if a specific ratio depends only on $x$.">Check if $M_y - N_x = 0$</button>
+        <button class="mcq-option" data-correct="false" data-hint="We're looking for a condition that lets us find $\mu(x)$.">Check if $M$ and $N$ are both functions of $x$ only</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+    <div class="phase-transition">Good! Let's compute...</div>
+  </div>
+
+  <!-- PHASE A: Strategy Building -->
+  <div class="mcq-phase locked" data-phase="A">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE A</span>
+      <span class="phase-name">Check the Condition</span>
+    </div>
+
+    <div class="strategy-outline" style="display:none;">
+      <div class="strategy-outline-title">Solution Outline</div>
+      <div class="strategy-steps"></div>
+    </div>
+
+    <div class="mcq-step" data-step="A1">
+      <p class="mcq-question">Compute $M_y - N_x$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! $(3x + 2y) - (2x + y) = x + y$." data-step-text="$M_y - N_x = (3x+2y) - (2x+y) = x + y$">$x + y$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check: $(3x + 2y) - (2x + y) = x + y$, not $x - y$." data-step-text="">$x - y$</button>
+        <button class="mcq-option" data-correct="false" data-hint="You may have reversed the subtraction." data-step-text="">$-x - y$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Careful: $3x - 2x = x$ and $2y - y = y$." data-step-text="">$5x + 3y$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="A2">
+      <p class="mcq-question">Compute $\dfrac{M_y - N_x}{N} = \dfrac{x + y}{x^2 + xy}$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! $\frac{x+y}{x^2+xy} = \frac{x+y}{x(x+y)} = \frac{1}{x}$." data-step-text="$\frac{M_y - N_x}{N} = \frac{x+y}{x(x+y)} = \frac{1}{x}$ (function of $x$ only!)">$\dfrac{1}{x}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Factor the denominator: $x^2 + xy = x(x+y)$." data-step-text="">$\dfrac{1}{x+y}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Simplify: $\frac{x+y}{x(x+y)} = \frac{1}{x}$." data-step-text="">$\dfrac{x+y}{x^2}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Try factoring: $x^2 + xy = x(x+y)$, then the $(x+y)$ cancels." data-step-text="">Cannot simplify</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="A3">
+      <p class="mcq-question">Since $\frac{M_y - N_x}{N} = \frac{1}{x}$ depends only on $x$, we can find $\mu(x)$. What equation does $\mu$ satisfy?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! This is the separable equation for $\mu(x)$." data-step-text="Solve $\frac{d\mu}{dx} = \frac{1}{x}\mu$">$\dfrac{d\mu}{dx} = \dfrac{1}{x}\mu$ &nbsp; (or $\dfrac{1}{\mu}\dfrac{d\mu}{dx} = \dfrac{1}{x}$)</button>
+        <button class="mcq-option" data-correct="false" data-hint="The equation should be $\frac{d\mu}{dx} = \frac{M_y - N_x}{N}\mu = \frac{1}{x}\mu$." data-step-text="">$\dfrac{d\mu}{dx} = x\mu$</button>
+        <button class="mcq-option" data-correct="false" data-hint="We're finding $\mu(x)$, so we differentiate with respect to $x$." data-step-text="">$\dfrac{d\mu}{dy} = \dfrac{1}{x}\mu$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="phase-transition">Now let's solve for $\mu(x)$...</div>
+  </div>
+
+  <!-- PHASE B: Execution -->
+  <div class="mcq-phase locked" data-phase="B">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE B</span>
+      <span class="phase-name">Find $\mu(x)$</span>
+    </div>
+
+    <div class="mcq-step" data-step="B1">
+      <div class="mcq-step-label">Step B1</div>
+      <p class="mcq-question">Solve $\frac{1}{\mu}\frac{d\mu}{dx} = \frac{1}{x}$ by integrating both sides:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$\ln|\mu| = \ln|x| + C$, so $\mu = x$ (taking $C=0$)</button>
+        <button class="mcq-option" data-correct="false" data-hint="$\int \frac{1}{x}\,dx = \ln|x|$, not $\frac{x^2}{2}$.">$\mu = e^{x^2/2}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The integral gives $\ln|\mu| = \ln|x|$, so $\mu = x$.">$\mu = \dfrac{1}{x}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$\int \frac{1}{x}\,dx = \ln|x|$, so $\mu = e^{\ln|x|} = x$.">$\mu = e^x$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="B2">
+      <div class="mcq-step-label">Step B2</div>
+      <p class="mcq-question">Multiply the original DE by $\mu = x$. What is the new $\tilde{M}$?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$\tilde{M} = x(3xy + y^2) = 3x^2 y + xy^2$</button>
+        <button class="mcq-option" data-correct="false" data-hint="We multiply by $x$, not add $x$.">$\tilde{M} = 3xy + y^2 + x$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Distribute $x$: $x \cdot 3xy = 3x^2 y$, $x \cdot y^2 = xy^2$.">$\tilde{M} = 3x^2 y^2 + xy^2$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="B3">
+      <div class="mcq-step-label">Step B3</div>
+      <p class="mcq-question">What is the new $\tilde{N}$?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$\tilde{N} = x(x^2 + xy) = x^3 + x^2 y$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Distribute: $x \cdot x^2 = x^3$, $x \cdot xy = x^2 y$.">$\tilde{N} = x^3 + xy^2$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Multiply each term by $x$.">$\tilde{N} = x^2 + x^2 y$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="B4">
+      <div class="mcq-step-label">Step B4</div>
+      <p class="mcq-question">Verify exactness: compute $\tilde{M}_y$ and $\tilde{N}_x$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$\tilde{M}_y = 3x^2 + 2xy = \tilde{N}_x$ ✓ Now exact!</button>
+        <button class="mcq-option" data-correct="false" data-hint="$\frac{\partial}{\partial y}(3x^2 y) = 3x^2$ and $\frac{\partial}{\partial y}(xy^2) = 2xy$.">$\tilde{M}_y = 6xy + 2xy \neq \tilde{N}_x$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Compute carefully: $\tilde{N}_x = 3x^2 + 2xy$.">$\tilde{M}_y = 3x^2 + 2xy$ but $\tilde{N}_x = 3x^2 + xy$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+  </div>
+
+  <div class="mcq-result">The integrating factor is $\mu(x) = x$. The solution (found by solving the now-exact equation) is $x^3 y + \frac{1}{2}x^2 y^2 = c$.</div>
+</div>
+
+<!-- MCQ 4: Solve Complete Exact Equation -->
+<div class="mcq" id="mcq-exact-solve">
+  <div class="mcq-title">Practice 4: Solve an Exact Equation</div>
+  <div class="mcq-problem">
+    <p>Solve the exact equation (from Exercise 1):</p>
+    $$(4x^3 y^3 - 2xy)\,dx + (3x^4 y^2 - x^2)\,dy = 0$$
+  </div>
+
+  <!-- PHASE 0: Verify Exactness -->
+  <div class="mcq-phase active" data-phase="0">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE 0</span>
+      <span class="phase-name">Verify Exactness</span>
+    </div>
+    <div class="mcq-step" data-step="classify">
+      <p class="mcq-question">With $M = 4x^3 y^3 - 2xy$ and $N = 3x^4 y^2 - x^2$, verify $M_y = N_x$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! $M_y = 12x^3 y^2 - 2x$ and $N_x = 12x^3 y^2 - 2x$. They're equal!">$M_y = 12x^3 y^2 - 2x = N_x$ ✓</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check: $\frac{\partial}{\partial y}(4x^3 y^3) = 12x^3 y^2$, not $4x^3 y^2$.">$M_y = 4x^3 y^2 - 2x \neq N_x$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$\frac{\partial}{\partial y}(-2xy) = -2x$, not $-2y$.">$M_y = 12x^3 y^2 - 2y$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+    <div class="phase-transition">Confirmed exact! Let's find $\psi$...</div>
+  </div>
+
+  <!-- PHASE A/B Combined: Solve -->
+  <div class="mcq-phase locked" data-phase="A">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE A</span>
+      <span class="phase-name">Find $\psi(x,y)$</span>
+    </div>
+
+    <div class="mcq-step" data-step="A1">
+      <p class="mcq-question">Integrate $\psi_x = M = 4x^3 y^3 - 2xy$ with respect to $x$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! $\int 4x^3 y^3\,dx = x^4 y^3$ and $\int -2xy\,dx = -x^2 y$.">$\psi = x^4 y^3 - x^2 y + h(y)$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$\int 4x^3\,dx = x^4$, not $\frac{4x^4}{4} = x^4$. Actually that's the same! But check the $y$ integral.">$\psi = x^4 y^3 - xy^2 + h(y)$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$\int -2xy\,dx = -x^2 y$, not $-2xy$.">$\psi = x^4 y^3 - 2xy + h(y)$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="A2">
+      <p class="mcq-question">Differentiate $\psi = x^4 y^3 - x^2 y + h(y)$ with respect to $y$ and compare with $N$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! $\psi_y = 3x^4 y^2 - x^2 + h'(y)$ must equal $N = 3x^4 y^2 - x^2$, so $h'(y) = 0$.">$\psi_y = 3x^4 y^2 - x^2 + h'(y)$; comparing with $N$ gives $h'(y) = 0$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$\frac{\partial}{\partial y}(x^4 y^3) = 3x^4 y^2$, not $x^4 y^2$.">$\psi_y = x^4 y^2 - x^2 + h'(y)$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$\frac{\partial}{\partial y}(-x^2 y) = -x^2$, not $-2x^2 y$.">$\psi_y = 3x^4 y^2 - 2x^2 y + h'(y)$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="A3">
+      <p class="mcq-question">Since $h'(y) = 0$, we have $h(y) = $ constant. The solution $\psi = c$ is:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$x^4 y^3 - x^2 y = C$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The signs should match what we found: $x^4 y^3 - x^2 y$.">$x^4 y^3 + x^2 y = C$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check the exponents: $y^3$, not $y^2$.">$x^4 y^2 - x^2 y = C$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="phase-transition"></div>
+  </div>
+
+  <div class="mcq-result">The solution is $x^4 y^3 - x^2 y = C$.</div>
+</div>
+
+<hr>
+<p style="text-align:center;color:#aaa;font-size:0.85rem;margin-top:3rem;">— End of Exact and Non-exact Equations Notes —</p>
+
+</div><!-- /.container -->
+</div><!-- /.page-wrapper -->
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // --- Interactive answers ---
+  document.querySelectorAll('.answer').forEach(function (span) {
+    var btn = document.createElement('button');
+    btn.className = 'answer-btn'; btn.textContent = 'Show'; btn.setAttribute('type', 'button');
+    span.parentNode.insertBefore(btn, span);
+    btn.addEventListener('click', function () {
+      var visible = span.classList.toggle('answer-revealed');
+      span.style.display = visible ? 'inline' : 'none';
+      btn.textContent = visible ? 'Hide' : 'Show';
+      btn.classList.toggle('revealed', visible);
+      if (visible && window.MathJax && MathJax.typeset) MathJax.typeset([span]);
+    });
+  });
+
+  // --- Three-Phase MCQ Logic ---
+  document.querySelectorAll('.mcq').forEach(function (mcq) {
+    var phases = mcq.querySelectorAll('.mcq-phase');
+    var result = mcq.querySelector('.mcq-result');
+    var currentPhaseIdx = 0;
+    var strategySteps = [];
+
+    // Find the current active phase
+    function getCurrentPhase() {
+      return phases[currentPhaseIdx];
+    }
+
+    // Update strategy outline display
+    function updateStrategyOutline(phase) {
+      var outline = phase.querySelector('.strategy-outline');
+      if (!outline) return;
+
+      var stepsContainer = outline.querySelector('.strategy-steps');
+      if (!stepsContainer) return;
+
+      stepsContainer.innerHTML = '';
+      strategySteps.forEach(function(stepText) {
+        var stepEl = document.createElement('div');
+        stepEl.className = 'strategy-step';
+        stepEl.innerHTML = stepText;
+        stepsContainer.appendChild(stepEl);
+      });
+
+      if (window.MathJax && MathJax.typeset) MathJax.typeset([stepsContainer]);
+    }
+
+    // Check if all steps in current phase are complete
+    function isPhaseComplete(phase) {
+      var steps = phase.querySelectorAll('.mcq-step');
+      var completedSteps = phase.querySelectorAll('.mcq-step.completed');
+      return steps.length === completedSteps.length;
+    }
+
+    // Unlock next phase
+    function unlockNextPhase() {
+      var currentPhase = phases[currentPhaseIdx];
+      var transition = currentPhase.querySelector('.phase-transition');
+
+      // Show transition message
+      if (transition && transition.textContent.trim()) {
+        transition.style.display = 'block';
+      }
+
+      // Mark current phase as completed
+      currentPhase.classList.remove('active');
+      currentPhase.classList.add('completed');
+
+      // Unlock next phase after delay
+      if (currentPhaseIdx + 1 < phases.length) {
+        setTimeout(function() {
+          currentPhaseIdx++;
+          var nextPhase = phases[currentPhaseIdx];
+          nextPhase.classList.remove('locked');
+          nextPhase.classList.add('active');
+
+          // Unlock first step in new phase
+          var firstStep = nextPhase.querySelector('.mcq-step.locked');
+          if (firstStep) firstStep.classList.remove('locked');
+
+          // Show strategy outline if Phase A or B
+          var outline = nextPhase.querySelector('.strategy-outline');
+          if (outline && strategySteps.length > 0) {
+            outline.style.display = 'block';
+            updateStrategyOutline(nextPhase);
+          }
+
+          if (window.MathJax && MathJax.typeset) MathJax.typeset([nextPhase]);
+        }, 600);
+      } else {
+        // All phases complete
+        setTimeout(function() {
+          if (result) result.style.display = 'block';
+        }, 600);
+      }
+    }
+
+    // Process each phase
+    phases.forEach(function(phase, phaseIdx) {
+      var steps = phase.querySelectorAll('.mcq-step');
+
+      steps.forEach(function(step, stepIdx) {
+        var options = step.querySelectorAll('.mcq-option');
+        var feedback = step.querySelector('.mcq-feedback');
+
+        options.forEach(function(opt) {
+          opt.addEventListener('click', function() {
+            if (opt.classList.contains('correct') || opt.classList.contains('wrong') || opt.classList.contains('disabled')) return;
+
+            var isCorrect = opt.getAttribute('data-correct') === 'true';
+            var hint = opt.getAttribute('data-hint') || '';
+
+            if (isCorrect) {
+              opt.classList.add('correct');
+              options.forEach(function(o) { if (o !== opt) o.classList.add('disabled'); });
+              step.classList.add('completed');
+
+              feedback.textContent = hint || 'Correct!';
+              feedback.className = 'mcq-feedback correct-fb';
+
+              // Add to strategy steps if in Phase A
+              var stepText = opt.getAttribute('data-step-text');
+              if (stepText && phase.getAttribute('data-phase') === 'A') {
+                strategySteps.push(stepText);
+                updateStrategyOutline(phase);
+              }
+
+              if (window.MathJax && MathJax.typeset) MathJax.typeset([step]);
+
+              // Check if phase is complete
+              if (isPhaseComplete(phase)) {
+                setTimeout(unlockNextPhase, 500);
+              } else {
+                // Unlock next step in same phase
+                var nextStep = step.nextElementSibling;
+                while (nextStep && !nextStep.classList.contains('mcq-step')) {
+                  nextStep = nextStep.nextElementSibling;
+                }
+                if (nextStep && nextStep.classList.contains('locked')) {
+                  setTimeout(function() {
+                    nextStep.classList.remove('locked');
+                    if (window.MathJax && MathJax.typeset) MathJax.typeset([nextStep]);
+                  }, 400);
+                }
+              }
+            } else {
+              opt.classList.add('wrong');
+              feedback.innerHTML = hint || 'Try again.';
+              feedback.className = 'mcq-feedback wrong-fb';
+
+              if (window.MathJax && MathJax.typeset) MathJax.typeset([feedback]);
+
+              setTimeout(function() {
+                opt.classList.remove('wrong');
+                feedback.style.display = 'none';
+                feedback.className = 'mcq-feedback';
+                setTimeout(function() { feedback.style.display = ''; }, 50);
+              }, 3000);
+            }
+          });
+        });
+      });
+    });
+  });
+
+  // --- Scroll-spy ---
+  var sidebarLinks = document.querySelectorAll('.sidebar a[href^="#"]');
+  var sections = [];
+  sidebarLinks.forEach(function (link) {
+    var id = link.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) sections.push({ id: id, el: el, link: link });
+  });
+
+  function updateActive() {
+    var scrollY = window.scrollY + 80, current = null;
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i].el.offsetTop <= scrollY) current = sections[i];
+    }
+    sidebarLinks.forEach(function (l) { l.classList.remove('active'); });
+    if (current) {
+      current.link.classList.add('active');
+      var sidebar = document.getElementById('sidebar');
+      var linkTop = current.link.offsetTop, sidebarH = sidebar.clientHeight;
+      if (linkTop < sidebar.scrollTop + 40 || linkTop > sidebar.scrollTop + sidebarH - 40)
+        sidebar.scrollTo({ top: linkTop - sidebarH / 3, behavior: 'smooth' });
+    }
+  }
+  window.addEventListener('scroll', updateActive, { passive: true });
+  updateActive();
+});
+</script>
+</body>
+</html>

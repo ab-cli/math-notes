@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MATH2352 — Interactive Lecture Notes</title>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']]
+  },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg: #2d2d2d;
+  --text: #e0e0e0;
+  --heading: #ffffff;
+  --accent: #8ab4f8;
+  --accent2: #81c995;
+  --border: #4a4a4a;
+  --card-bg: #353535;
+  --shadow: rgba(0, 0, 0, 0.3);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 18px; scroll-behavior: smooth; }
+
+body {
+  font-family: 'Crimson Pro', Georgia, serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+h1 {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--heading);
+  margin-bottom: 0.3rem;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 1rem;
+  color: #888;
+  margin-bottom: 0.5rem;
+}
+
+.description {
+  font-size: 1.05rem;
+  color: #aaa;
+  margin-bottom: 2.5rem;
+  max-width: 640px;
+}
+
+.week-group {
+  margin-bottom: 2rem;
+}
+
+.week-label {
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #888;
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+  padding-left: 0.2rem;
+}
+
+.note-card {
+  display: block;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.4rem;
+  margin-bottom: 0.6rem;
+  text-decoration: none;
+  color: var(--text);
+  transition: all 0.2s;
+  border-left: 3px solid var(--accent);
+}
+
+.note-card:hover {
+  background: #3a3a3a;
+  border-left-color: var(--accent2);
+  transform: translateX(4px);
+}
+
+.note-title {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--heading);
+  margin-bottom: 0.15rem;
+}
+
+.note-topic {
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.82rem;
+  color: #999;
+}
+
+.badge {
+  display: inline-block;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 3px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.badge-exercises { background: rgba(129, 201, 149, 0.15); color: var(--accent2); }
+.badge-supplementary { background: rgba(138, 180, 248, 0.15); color: var(--accent); }
+
+.footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.82rem;
+  color: #666;
+}
+
+.footer a { color: var(--accent); text-decoration: none; }
+.footer a:hover { text-decoration: underline; }
+
+@media (max-width: 600px) {
+  .container { padding: 2rem 1rem; }
+  h1 { font-size: 1.6rem; }
+  .note-card { padding: 0.8rem 1rem; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Differential Equations</h1>
+  <div class="subtitle">MATH2352 Interactive Lecture Notes</div>
+  <div class="description">
+    AI-generated interactive notes covering first and second order ODEs.
+    Each page includes theory, worked examples, and practice questions with step-by-step solutions.
+  </div>
+
+  <div class="week-group">
+    <div class="week-label">Week 1 — First Order Equations: Introduction</div>
+    <a class="note-card" href="Week 1.1 What are Differential Equations.html">
+      <div class="note-title">1.1 What are Differential Equations? <span class="badge badge-exercises">Exercises</span></div>
+      <div class="note-topic">Classification, order, linearity, direction fields, initial value problems</div>
+    </a>
+    <a class="note-card" href="Week 1.2 Partial Derivatives (Supplementary).html">
+      <div class="note-title">1.2 Partial Derivatives <span class="badge badge-supplementary">Supplementary</span></div>
+      <div class="note-topic">Review of multivariable calculus needed for exact equations</div>
+    </a>
+    <a class="note-card" href="Week 1.3 First Order Equations - Modelling.html">
+      <div class="note-title">1.3 Modelling with First Order Equations <span class="badge badge-exercises">Exercises</span></div>
+      <div class="note-topic">Population growth, mixing problems, Newton's cooling law, falling bodies</div>
+    </a>
+    <a class="note-card" href="Week 1.4 First Order Equations - Integration Factors.html">
+      <div class="note-title">1.4 Integrating Factors <span class="badge badge-exercises">Exercises</span></div>
+      <div class="note-topic">Linear first order equations, integrating factor method, applications</div>
+    </a>
+  </div>
+
+  <div class="week-group">
+    <div class="week-label">Week 2 — First Order Equations: Methods</div>
+    <a class="note-card" href="Week 2.1 Separation of Variables.html">
+      <div class="note-title">2.1 Separation of Variables <span class="badge badge-exercises">Exercises</span></div>
+      <div class="note-topic">Separable equations, substitution techniques, Bernoulli equations</div>
+    </a>
+    <a class="note-card" href="Week 2.2 Euler's Numerical Method.html">
+      <div class="note-title">2.2 Euler's Numerical Method <span class="badge badge-exercises">Exercises</span></div>
+      <div class="note-topic">Forward Euler, step size, error analysis, improved Euler method</div>
+    </a>
+    <a class="note-card" href="Week 2.3 Exact and Non-exact Equations.html">
+      <div class="note-title">2.3 Exact and Non-exact Equations <span class="badge badge-exercises">Exercises</span></div>
+      <div class="note-topic">Exactness condition, solving exact ODEs, integrating factors for non-exact</div>
+    </a>
+  </div>
+
+  <div class="week-group">
+    <div class="week-label">Week 3 — Second Order Linear Equations</div>
+    <a class="note-card" href="Week 3.1 Second Order Linear Homogeneous Equations.html">
+      <div class="note-title">3.1 Homogeneous Equations <span class="badge badge-exercises">Exercises</span></div>
+      <div class="note-topic">Characteristic equation, real/complex/repeated roots, superposition principle</div>
+    </a>
+    <a class="note-card" href="Week 3.2 Wronskian.html">
+      <div class="note-title">3.2 Wronskians and Linear Independence <span class="badge badge-exercises">Exercises</span></div>
+      <div class="note-topic">Wronskian determinant, fundamental sets, Abel's theorem</div>
+    </a>
+  </div>
+
+  <div class="week-group">
+    <div class="week-label">Week 4 — Second Order: Non-homogeneous</div>
+    <a class="note-card" href="Week 4.1 Repeated Characteristic Roots.html">
+      <div class="note-title">4.1 Repeated Characteristic Roots <span class="badge badge-exercises">Exercises</span></div>
+      <div class="note-topic">Reduction of order, repeated roots, Euler-Cauchy equations</div>
+    </a>
+    <a class="note-card" href="Week 4.2 Non-homogeneous Equations.html">
+      <div class="note-title">4.2 Non-homogeneous Equations <span class="badge badge-exercises">Exercises</span></div>
+      <div class="note-topic">Method of undetermined coefficients, particular solutions</div>
+    </a>
+    <a class="note-card" href="Week 4.3 Variation of Parameters.html">
+      <div class="note-title">4.3 Variation of Parameters <span class="badge badge-exercises">Exercises</span></div>
+      <div class="note-topic">General method for non-homogeneous equations, applications</div>
+    </a>
+  </div>
+
+  <div class="footer">
+    Built with AI as a study aid &bull; <a href="https://github.com/ab-cli/math-notes">Source on GitHub</a>
+  </div>
+</div>
+</body>
+</html>

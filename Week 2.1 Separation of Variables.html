@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MATH2351/2352 – Separation of Variables</title>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    tags: 'ams'
+  },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg: #2d2d2d;
+  --text: #e0e0e0;
+  --heading: #ffffff;
+  --accent: #8ab4f8;
+  --accent2: #81c995;
+  --border: #4a4a4a;
+  --def-bg: #3a3a3a;
+  --def-border: #6a6a6a;
+  --prop-bg: #353535;
+  --prop-border: #5a5a5a;
+  --exercise-bg: #383838;
+  --exercise-border: #5a5a5a;
+  --warn-bg: #3d3535;
+  --warn-border: #7a5a5a;
+  --code-bg: #333333;
+  --shadow: rgba(0, 0, 0, 0.3);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 18px; scroll-behavior: smooth; }
+
+body {
+  font-family: 'Crimson Pro', Georgia, serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page-wrapper { display: flex; min-height: 100vh; }
+
+/* --- Sidebar --- */
+.sidebar {
+  position: sticky; top: 0; align-self: flex-start;
+  width: 280px; min-width: 280px; height: 100vh;
+  overflow-y: auto; padding: 2rem 1.2rem 2rem 1.4rem;
+  border-right: 1.5px solid var(--border); background: #252525;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+.sidebar::-webkit-scrollbar { width: 5px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+.sidebar .sidebar-title {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.72rem;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: #888888; margin-bottom: 1rem; font-weight: 600;
+}
+
+.sidebar ol { list-style: none; padding: 0; margin: 0; counter-reset: sidebar-counter; }
+.sidebar > ol > li { counter-increment: sidebar-counter; margin-bottom: 0.15rem; }
+.sidebar > ol > li > a::before {
+  content: counter(sidebar-counter) ". "; font-weight: 600;
+  color: var(--accent); font-size: 0.8rem;
+}
+
+.sidebar a {
+  display: block; font-family: 'Source Sans 3', sans-serif; font-size: 0.82rem;
+  color: var(--text); text-decoration: none; padding: 0.2rem 0.5rem;
+  border-radius: 4px; border-left: 2.5px solid transparent;
+  transition: all 0.2s; line-height: 1.4;
+}
+.sidebar a:hover { color: var(--accent); background: rgba(138,180,248,0.1); }
+.sidebar a.active {
+  color: var(--accent); font-weight: 600;
+  background: rgba(138,180,248,0.15); border-left-color: var(--accent);
+}
+
+.sidebar ol ol { margin-left: 1rem; margin-top: 0.1rem; counter-reset: none; }
+.sidebar ol ol li { margin-bottom: 0.05rem; }
+.sidebar ol ol a { font-size: 0.78rem; }
+.sidebar ol ol a::before { display: none; }
+
+.container {
+  max-width: 780px; margin: 0 auto; padding: 2rem 1.5rem 4rem;
+  flex: 1; min-width: 0;
+}
+
+/* --- Title Block --- */
+.title-block {
+  text-align: center; padding: 3rem 0 2.5rem;
+  border-bottom: 2px solid var(--border); margin-bottom: 2.5rem;
+}
+.title-block h1 {
+  font-family: 'Crimson Pro', serif; font-size: 2.4rem; font-weight: 700;
+  color: var(--heading); line-height: 1.2; margin-bottom: 0.5rem; letter-spacing: -0.02em;
+}
+.title-block .author { font-family: 'Source Sans 3', sans-serif; font-size: 1rem; color: #a0a0a0; }
+.title-block .course {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: #888888;
+  margin-top: 0.2rem; letter-spacing: 0.04em; text-transform: uppercase;
+}
+.title-block .date { font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: #888888; margin-top: 0.3rem; }
+
+/* --- TOC (mobile) --- */
+.toc {
+  background: var(--def-bg); border: 1px solid var(--border);
+  border-radius: 6px; padding: 1.5rem 2rem; margin-bottom: 2.5rem;
+}
+.toc h2 {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.8rem;
+  text-transform: uppercase; letter-spacing: 0.12em; color: #888888;
+  margin-bottom: 0.8rem; font-weight: 600;
+}
+.toc ol { list-style: none; counter-reset: toc-counter; }
+.toc > ol > li { counter-increment: toc-counter; margin-bottom: 0.3rem; }
+.toc > ol > li::before {
+  content: counter(toc-counter) "."; font-weight: 600; color: var(--accent);
+  margin-right: 0.5rem; font-family: 'Source Sans 3', sans-serif; font-size: 0.9rem;
+}
+.toc a { color: var(--text); text-decoration: none; font-size: 0.95rem; transition: color 0.2s; }
+.toc a:hover { color: var(--accent); }
+
+/* --- Headings --- */
+h2 {
+  font-family: 'Crimson Pro', serif; font-size: 1.8rem; font-weight: 700;
+  color: var(--heading); margin-top: 3rem; margin-bottom: 1rem;
+  padding-bottom: 0.4rem; border-bottom: 1.5px solid var(--border); line-height: 1.3;
+}
+h3 { font-family: 'Crimson Pro', serif; font-size: 1.35rem; font-weight: 600; color: var(--heading); margin-top: 2rem; margin-bottom: 0.8rem; }
+h4 { font-family: 'Crimson Pro', serif; font-size: 1.1rem; font-weight: 600; color: var(--heading); margin-top: 1.5rem; margin-bottom: 0.6rem; }
+
+p { margin-bottom: 1rem; text-align: justify; hyphens: auto; }
+
+/* --- Boxes --- */
+.box { border-radius: 5px; padding: 1.2rem 1.4rem; margin: 1.5rem 0; border-left: 4px solid; position: relative; }
+.box-title { font-family: 'Source Sans 3', sans-serif; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.6rem; display: block; }
+.definition { background: var(--def-bg); border-color: var(--def-border); }
+.definition .box-title { color: #f0c040; }
+.theorem { background: var(--prop-bg); border-color: var(--accent2); }
+.theorem .box-title { color: var(--accent2); }
+.proposition { background: var(--prop-bg); border-color: var(--prop-border); }
+.proposition .box-title { color: var(--accent2); }
+.exercise-box { background: var(--exercise-bg); border-color: var(--exercise-border); }
+.exercise-box .box-title { color: #c0a080; }
+.warning-box { background: var(--warn-bg); border-color: var(--warn-border); }
+.warning-box .box-title { color: #f08080; }
+.remark-box { background: #3a3a40; border-color: #6a6a80; }
+.remark-box .box-title { color: #a0a0d0; }
+.box p:last-child { margin-bottom: 0; }
+
+.proof { margin: 1rem 0 1.5rem; padding-left: 1rem; border-left: 2px solid var(--border); }
+.proof-label { font-style: italic; font-weight: 500; color: #a0a0a0; }
+.proof::after { content: "□"; display: block; text-align: right; color: #666; margin-top: 0.3rem; }
+
+ol, ul { margin-bottom: 1rem; padding-left: 1.5rem; }
+li { margin-bottom: 0.4rem; }
+
+.answer { display: none; }
+.answer-btn {
+  font-family: 'Source Sans 3', sans-serif; font-size: 0.78rem; font-weight: 600;
+  color: var(--accent2); background: none; border: 1.5px solid var(--accent2);
+  border-radius: 4px; padding: 0.15rem 0.55rem; margin-left: 0.4rem;
+  cursor: pointer; transition: all 0.2s; vertical-align: middle;
+}
+.answer-btn:hover { background: var(--accent2); color: #fff; }
+.answer-btn.revealed { border-color: var(--border); color: #888888; }
+.answer-btn.revealed:hover { background: var(--exercise-bg); color: #a0a0a0; }
+.answer-revealed {
+  display: inline; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem;
+  color: var(--accent2); margin-left: 0.3rem; animation: fadeIn 0.25s ease;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-2px); } to { opacity: 1; transform: translateY(0); } }
+
+hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+.key-formula {
+  background: linear-gradient(135deg, #3a3a3a, #353535);
+  border: 1.5px solid var(--def-border); border-radius: 5px;
+  padding: 1rem 1.4rem; margin: 1.2rem 0; text-align: center;
+}
+
+/* --- MCQ Phase System --- */
+.mcq { background: #333; border: 1.5px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; }
+.mcq-title { font-family: 'Source Sans 3', sans-serif; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 0.8rem; }
+.mcq-problem { margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border); }
+
+.mcq-phase { margin-bottom: 1rem; padding: 1rem; border-radius: 6px; background: #2a2a2a; border: 1.5px solid #444; transition: all 0.3s; }
+.mcq-phase.locked { opacity: 0.4; pointer-events: none; filter: grayscale(0.3); }
+.mcq-phase.active { border-color: var(--accent); box-shadow: 0 2px 8px rgba(138,180,248,0.15); }
+.mcq-phase.completed { border-color: var(--accent2); background: #2a3530; }
+
+.phase-label { font-family: 'Source Sans 3', sans-serif; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.5rem; }
+.phase-label .phase-tag { background: var(--accent); color: #1a1a1a; padding: 0.15rem 0.5rem; border-radius: 3px; font-size: 0.65rem; }
+.mcq-phase.completed .phase-label .phase-tag { background: var(--accent2); }
+.phase-label .phase-name { color: #888; }
+
+.strategy-outline { background: #353535; border-radius: 4px; padding: 0.8rem 1rem; margin: 0.8rem 0; border-left: 3px solid var(--accent2); }
+.strategy-outline-title { font-family: 'Source Sans 3', sans-serif; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin-bottom: 0.4rem; }
+.strategy-step { font-size: 0.9rem; padding: 0.3rem 0; color: var(--text); display: flex; align-items: flex-start; gap: 0.5rem; }
+.strategy-step::before { content: "✓"; color: var(--accent2); font-weight: 700; flex-shrink: 0; }
+
+.mcq-step { margin-bottom: 0.8rem; }
+.mcq-step.locked { display: none; }
+.mcq-step.completed .mcq-options { opacity: 0.6; }
+.mcq-step-label { font-family: 'Source Sans 3', sans-serif; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin-bottom: 0.5rem; }
+.mcq-question { margin-bottom: 0.6rem; font-size: 0.95rem; }
+.mcq-options { display: flex; flex-direction: column; gap: 0.4rem; }
+.mcq-option { font-family: 'Crimson Pro', serif; font-size: 0.95rem; text-align: left; padding: 0.5rem 0.8rem; border: 1.5px solid #555; border-radius: 5px; background: #2a2a2a; color: var(--text); cursor: pointer; transition: all 0.2s; line-height: 1.5; }
+.mcq-option:hover { border-color: var(--accent); background: rgba(138,180,248,0.1); }
+.mcq-option.correct { border-color: var(--accent2); background: rgba(129,201,149,0.15); cursor: default; }
+.mcq-option.correct::before { content: "✓ "; color: var(--accent2); font-weight: 700; }
+.mcq-option.wrong { border-color: #f08080; background: rgba(240,128,128,0.15); cursor: default; }
+.mcq-option.wrong::before { content: "✗ "; color: #f08080; font-weight: 700; }
+.mcq-option.disabled { pointer-events: none; opacity: 0.5; }
+.mcq-feedback { display: none; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; padding: 0.5rem 0.8rem; border-radius: 4px; margin-top: 0.5rem; line-height: 1.5; }
+.mcq-feedback.correct-fb { display: block; background: rgba(129,201,149,0.15); color: var(--accent2); border: 1px solid var(--accent2); }
+.mcq-feedback.wrong-fb { display: block; background: rgba(240,128,128,0.15); color: #f08080; border: 1px solid #f08080; }
+.mcq-result { display: none; font-family: 'Source Sans 3', sans-serif; font-size: 0.9rem; font-weight: 600; color: var(--accent2); padding: 0.8rem 1rem; background: rgba(129,201,149,0.15); border-radius: 6px; border: 1.5px solid var(--accent2); text-align: center; margin-top: 1rem; }
+
+.phase-transition { display: none; text-align: center; padding: 0.6rem; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: var(--accent2); background: rgba(129,201,149,0.1); border-radius: 4px; margin: 0.5rem 0; animation: fadeIn 0.3s ease; }
+
+@media (min-width: 901px) { .toc { display: none; } }
+@media (max-width: 900px) {
+  .page-wrapper { display: block; } .sidebar { display: none; }
+  html { font-size: 16px; } .container { padding: 1rem; max-width: 100%; }
+  .title-block h1 { font-size: 1.8rem; } h2 { font-size: 1.5rem; } .box { padding: 1rem; }
+}
+@media print {
+  .sidebar { display: none; } .page-wrapper { display: block; }
+  body { font-size: 11pt; } .container { max-width: 100%; }
+  .box { break-inside: avoid; } h2 { break-after: avoid; } .toc { display: block; }
+}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+
+<!-- ===== SIDEBAR ===== -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-title">Contents</div>
+  <ol>
+    <li><a href="#sec-separable">Separable First Order ODEs</a>
+      <ol>
+        <li><a href="#sec-theorem">The Separation Theorem</a></li>
+        <li><a href="#sec-ex1">Example: $\frac{dy}{dx} = \frac{x^2}{1-y^2}$</a></li>
+        <li><a href="#sec-ex2">Example IVP: Polynomial</a></li>
+        <li><a href="#sec-ex3">Example IVP: Rational</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec-homogeneous">Homogeneous Equations</a>
+      <ol>
+        <li><a href="#sec-homo-def">Definition</a></li>
+        <li><a href="#sec-homo-examples">Examples of Homogeneity</a></li>
+        <li><a href="#sec-homo-solve">Solving Homogeneous DEs</a></li>
+        <li><a href="#sec-homo-theorem">General Theorem</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec-exercises">Exercises</a></li>
+    <li><a href="#sec-practice">Practice MCQ</a></li>
+  </ol>
+</nav>
+
+<div class="container">
+
+<!-- ===== TITLE ===== -->
+<div class="title-block">
+  <h1>First Order Equations: Separation of Variables</h1>
+  <div class="author">Edmund Chiang</div>
+  <div class="course">MATH2351 / 2352 — Boyce &amp; DiPrima §2.2</div>
+  <div class="date">February 6, 2026</div>
+</div>
+
+<!-- ===== TOC (mobile) ===== -->
+<nav class="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#sec-separable">Separable First Order ODEs</a></li>
+    <li><a href="#sec-homogeneous">Homogeneous Equations</a></li>
+    <li><a href="#sec-exercises">Exercises</a></li>
+    <li><a href="#sec-practice">Practice MCQ</a></li>
+  </ol>
+</nav>
+
+<!-- ============================================================ -->
+<h2 id="sec-separable">1 &ensp; Separable Linear First Order ODEs</h2>
+
+<p>We considered examples of linear first order differential equations of the form</p>
+
+$$\frac{dy}{dx} = ay + b$$
+
+<p>in the Introduction. These can be solved by the method of separation of variables. We now consider more general first order equations</p>
+
+$$\frac{dy}{dx} = f(x, y)$$
+
+<p>for some $f$ such that they can be rearranged into a "separated form."</p>
+
+<h3 id="sec-theorem">1.1 &ensp; The Separation Theorem</h3>
+
+<div class="box theorem">
+  <span class="box-title">Theorem — Separation of Variables</span>
+  <p>Suppose</p>
+  $$M(x) + N(y)\frac{dy}{dx} = 0$$
+  <p>such that</p>
+  $$H_1'(x) = M(x), \qquad H_2'(y) = N(y).$$
+  <p>Then</p>
+  $$H_1(x) + H_2(y) = c,$$
+  <p>for some constant $c$.</p>
+</div>
+
+<div class="proof">
+  <span class="proof-label">Proof.</span> If we have such a first order DE, then
+  \begin{align}
+  0 &= M(x) + N(y)\frac{dy}{dx} = H_1'(x) + H_2'(y)\frac{dy}{dx} \\[6pt]
+  &= \frac{d}{dx}H_1(x) + \frac{d}{dx}H_2(y) \\[6pt]
+  &= \frac{d}{dx}\big(H_1(x) + H_2(y)\big)
+  \end{align}
+  <p>where we have applied the <strong>Chain rule</strong> in the last computation:</p>
+  $$\frac{d}{dx}H_2(y) = H_2'(y)\frac{dy}{dx}.$$
+  <p>Hence</p>
+  $$H_1(x) + H_2(y) = c.$$
+</div>
+
+<p>The above is a solution to the separable DE in the <em>implicit form</em>. It is generally rare that one can solve $y$ as a function of $x$ only.</p>
+
+<div class="box remark-box">
+  <span class="box-title">Remark — Differential Notation</span>
+  <p>We also write the separated DE in the form</p>
+  $$\boxed{M(x)\,dx + N(y)\,dy = 0,}$$
+  <p>and hence here is where the origin of the <strong>method of separation of variables</strong>. The next step corresponds to</p>
+  $$\int M(x)\,dx = -\int N(y)\,dy,$$
+  <p>or</p>
+  $$H_1(x) + H_2(y) = c.$$
+</div>
+
+<hr>
+
+<h3 id="sec-ex1">1.2 &ensp; Example: $\dfrac{dy}{dx} = \dfrac{x^2}{1 - y^2}$</h3>
+
+<p><strong>Solve</strong> $\;\displaystyle\frac{dy}{dx} = \frac{x^2}{1 - y^2}.$</p>
+
+<p>We rearrange the DE into the form</p>
+
+$$-x^2 + (1 - y^2)\frac{dy}{dx} = 0.$$
+
+<p>So according to our earlier derivation there are $H_1(x)$ and $H_2(y)$ such that $H_1'(x) = -x^2$ and $H_2'(y) = (1 - y^2)$. Thus</p>
+
+\begin{align}
+0 &= -x^2 + (1 - y^2)\frac{dy}{dx} \\[6pt]
+&= \frac{d}{dx}\Big(-\frac{x^3}{3} + y - \frac{y^3}{3}\Big) = 0.
+\end{align}
+
+<p>Hence</p>
+
+<div class="key-formula">
+$$-x^3 + 3y - y^3 = c,$$
+</div>
+
+<p>for some constant $c$.</p>
+
+<div class="box remark-box">
+  <span class="box-title">Remark</span>
+  <p>We note that it would be too complicated to express $y$ in terms of $x$ only in the above solution. The solution remains in <em>implicit form</em>.</p>
+</div>
+
+<hr>
+
+<h3 id="sec-ex2">1.3 &ensp; Example IVP: $\dfrac{dy}{dx} = \dfrac{3x^2 + 4x + 2}{2(y-1)}$, $\;y(0) = -1$</h3>
+
+<p><strong>Solve the IVP</strong> $\;\displaystyle\frac{dy}{dx} = \frac{3x^2 + 4x + 2}{2(y-1)}, \quad y(0) = -1.$</p>
+
+<p>We could write</p>
+
+$$-(3x^2 + 4x + 2) + 2(y - 1)\frac{dy}{dx} = 0 \tag{1}$$
+
+<p>and proceed as in the above example:</p>
+
+$$\frac{d}{dx}\Big(-(x^3 + 2x^2 + 2x) + \frac{(y-1)^2}{2}\Big) = 0.$$
+
+<p>Or we simply "separate" the variables of (1) into the form</p>
+
+$$\int 3x^2 + 4x + 2\,dx = \int 2(y - 1)\,dy.$$
+
+<p>This yields</p>
+
+$$x^3 + 2x^2 + 2x = (y - 1)^2 + c$$
+
+<p>for some constant $c$. Substitute the initial condition $y(0) = -1$ yields</p>
+
+$$0 = (-1 - 1)^2 + c,$$
+
+<p>so that $c = -4$. That is,</p>
+
+$$(y - 1)^2 = x^3 + 2x^2 + 2x + 4,$$
+
+<p>or, in this exceptional case,</p>
+
+$$y(x) = 1 \pm \sqrt{x^3 + 2x^2 + 2x + 4}.$$
+
+<p>But only the</p>
+
+<div class="key-formula">
+$$y(x) = 1 - \sqrt{x^3 + 2x^2 + 2x + 4}$$
+</div>
+
+<p>would fulfill the initial condition $y(0) = -1$ and in which case the curve passes through the point $(-2, 1)$ (but $y'(-2, 1)$ is undefined).</p>
+
+<div class="box remark-box">
+  <span class="box-title">Direction Field</span>
+  <p>The direction field for this IVP shows the solution curve passing through $(0, -1)$ with a cusp at $(-2, 1)$ where the derivative becomes undefined. The solution exists for $x > -2$.</p>
+</div>
+
+<hr>
+
+<h3 id="sec-ex3">1.4 &ensp; Example IVP: $\dfrac{dy}{dx} = \dfrac{4x - x^3}{4 + y^3}$, $\;y(0) = 1$</h3>
+
+<p><strong>Solve</strong> $\;\displaystyle\frac{dy}{dx} = \frac{4x - x^3}{4 + y^3}, \quad y(0) = 1.$</p>
+
+<p>We compute directly,</p>
+
+$$\int (4x - x^3)\,dx = \int (4 + y^3)\,dy.$$
+
+<p>Then</p>
+
+$$2x^2 - \frac{x^4}{4} = 4y + \frac{y^4}{4} + c,$$
+
+<p>or</p>
+
+$$y^4 + 16y + x^4 - 8x^2 + c = 0.$$
+
+<p>Substituting $y(0) = 1$ yields</p>
+
+<div class="key-formula">
+$$y^4 + 16y + x^4 - 8x^2 - 17 = 0.$$
+</div>
+
+<p>Can you draw the curve that passes through $y(0) = 1$? We further note that $\dfrac{dy}{dx}$ is undefined when $y^3 + 4 = 0$, that is $y = (-4)^{1/3} \approx -1.5874$. So the corresponding $y$ coordinates can be computed numerically from</p>
+
+$$y^4 + 16y + x^4 - 8x^2 - 17 = 0$$
+
+<p>and are</p>
+
+$$(-3.348, -1.5874), \quad (3.348, -1.5874).$$
+
+<!-- ============================================================ -->
+<h2 id="sec-homogeneous">2 &ensp; Homogeneous Equations</h2>
+
+<h3 id="sec-homo-def">2.1 &ensp; Definition</h3>
+
+<div class="box definition">
+  <span class="box-title">Definition — Homogeneous Function</span>
+  <p>A function $f(x, y)$ is said to be <em>homogeneous of degree $n$</em> if</p>
+  $$f(\lambda x, \lambda y) = \lambda^n f(x, y), \qquad \lambda \in \mathbb{C}.$$
+</div>
+
+<hr>
+
+<h3 id="sec-homo-examples">2.2 &ensp; Examples of Homogeneity</h3>
+
+<p><strong>Example 1.</strong> Consider $f(x, y) = x^3 - x^2 y$. Then</p>
+
+$$f(\lambda x, \lambda y) = \lambda^3 x^3 - (\lambda^2 x^2)\lambda y = \lambda^3(x^3 - x^2 y) = \lambda^3 f(x, y).$$
+
+<p>So $f$ is a homogeneous function of <strong>degree 3</strong>.</p>
+
+<hr>
+
+<p><strong>Example 2.</strong> Consider $f(x, y) = e^{2x/y} + \sin \dfrac{y}{x}$. Then</p>
+
+$$f(\lambda x, \lambda y) = e^{2\lambda x/(\lambda y)} + \sin \frac{\lambda y}{\lambda x} = e^{2x/y} + \sin \frac{y}{x} = \lambda^0 f(x, y).$$
+
+<p>So $f$ is a homogeneous function of <strong>degree 0</strong>.</p>
+
+<hr>
+
+<p><strong>Example 3.</strong> Consider $f(x, y) = y^2 + \sin y \sin x$. Then</p>
+
+$$f(\lambda x, \lambda y) = \lambda^2 y^2 + \sin \lambda y \sin \lambda x \neq \lambda^n f(x, y)$$
+
+<p>for any integer $n$. So $f$ is <strong>not homogeneous</strong>.</p>
+
+<hr>
+
+<h3 id="sec-homo-solve">2.3 &ensp; Solving Homogeneous DEs via $y = vx$</h3>
+
+<p><strong>Example.</strong> Solve $\;x^3 + y^3 = 3xy^2\dfrac{dy}{dx}.$</p>
+
+<p>Note that $M(x, y) = x^3 + y^3$ and $N(x, y) = 3xy^2$ are both homogeneous functions of degree 3. Substitute $y = vx$ and $dy = v\,dx + x\,dv$ into the DE yields</p>
+
+$$(1 - 2v^3)\,dx - 3v^2 x\,dv = 0,$$
+
+<p>or</p>
+
+$$\frac{3v^2}{1 - 2v^3}\,dv = \frac{dx}{x}.$$
+
+<p>Integrating both sides yields</p>
+
+$$-\frac{1}{2}\ln|1 - 2v^3| = \ln|x| + c_1$$
+
+$$\ln|1 - 2v^3| = -2\ln|x| + c_2$$
+
+$$|1 - 2v^3| = \frac{C}{x^2}$$
+
+<p>Thus</p>
+
+<div class="key-formula">
+$$C = x^2(1 - 2v^3) = x^2\Big(1 - 2\frac{y^3}{x^3}\Big) = x^2 - \frac{2y^3}{x}.$$
+</div>
+
+<hr>
+
+<h3 id="sec-homo-theorem">2.4 &ensp; General Theorem for Homogeneous DEs</h3>
+
+<div class="box theorem">
+  <span class="box-title">Theorem — Reduction to Separable Form</span>
+  <p>Suppose $M(x, y)$ and $N(x, y)$ are both homogeneous of degree $n$. Then the differential equation</p>
+  $$M(x, y)\,dx + N(x, y)\,dy = 0$$
+  <p>can be transformed into a first order <em>separable</em> differential equation.</p>
+</div>
+
+<div class="proof">
+  <span class="proof-label">Proof.</span> Let $y = vx$. Then
+  $$0 = M(x, y)\,dx + N(x, y)\,dy = x^n\big(M_1(x/y)\,dx + N_1(x/y)\,dy\big)$$
+  <p>where</p>
+  $$M_1(x/y) = M(1, y/x), \qquad N_1(x/y) = N(1, y/x).$$
+  <p>Since $y = vx$ so that $dy = v\,dx + x\,dv$. Thus the above DE can be re-written as</p>
+  $$M_1(v)\,dx + N_1(v)(v\,dx + x\,dv) = 0,$$
+  <p>which can be written into a separable form</p>
+  $$\frac{dx}{x} + \frac{N_1(v)\,dv}{M_1(v) + vN_1(v)} = 0.$$
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec-exercises">3 &ensp; Exercises</h2>
+
+<div class="box exercise-box">
+  <span class="box-title">Exercises — Separation of Variables</span>
+  <ol>
+    <li>$y' = x^2/y$ <span class="answer">(Ans. $3y^2 - 2x^3 = c,\; y \neq 0$)</span></li>
+    <li>$y' = x^2/y(1 + x^3)$ <span class="answer">(Ans. $3y^2 - 2\ln|1 + x^3| = c,\; x \neq -1,\; y \neq 0$)</span></li>
+    <li>$x' = \sqrt{1 - y^2}$ <span class="answer">(Ans. $\sin(\ln x + c)$ if $x \neq 0^-$ and $|y| < 1$; $y = \pm 1$)</span></li>
+    <li>$y' = (x - e^{-x})/(y + e^y)$ <span class="answer">(Ans. $y^2 - x^2 + 2(e^y - e^{-x}) = c,\; y + e^y \neq 0$)</span></li>
+    <li>$x\,dy - y\,dx - \sqrt{x^2 - y^2}\,dx = 0$ <span class="answer">(Ans. $Cx = e^{\sin^{-1} y/x}$)</span></li>
+    <li>$(2x + 3y)\,dx + (y - x)\,dy = 0$ <span class="answer">(Ans. $\ln(y^2 + 2xy + 2x^2) - 4\tan^{-1}\frac{x+y}{x} = C$)</span></li>
+    <li>$(1 + 2e^{x/y})\,dx + 2e^{x/y}(1 - x/y)\,dy = 0$ <span class="answer">(Ans. $x + 2ye^{x/y} = C$)</span></li>
+  </ol>
+</div>
+
+<div class="box exercise-box">
+  <span class="box-title">Exercises — Initial Value Problems</span>
+  <p>In each of the following problems, solve the initial value problem, plot a graph and determine the interval in which the solution is defined.</p>
+  <ol>
+    <li>$y' = (1 - 2x)y^2,\; y(0) = -1/6$ <span class="answer">(Ans. $y = (x^2 - x - 6)^{-1},\; -2 < x < 3$)</span></li>
+    <li>$x\,dx + ye^{-y}\,dy = 0,\; y(0) = 1$ <span class="answer">(Ans. $y = \sqrt{2(1-x)e^x - 1},\; -1.68 < x < 0.77$ approx.)</span></li>
+    <li>$y' = 2x/(1 + 2y),\; y(2) = 0$ <span class="answer">(Ans. $y = -\frac{1}{2} + \frac{1}{2}\sqrt{4x^2 - 15},\; x > \frac{1}{2}\sqrt{15}$)</span></li>
+  </ol>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec-practice">4 &ensp; Practice MCQ</h2>
+
+<!-- MCQ 1: Three-Phase Separable DE -->
+<div class="mcq" id="mcq-separable">
+  <div class="mcq-title">Practice 1: Solve a Separable DE (Three-Phase Approach)</div>
+  <div class="mcq-problem">
+    <p>Given the differential equation:</p>
+    $$\frac{dy}{dx} = \frac{x^2}{1 - y^2}$$
+  </div>
+
+  <!-- PHASE 0: Classification -->
+  <div class="mcq-phase active" data-phase="0">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE 0</span>
+      <span class="phase-name">Classify the DE</span>
+    </div>
+    <div class="mcq-step" data-step="classify">
+      <p class="mcq-question">What method should we use to solve this DE?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="false" data-hint="This isn't linear in $y$ — the integrating factor method requires the form $y' + P(x)y = Q(x)$, but here $y$ appears as $y^2$ on the right side.">Integrating factor (linear first-order)</button>
+        <button class="mcq-option" data-correct="true" data-hint="Correct! The RHS can be written with all $x$ terms separate from $y$ terms. We can rearrange to $(1-y^2)\,dy = x^2\,dx$.">Separation of variables</button>
+        <button class="mcq-option" data-correct="false" data-hint="For exact equations we need $M\,dx + N\,dy = 0$ with $\partial M/\partial y = \partial N/\partial x$. This isn't naturally in that form.">Exact equation method</button>
+        <button class="mcq-option" data-correct="false" data-hint="For homogeneous DEs, both $M(x,y)$ and $N(x,y)$ must have the same degree. Here $x^2$ is degree 2, but $1-y^2$ doesn't involve $x$ at all — not homogeneous.">Homogeneous substitution $y = vx$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+    <div class="phase-transition">Method identified! Now let's plan the strategy...</div>
+  </div>
+
+  <!-- PHASE A: Strategy Building -->
+  <div class="mcq-phase locked" data-phase="A">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE A</span>
+      <span class="phase-name">Build the Strategy</span>
+    </div>
+
+    <div class="strategy-outline" style="display:none;">
+      <div class="strategy-outline-title">Solution Outline</div>
+      <div class="strategy-steps"></div>
+    </div>
+
+    <div class="mcq-step" data-step="A1">
+      <p class="mcq-question">What's the <strong>first</strong> step?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="false" data-hint="You can't integrate $\frac{x^2}{1-y^2}$ directly with respect to $x$ — the $y$ is entangled with $x$ through the differential equation." data-step-text="">Integrate both sides directly with respect to $x$</button>
+        <button class="mcq-option" data-correct="true" data-hint="Correct! Rearrange so all $x$ terms are with $dx$ and all $y$ terms are with $dy$." data-step-text="Rearrange into $M(x)\,dx + N(y)\,dy = 0$ form">Rearrange into $M(x) + N(y)\dfrac{dy}{dx} = 0$ form</button>
+        <button class="mcq-option" data-correct="false" data-hint="This isn't a linear DE, so finding an integrating factor won't work here." data-step-text="">Find the integrating factor $\mu(x)$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The substitution $y = vx$ is for homogeneous DEs, not separable ones." data-step-text="">Substitute $y = vx$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="A2">
+      <p class="mcq-question">Good. Now what's the <strong>next</strong> step?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! Once separated, we integrate each side with respect to its own variable." data-step-text="Integrate: $\int M(x)\,dx$ and $\int N(y)\,dy$ separately">Integrate $M(x)$ and $N(y)$ separately</button>
+        <button class="mcq-option" data-correct="false" data-hint="You've already separated the variables — now it's time to integrate." data-step-text="">Multiply both sides by $(1-y^2)$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Checking exactness is for exact equations. We're solving by separation." data-step-text="">Check if the equation is exact</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="A3">
+      <p class="mcq-question">What do we do with the integration results?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="false" data-hint="Close, but we need to include the constant of integration. The antiderivatives sum to a constant." data-step-text="">Set $H_1(x) = H_2(y)$</button>
+        <button class="mcq-option" data-correct="true" data-hint="Correct! This gives us the implicit solution." data-step-text="Write $H_1(x) + H_2(y) = c$ (implicit solution)">Write $H_1(x) + H_2(y) = c$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Differentiation would verify a solution, but the question asks for the next solving step." data-step-text="">Differentiate to verify</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="phase-transition">Strategy complete! Now let's execute each step...</div>
+  </div>
+
+  <!-- PHASE B: Execution -->
+  <div class="mcq-phase locked" data-phase="B">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE B</span>
+      <span class="phase-name">Execute the Computation</span>
+    </div>
+
+    <div class="mcq-step" data-step="B1">
+      <div class="mcq-step-label">Step B1</div>
+      <p class="mcq-question">Rearranging $\dfrac{dy}{dx} = \dfrac{x^2}{1-y^2}$ into separated form, what is $M(x)$?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$-x^2$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check the signs: $M(x) + N(y)\frac{dy}{dx} = 0$ means $M(x) = -x^2$, not $+x^2$.">$x^2$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$\frac{x^2}{1-y^2}$ is not $M(x)$ — we need to separate variables first.">$\dfrac{x^2}{1-y^2}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$(1-y^2)$ is $N(y)$, not $M(x)$.">$1-y^2$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="B2">
+      <div class="mcq-step-label">Step B2</div>
+      <p class="mcq-question">What is $N(y)$?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$1 - y^2$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check the sign: in $M(x) + N(y)\frac{dy}{dx} = 0$, we have $N(y) = (1-y^2)$, not $-(1-y^2)$.">$-(1-y^2)$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$y^2$ alone isn't correct — the coefficient of $\frac{dy}{dx}$ is $(1-y^2)$.">$y^2$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$\frac{1}{1-y^2}$ appears if we write $\frac{dy}{dx} = \frac{x^2}{1-y^2}$, but in separated form $N(y) = (1-y^2)$.">$\dfrac{1}{1-y^2}$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="B3">
+      <div class="mcq-step-label">Step B3</div>
+      <p class="mcq-question">$\displaystyle\int M(x)\,dx = \int -x^2\,dx = H_1(x) = \;?$</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$-\dfrac{x^3}{3}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Watch the sign: $\int -x^2\,dx = -\frac{x^3}{3}$, not $+\frac{x^3}{3}$.">$\dfrac{x^3}{3}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Don't forget to divide by 3 when integrating $x^2$.">$-x^3$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$\int x^2\,dx = \frac{x^3}{3}$, not $\frac{x^2}{2}$. Check the power rule.">$\dfrac{x^2}{2}$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="B4">
+      <div class="mcq-step-label">Step B4</div>
+      <p class="mcq-question">$\displaystyle\int N(y)\,dy = \int (1 - y^2)\,dy = H_2(y) = \;?$</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$y - \dfrac{y^3}{3}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check the sign: $\int(1-y^2)\,dy = y - \frac{y^3}{3}$, not $y + \frac{y^3}{3}$.">$y + \dfrac{y^3}{3}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Don't forget to integrate the constant term: $\int 1\,dy = y$.">$\dfrac{y^3}{3} - y$</button>
+        <button class="mcq-option" data-correct="false" data-hint="You need to integrate, not square. $\int(1-y^2)\,dy = y - \frac{y^3}{3}$.">$\dfrac{(1-y^2)^2}{2}$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="B5">
+      <div class="mcq-step-label">Step B5</div>
+      <p class="mcq-question">Final implicit solution $H_1(x) + H_2(y) = c$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$-x^3 + 3y - y^3 = c$ (or equivalently $-\dfrac{x^3}{3} + y - \dfrac{y^3}{3} = c$)</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check the sign on the $x^3$ term: $H_1(x) = -\frac{x^3}{3}$.">$x^3 + 3y - y^3 = c$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The $y$ term should be positive and $y^3$ negative: $H_2(y) = y - \frac{y^3}{3}$.">$-x^3 - 3y + y^3 = c$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check all signs: $H_1 = -\frac{x^3}{3}$ and $H_2 = y - \frac{y^3}{3}$.">$x^3 - 3y + y^3 = c$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+  </div>
+
+  <div class="mcq-result">All phases complete — excellent work! You've successfully solved the separable DE.</div>
+</div>
+
+<!-- MCQ 2: Identify Homogeneous Functions -->
+<div class="mcq" id="mcq-homogeneous-identify">
+  <div class="mcq-title">Practice 2: Identify Homogeneous Functions</div>
+  <div class="mcq-problem">
+    <p>For each function, determine if it is homogeneous and find its degree.</p>
+  </div>
+
+  <div class="mcq-phase active" data-phase="single">
+    <div class="mcq-step" data-step="1">
+      <div class="mcq-step-label">Function A</div>
+      <p class="mcq-question">$f(x, y) = x^3 - x^2 y$. Is this homogeneous? If so, what degree?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="false" data-hint="Check: $f(\lambda x, \lambda y) = \lambda^3 x^3 - \lambda^3 x^2 y = \lambda^3 f(x,y)$. It IS homogeneous.">Not homogeneous</button>
+        <button class="mcq-option" data-correct="false" data-hint="Degree 2 would mean $f(\lambda x, \lambda y) = \lambda^2 f(x,y)$. But $\lambda^3 x^3 - \lambda^3 x^2 y = \lambda^3(x^3 - x^2 y)$.">Homogeneous of degree 2</button>
+        <button class="mcq-option" data-correct="true">Homogeneous of degree 3</button>
+        <button class="mcq-option" data-correct="false" data-hint="The total degree of each term is 3 (both $x^3$ and $x^2 y$), not 4.">Homogeneous of degree 4</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="2">
+      <div class="mcq-step-label">Function B</div>
+      <p class="mcq-question">$f(x, y) = e^{2x/y} + \sin \dfrac{y}{x}$. Is this homogeneous? If so, what degree?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="false" data-hint="Check: $f(\lambda x, \lambda y) = e^{2\lambda x/\lambda y} + \sin\frac{\lambda y}{\lambda x} = e^{2x/y} + \sin\frac{y}{x} = f(x,y) = \lambda^0 f(x,y)$.">Not homogeneous</button>
+        <button class="mcq-option" data-correct="true">Homogeneous of degree 0</button>
+        <button class="mcq-option" data-correct="false" data-hint="The $\lambda$'s cancel in both $2x/y$ and $y/x$, giving $f(\lambda x, \lambda y) = f(x,y) = \lambda^0 f(x,y)$.">Homogeneous of degree 1</button>
+        <button class="mcq-option" data-correct="false" data-hint="Exponentials and trig functions can still be homogeneous if their arguments are ratios like $x/y$.">Homogeneous of degree 2</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="3">
+      <div class="mcq-step-label">Function C</div>
+      <p class="mcq-question">$f(x, y) = y^2 + \sin y \sin x$. Is this homogeneous?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">Not homogeneous</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check: $f(\lambda x, \lambda y) = \lambda^2 y^2 + \sin(\lambda y)\sin(\lambda x)$. The first term scales as $\lambda^2$, but $\sin(\lambda y)\sin(\lambda x) \neq \lambda^n \sin y \sin x$ for any fixed $n$.">Homogeneous of degree 0</button>
+        <button class="mcq-option" data-correct="false" data-hint="$y^2$ has degree 2, but $\sin y \sin x$ doesn't scale as $\lambda^2$ — it's not a polynomial.">Homogeneous of degree 2</button>
+        <button class="mcq-option" data-correct="false" data-hint="The sine terms prevent this from being homogeneous of any degree.">Homogeneous of degree 1</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+  </div>
+
+  <div class="mcq-result">All functions classified correctly!</div>
+</div>
+
+<!-- MCQ 3: Solve Homogeneous DE -->
+<div class="mcq" id="mcq-homogeneous-solve">
+  <div class="mcq-title">Practice 3: Solve a Homogeneous DE (Three-Phase Approach)</div>
+  <div class="mcq-problem">
+    <p>Given the differential equation:</p>
+    $$x^3 + y^3 = 3xy^2\frac{dy}{dx}$$
+  </div>
+
+  <!-- PHASE 0: Classification -->
+  <div class="mcq-phase active" data-phase="0">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE 0</span>
+      <span class="phase-name">Classify the DE</span>
+    </div>
+    <div class="mcq-step" data-step="classify">
+      <p class="mcq-question">What method should we use to solve this DE?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="false" data-hint="Try separating: $(x^3 + y^3)\,dx = 3xy^2\,dy$. Can you get all $x$'s on one side and all $y$'s on the other? No — the $x^3 + y^3$ and $xy^2$ terms mix $x$ and $y$ together.">Separation of variables</button>
+        <button class="mcq-option" data-correct="false" data-hint="The integrating factor method requires a linear DE of the form $y' + P(x)y = Q(x)$. This equation has $y^3$ and $xy^2$ terms — not linear.">Integrating factor</button>
+        <button class="mcq-option" data-correct="true" data-hint="Correct! $M(x,y) = x^3 + y^3$ and $N(x,y) = 3xy^2$ are both homogeneous of degree 3. The substitution $y = vx$ will work.">Homogeneous substitution $y = vx$</button>
+        <button class="mcq-option" data-correct="false" data-hint="For exact: write as $M\,dx + N\,dy = 0$ and check if $\partial M/\partial y = \partial N/\partial x$. Here $M = x^3 + y^3$, $N = -3xy^2$. We get $3y^2 \neq -3y^2$. Not exact.">Exact equation method</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+    <div class="phase-transition">Correct! Both terms are homogeneous of degree 3. Now let's plan...</div>
+  </div>
+
+  <!-- PHASE A: Strategy Building -->
+  <div class="mcq-phase locked" data-phase="A">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE A</span>
+      <span class="phase-name">Build the Strategy</span>
+    </div>
+
+    <div class="strategy-outline" style="display:none;">
+      <div class="strategy-outline-title">Solution Outline</div>
+      <div class="strategy-steps"></div>
+    </div>
+
+    <div class="mcq-step" data-step="A1">
+      <p class="mcq-question">What's the <strong>first</strong> step?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! We verify that both $M$ and $N$ have the same degree before substituting." data-step-text="Verify $M(x,y) = x^3 + y^3$ and $N(x,y) = 3xy^2$ are both degree 3">Verify that $M$ and $N$ have the same homogeneous degree</button>
+        <button class="mcq-option" data-correct="false" data-hint="We should verify homogeneity first to confirm the method will work." data-step-text="">Substitute $y = vx$ immediately</button>
+        <button class="mcq-option" data-correct="false" data-hint="The equation won't separate directly — that's why we need the substitution." data-step-text="">Try to separate variables</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="A2">
+      <p class="mcq-question">After confirming homogeneity, what's <strong>next</strong>?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! With $y = vx$, we also need $dy = v\,dx + x\,dv$ from the product rule." data-step-text="Substitute $y = vx$ and $dy = v\,dx + x\,dv$">Substitute $y = vx$ and compute $dy = v\,dx + x\,dv$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Integration comes after we substitute and separate the equation in terms of $v$ and $x$." data-step-text="">Integrate both sides</button>
+        <button class="mcq-option" data-correct="false" data-hint="We want $y = vx$, not $x = vy$. The substitution $y = vx$ reduces homogeneous DEs to separable form." data-step-text="">Substitute $x = vy$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="A3">
+      <p class="mcq-question">After substituting, what should happen?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! The substitution transforms the homogeneous DE into a separable one in $v$ and $x$." data-step-text="Simplify to get a separable equation in $v$ and $x$">The equation becomes separable in $v$ and $x$</button>
+        <button class="mcq-option" data-correct="false" data-hint="It becomes separable, not linear. We won't need an integrating factor." data-step-text="">Use integrating factor on $v$</button>
+        <button class="mcq-option" data-correct="false" data-hint="It will be separable, so we can solve by separation of variables." data-step-text="">The equation becomes exact</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="A4">
+      <p class="mcq-question">After solving for $v$, what's the <strong>final</strong> step?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! Since $v = y/x$, we substitute back to get the solution in terms of $x$ and $y$." data-step-text="Substitute $v = y/x$ back to get solution in $x$ and $y$">Substitute $v = y/x$ back into the solution</button>
+        <button class="mcq-option" data-correct="false" data-hint="Differentiation would verify the solution, but first we need to express it in terms of the original variables." data-step-text="">Differentiate to check</button>
+        <button class="mcq-option" data-correct="false" data-hint="We don't have initial conditions in this problem — we want the general solution." data-step-text="">Apply initial conditions</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="phase-transition">Strategy complete! Now let's compute...</div>
+  </div>
+
+  <!-- PHASE B: Execution -->
+  <div class="mcq-phase locked" data-phase="B">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE B</span>
+      <span class="phase-name">Execute the Computation</span>
+    </div>
+
+    <div class="mcq-step" data-step="B1">
+      <div class="mcq-step-label">Step B1</div>
+      <p class="mcq-question">Rewrite in the form $M\,dx + N\,dy = 0$. With $M = x^3 + y^3$ and $N = -3xy^2$, substitute $y = vx$:</p>
+      <p>$(x^3 + v^3 x^3)\,dx + (-3x \cdot v^2 x^2)(v\,dx + x\,dv) = 0$</p>
+      <p>Simplify to get:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$(1 - 2v^3)\,dx - 3v^2 x\,dv = 0$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check the algebra: $(x^3 + v^3 x^3) - 3v^3 x^3 = x^3(1 - 2v^3)$, and the $dv$ term has coefficient $-3v^2 x^4 / x^3 = -3v^2 x$.">$(1 + 2v^3)\,dx - 3v^2 x\,dv = 0$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The sign on the $dv$ term should be negative.">$(1 - 2v^3)\,dx + 3v^2 x\,dv = 0$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Factor out $x^3$ carefully and simplify.">$(v^3 - 1)\,dx - 3v^2 x\,dv = 0$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="B2">
+      <div class="mcq-step-label">Step B2</div>
+      <p class="mcq-question">Separate variables from $(1 - 2v^3)\,dx = 3v^2 x\,dv$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$\dfrac{dx}{x} = \dfrac{3v^2}{1 - 2v^3}\,dv$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The $v^2$ should be in the numerator, not denominator.">$\dfrac{dx}{x} = \dfrac{1 - 2v^3}{3v^2}\,dv$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check: we want $\frac{dx}{x}$ on the left, so divide both sides by $x(1-2v^3)$.">$x\,dx = \dfrac{3v^2}{1 - 2v^3}\,dv$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The sign in the denominator should match the original: $(1 - 2v^3)$.">$\dfrac{dx}{x} = \dfrac{3v^2}{2v^3 - 1}\,dv$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="B3">
+      <div class="mcq-step-label">Step B3</div>
+      <p class="mcq-question">Integrate $\displaystyle\int \dfrac{3v^2}{1 - 2v^3}\,dv$. (Hint: use substitution $u = 1 - 2v^3$)</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$-\dfrac{1}{2}\ln|1 - 2v^3|$</button>
+        <button class="mcq-option" data-correct="false" data-hint="With $u = 1-2v^3$, we have $du = -6v^2\,dv$, so $\int\frac{3v^2}{u}\cdot\frac{du}{-6v^2} = -\frac{1}{2}\ln|u|$.">$\dfrac{1}{2}\ln|1 - 2v^3|$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The coefficient should be $-1/2$, not $-1/6$.">$-\dfrac{1}{6}\ln|1 - 2v^3|$</button>
+        <button class="mcq-option" data-correct="false" data-hint="It should be $\ln$, not $\ln^2$.">$-\dfrac{1}{2}\ln^2|1 - 2v^3|$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="B4">
+      <div class="mcq-step-label">Step B4</div>
+      <p class="mcq-question">From $\ln|x| = -\frac{1}{2}\ln|1 - 2v^3| + c_1$, solve for the relationship and substitute $v = y/x$:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$C = x^2 - \dfrac{2y^3}{x}$ (or equivalently $Cx = x^3 - 2y^3$)</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check: $x^2(1 - 2v^3) = x^2 - 2v^3 x^2 = x^2 - 2\frac{y^3}{x^3}x^2 = x^2 - \frac{2y^3}{x}$.">$C = x^2 + \dfrac{2y^3}{x}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The exponent on $x$ should be 2 from $2\ln|x| = -\ln|1-2v^3| + c$.">$C = x^3 - 2y^3$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Be careful with signs when substituting $v = y/x$ back.">$C = \dfrac{2y^3}{x} - x^2$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+  </div>
+
+  <div class="mcq-result">Excellent! You've successfully solved the homogeneous DE using the $y = vx$ substitution.</div>
+</div>
+
+<!-- MCQ 4: Solve an IVP -->
+<div class="mcq" id="mcq-ivp">
+  <div class="mcq-title">Practice 4: Solve an Initial Value Problem</div>
+  <div class="mcq-problem">
+    <p>Solve the IVP:</p>
+    $$\frac{dy}{dx} = \frac{3x^2 + 4x + 2}{2(y-1)}, \quad y(0) = -1$$
+  </div>
+
+  <!-- PHASE 0: Classification -->
+  <div class="mcq-phase active" data-phase="0">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE 0</span>
+      <span class="phase-name">Classify the DE</span>
+    </div>
+    <div class="mcq-step" data-step="classify">
+      <p class="mcq-question">What type of DE is this? What method should we use?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! The RHS is a quotient where numerator depends only on $x$ and denominator only on $y$. We can write $2(y-1)\,dy = (3x^2+4x+2)\,dx$.">Separable — use separation of variables</button>
+        <button class="mcq-option" data-correct="false" data-hint="This isn't linear in $y$ — the term $2(y-1)$ in the denominator means $y$ appears nonlinearly.">Linear — use integrating factor</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check homogeneity: the numerator has degree 2 in $x$ (with no $y$), the denominator has degree 1 in $y$ (with no $x$). Not homogeneous.">Homogeneous — use $y = vx$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Bernoulli equations have the form $y' + P(x)y = Q(x)y^n$. This doesn't match that pattern.">Bernoulli — use substitution</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+    <div class="phase-transition">Correct! Now let's solve it step by step...</div>
+  </div>
+
+  <!-- PHASE A: Strategy with IVP -->
+  <div class="mcq-phase locked" data-phase="A">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE A</span>
+      <span class="phase-name">IVP Strategy</span>
+    </div>
+
+    <div class="strategy-outline" style="display:none;">
+      <div class="strategy-outline-title">Solution Outline</div>
+      <div class="strategy-steps"></div>
+    </div>
+
+    <div class="mcq-step" data-step="A1">
+      <p class="mcq-question">First step for a separable IVP?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! First find the general solution, then apply the initial condition." data-step-text="Separate and integrate to find general solution">Separate variables and integrate both sides</button>
+        <button class="mcq-option" data-correct="false" data-hint="We typically find the general solution first, then determine the constant using the IC." data-step-text="">Apply the initial condition immediately</button>
+        <button class="mcq-option" data-correct="false" data-hint="Checking existence/uniqueness is good practice, but let's focus on solving here." data-step-text="">Check existence and uniqueness first</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="A2">
+      <p class="mcq-question">After finding the general solution with constant $c$, what's next?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! Substitute $x=0$, $y=-1$ to find $c$." data-step-text="Apply IC: substitute $x=0$, $y=-1$ to find $c$">Substitute the initial condition $y(0) = -1$ to find $c$</button>
+        <button class="mcq-option" data-correct="false" data-hint="We need to find the specific solution first by determining $c$." data-step-text="">Differentiate to verify the solution</button>
+        <button class="mcq-option" data-correct="false" data-hint="Determining the interval comes after we have the specific solution." data-step-text="">Find the interval of validity</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="A3">
+      <p class="mcq-question">If the solution involves $y = 1 \pm \sqrt{\cdots}$, how do we choose the sign?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true" data-hint="Correct! Since $y(0) = -1 < 1$, we need the minus sign to get $y < 1$." data-step-text="Choose sign so that $y(0) = -1$ is satisfied">Check which sign satisfies $y(0) = -1$</button>
+        <button class="mcq-option" data-correct="false" data-hint="We need to match the initial condition, which determines the sign." data-step-text="">Always take the positive root</button>
+        <button class="mcq-option" data-correct="false" data-hint="The convention depends on the specific problem and initial condition." data-step-text="">Always take the negative root</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="phase-transition">Strategy set! Let's compute...</div>
+  </div>
+
+  <!-- PHASE B: Execution -->
+  <div class="mcq-phase locked" data-phase="B">
+    <div class="phase-label">
+      <span class="phase-tag">PHASE B</span>
+      <span class="phase-name">Execute</span>
+    </div>
+
+    <div class="mcq-step" data-step="B1">
+      <div class="mcq-step-label">Step B1</div>
+      <p class="mcq-question">Separate and integrate: $\displaystyle\int 2(y-1)\,dy = \int (3x^2 + 4x + 2)\,dx$. Result:</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="true">$(y-1)^2 = x^3 + 2x^2 + 2x + c$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$\int 2(y-1)\,dy = (y-1)^2$, not $y^2 - 2y$.">$y^2 - 2y = x^3 + 2x^2 + 2x + c$</button>
+        <button class="mcq-option" data-correct="false" data-hint="Check the RHS integral: $\int(3x^2+4x+2)\,dx = x^3 + 2x^2 + 2x$, not $x^3 + 2x^2 + x$.">$(y-1)^2 = x^3 + 2x^2 + x + c$</button>
+        <button class="mcq-option" data-correct="false" data-hint="The LHS should be $(y-1)^2$, not $2(y-1)^2$.">$2(y-1)^2 = x^3 + 2x^2 + 2x + c$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="B2">
+      <div class="mcq-step-label">Step B2</div>
+      <p class="mcq-question">Apply $y(0) = -1$: $((-1)-1)^2 = 0 + 0 + 0 + c$. What is $c$?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="false" data-hint="$(-1-1)^2 = (-2)^2 = 4$, not $-4$.">$c = -4$</button>
+        <button class="mcq-option" data-correct="true">$c = 4$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$(-2)^2 = 4$, not $2$.">$c = 2$</button>
+        <button class="mcq-option" data-correct="false" data-hint="$(-2)^2 = 4$, not $0$.">$c = 0$</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+
+    <div class="mcq-step locked" data-step="B3">
+      <div class="mcq-step-label">Step B3</div>
+      <p class="mcq-question">So $(y-1)^2 = x^3 + 2x^2 + 2x + 4$, giving $y = 1 \pm \sqrt{x^3 + 2x^2 + 2x + 4}$. Which sign?</p>
+      <div class="mcq-options">
+        <button class="mcq-option" data-correct="false" data-hint="If $y = 1 + \sqrt{4} = 1 + 2 = 3 \neq -1$. Wrong sign.">$y = 1 + \sqrt{x^3 + 2x^2 + 2x + 4}$</button>
+        <button class="mcq-option" data-correct="true">$y = 1 - \sqrt{x^3 + 2x^2 + 2x + 4}$</button>
+        <button class="mcq-option" data-correct="false" data-hint="We need to choose one based on the initial condition.">Both are valid solutions</button>
+        <button class="mcq-option" data-correct="false" data-hint="One of them satisfies $y(0) = -1$: check $1 - \sqrt{4} = 1 - 2 = -1$. ✓">Neither works</button>
+      </div>
+      <div class="mcq-feedback"></div>
+    </div>
+  </div>
+
+  <div class="mcq-result">Well done! The solution is $y = 1 - \sqrt{x^3 + 2x^2 + 2x + 4}$ with $y(0) = -1$.</div>
+</div>
+
+<hr>
+<p style="text-align:center;color:#aaa;font-size:0.85rem;margin-top:3rem;">— End of Separation of Variables Notes —</p>
+
+</div><!-- /.container -->
+</div><!-- /.page-wrapper -->
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // --- Interactive answers ---
+  document.querySelectorAll('.answer').forEach(function (span) {
+    var btn = document.createElement('button');
+    btn.className = 'answer-btn'; btn.textContent = 'Show'; btn.setAttribute('type', 'button');
+    span.parentNode.insertBefore(btn, span);
+    btn.addEventListener('click', function () {
+      var visible = span.classList.toggle('answer-revealed');
+      span.style.display = visible ? 'inline' : 'none';
+      btn.textContent = visible ? 'Hide' : 'Show';
+      btn.classList.toggle('revealed', visible);
+      if (visible && window.MathJax && MathJax.typeset) MathJax.typeset([span]);
+    });
+  });
+
+  // --- Three-Phase MCQ Logic ---
+  document.querySelectorAll('.mcq').forEach(function (mcq) {
+    var phases = mcq.querySelectorAll('.mcq-phase');
+    var result = mcq.querySelector('.mcq-result');
+    var currentPhaseIdx = 0;
+    var strategySteps = [];
+
+    // Find the current active phase
+    function getCurrentPhase() {
+      return phases[currentPhaseIdx];
+    }
+
+    // Update strategy outline display
+    function updateStrategyOutline(phase) {
+      var outline = phase.querySelector('.strategy-outline');
+      if (!outline) return;
+
+      var stepsContainer = outline.querySelector('.strategy-steps');
+      if (!stepsContainer) return;
+
+      stepsContainer.innerHTML = '';
+      strategySteps.forEach(function(stepText) {
+        var stepEl = document.createElement('div');
+        stepEl.className = 'strategy-step';
+        stepEl.innerHTML = stepText;
+        stepsContainer.appendChild(stepEl);
+      });
+
+      if (window.MathJax && MathJax.typeset) MathJax.typeset([stepsContainer]);
+    }
+
+    // Check if all steps in current phase are complete
+    function isPhaseComplete(phase) {
+      var steps = phase.querySelectorAll('.mcq-step');
+      var completedSteps = phase.querySelectorAll('.mcq-step.completed');
+      return steps.length === completedSteps.length;
+    }
+
+    // Unlock next phase
+    function unlockNextPhase() {
+      var currentPhase = phases[currentPhaseIdx];
+      var transition = currentPhase.querySelector('.phase-transition');
+
+      // Show transition message
+      if (transition) {
+        transition.style.display = 'block';
+      }
+
+      // Mark current phase as completed
+      currentPhase.classList.remove('active');
+      currentPhase.classList.add('completed');
+
+      // Unlock next phase after delay
+      if (currentPhaseIdx + 1 < phases.length) {
+        setTimeout(function() {
+          currentPhaseIdx++;
+          var nextPhase = phases[currentPhaseIdx];
+          nextPhase.classList.remove('locked');
+          nextPhase.classList.add('active');
+
+          // Unlock first step in new phase
+          var firstStep = nextPhase.querySelector('.mcq-step.locked');
+          if (firstStep) firstStep.classList.remove('locked');
+
+          // Show strategy outline if Phase A or B
+          var outline = nextPhase.querySelector('.strategy-outline');
+          if (outline && strategySteps.length > 0) {
+            outline.style.display = 'block';
+            updateStrategyOutline(nextPhase);
+          }
+
+          if (window.MathJax && MathJax.typeset) MathJax.typeset([nextPhase]);
+        }, 600);
+      } else {
+        // All phases complete
+        setTimeout(function() {
+          if (result) result.style.display = 'block';
+        }, 600);
+      }
+    }
+
+    // Process each phase
+    phases.forEach(function(phase, phaseIdx) {
+      var steps = phase.querySelectorAll('.mcq-step');
+
+      steps.forEach(function(step, stepIdx) {
+        var options = step.querySelectorAll('.mcq-option');
+        var feedback = step.querySelector('.mcq-feedback');
+
+        options.forEach(function(opt) {
+          opt.addEventListener('click', function() {
+            if (opt.classList.contains('correct') || opt.classList.contains('wrong') || opt.classList.contains('disabled')) return;
+
+            var isCorrect = opt.getAttribute('data-correct') === 'true';
+            var hint = opt.getAttribute('data-hint') || '';
+
+            if (isCorrect) {
+              opt.classList.add('correct');
+              options.forEach(function(o) { if (o !== opt) o.classList.add('disabled'); });
+              step.classList.add('completed');
+
+              feedback.textContent = hint || 'Correct!';
+              feedback.className = 'mcq-feedback correct-fb';
+
+              // Add to strategy steps if in Phase A
+              var stepText = opt.getAttribute('data-step-text');
+              if (stepText && phase.getAttribute('data-phase') === 'A') {
+                strategySteps.push(stepText);
+                updateStrategyOutline(phase);
+              }
+
+              if (window.MathJax && MathJax.typeset) MathJax.typeset([step]);
+
+              // Check if phase is complete
+              if (isPhaseComplete(phase)) {
+                setTimeout(unlockNextPhase, 500);
+              } else {
+                // Unlock next step in same phase
+                var nextStep = step.nextElementSibling;
+                while (nextStep && !nextStep.classList.contains('mcq-step')) {
+                  nextStep = nextStep.nextElementSibling;
+                }
+                if (nextStep && nextStep.classList.contains('locked')) {
+                  setTimeout(function() {
+                    nextStep.classList.remove('locked');
+                    if (window.MathJax && MathJax.typeset) MathJax.typeset([nextStep]);
+                  }, 400);
+                }
+              }
+            } else {
+              opt.classList.add('wrong');
+              feedback.innerHTML = hint || 'Try again.';
+              feedback.className = 'mcq-feedback wrong-fb';
+
+              if (window.MathJax && MathJax.typeset) MathJax.typeset([feedback]);
+
+              setTimeout(function() {
+                opt.classList.remove('wrong');
+                feedback.style.display = 'none';
+                feedback.className = 'mcq-feedback';
+                setTimeout(function() { feedback.style.display = ''; }, 50);
+              }, 3000);
+            }
+          });
+        });
+      });
+    });
+  });
+
+  // --- Scroll-spy ---
+  var sidebarLinks = document.querySelectorAll('.sidebar a[href^="#"]');
+  var sections = [];
+  sidebarLinks.forEach(function (link) {
+    var id = link.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) sections.push({ id: id, el: el, link: link });
+  });
+
+  function updateActive() {
+    var scrollY = window.scrollY + 80, current = null;
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i].el.offsetTop <= scrollY) current = sections[i];
+    }
+    sidebarLinks.forEach(function (l) { l.classList.remove('active'); });
+    if (current) {
+      current.link.classList.add('active');
+      var sidebar = document.getElementById('sidebar');
+      var linkTop = current.link.offsetTop, sidebarH = sidebar.clientHeight;
+      if (linkTop < sidebar.scrollTop + 40 || linkTop > sidebar.scrollTop + sidebarH - 40)
+        sidebar.scrollTo({ top: linkTop - sidebarH / 3, behavior: 'smooth' });
+    }
+  }
+  window.addEventListener('scroll', updateActive, { passive: true });
+  updateActive();
+});
+</script>
+</body>
+</html>
